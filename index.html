@@ -28,11 +28,23 @@
             padding-top: 70px;
         }
 
+        /* --- Animacje Startowe --- */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
         .animate-in { animation: fadeIn 0.8s ease-out forwards; opacity: 0; }
+
+        /* --- Animacje przy przewijaniu (Scroll Reveal) --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
         /* Nawigacja */
         nav {
@@ -93,7 +105,7 @@
         }
         .header-content p { font-size: 1.5rem; color: #94a3b8; font-weight: 600; margin-top: 10px; margin-bottom: 0; animation: fadeIn 1.2s ease-out; }
         .header-content .header-desc { font-size: 1.1rem; color: #cbd5e1; max-width: 600px; margin: 20px auto 0 auto; font-weight: 400; opacity: 0.8; animation: fadeIn 1.4s ease-out; }
-        .btn-header { margin-top: 40px; padding: 16px 32px; font-size: 1.2rem; position: relative; z-index: 10; cursor: pointer; }
+        .btn-header { margin-top: 40px; padding: 16px 32px; font-size: 1.2rem; cursor: pointer; }
 
         /* Kontenery i Karty */
         .container { width: 90%; max-width: 900px; margin: 0 auto; padding: 80px 0; }
@@ -136,6 +148,11 @@
         #portfolio .card-portfolio h4 { color: #0369a1; font-size: 1.2rem; }
         #portfolio .card-portfolio p { color: #0c4a6e; opacity: 0.8; font-weight: 600; margin: 0; }
 
+        /* Sekcja O mnie */
+        .omnie-content { text-align: center; max-width: 700px; margin: 0 auto; }
+        .omnie-content p { font-size: 1.1rem; color: var(--text-muted); margin-bottom: 15px; }
+        .omnie-highlight { color: var(--accent); font-weight: 700; }
+
         /* Przyciski */
         .btn {
             display: inline-block; background-color: var(--accent); color: white;
@@ -149,20 +166,26 @@
         .btn-email:hover { background-color: #475569; }
         .btn-outline { background-color: transparent; border: 2px solid var(--accent); color: var(--accent); }
         .btn-outline:hover { background-color: var(--accent); color: white; }
+        
+        /* Final CTA button */
+        .btn-final {
+            margin-top: 60px; padding: 20px 40px; font-size: 1.3rem;
+            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.2);
+        }
 
         /* Modal / Pop-upy */
         .modal-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(15, 23, 42, 0.8); z-index: 2000; justify-content: center;
             align-items: center; backdrop-filter: blur(5px); opacity: 0; transition: opacity 0.3s ease;
-            padding: 20px; /* Margines na małych ekranach */
+            padding: 20px;
         }
         .modal-overlay.active { display: flex; opacity: 1; }
         .modal-content {
             background: #fff; padding: 40px; border-radius: 20px; max-width: 600px;
             width: 100%; position: relative; text-align: left;
             transform: translateY(20px); transition: transform 0.3s ease;
-            max-height: 85vh; overflow-y: auto; /* Przewijanie dla długich treści */
+            max-height: 85vh; overflow-y: auto;
         }
         .modal-content.center-text { text-align: center; }
         .modal-overlay.active .modal-content { transform: translateY(0); }
@@ -191,6 +214,7 @@
             nav a { font-size: 0.85rem; } 
             .guarantee-box { padding: 30px 20px; }
             .modal-content { padding: 30px 20px; }
+            .btn-final { font-size: 1.1rem; padding: 16px 24px;}
         }
     </style>
 </head>
@@ -214,16 +238,16 @@
         </div>
     </header>
 
-    <div class="container animate-in">
+    <div class="container">
         
         <section id="oferta">
-            <h2 class="section-title">Co dokładnie dostaniesz?</h2>
+            <h2 class="section-title reveal">Co dokładnie dostaniesz?</h2>
             <div class="grid">
-                <div class="card" onclick="openModal('wizytowkiModal')">
+                <div class="card reveal" onclick="openModal('wizytowkiModal')">
                     <h3>Błyskawiczne Wizytówki</h3>
                     <p>Skupiamy się na konkretach i szybkim zdobywaniu klientów z twojej okolicy. Strony pisane od zera.</p>
                 </div>
-                <div class="card" onclick="openModal('mobilneModal')">
+                <div class="card reveal" style="transition-delay: 0.1s;" onclick="openModal('mobilneModal')">
                     <h3>Projekty Mobilne</h3>
                     <p>Większość ruchu w sieci to smartfony. Twoja nowa strona ładuje się błyskawicznie na każdym ekranie.</p>
                 </div>
@@ -231,21 +255,30 @@
         </section>
 
         <section id="gwarancja" style="padding-top: 40px;">
-            <div class="guarantee-box">
+            <div class="guarantee-box reveal">
                 <h3>Gwarancja Szybkości</h3>
                 <span class="score">100 / 100</span>
                 <p>Zwykłe strony na WordPressie od konkurencji ładują się 5 sekund i tracą klientów. Moje projekty pisane w czystym kodzie osiągają maksymalne wyniki wydajności w testach Google PageSpeed Insights. Twój biznes działa błyskawicznie i pozycjonuje się lepiej.</p>
             </div>
         </section>
 
-        <section id="portfolio" style="padding-top: 40px;">
-            <h2 class="section-title">Wybrane Projekty</h2>
+        <section id="omnie" style="padding-top: 80px; text-align: center;">
+            <h2 class="section-title reveal">Poznajmy się</h2>
+            <div class="card no-click omnie-content reveal">
+                <p>Cześć, mam na imię Dawid i stoję za CodePace Studio.</p>
+                <p>Piszę strony w czystym kodzie, ale w codziennej pracy <span class="omnie-highlight">aktywnie wykorzystuję możliwości sztucznej inteligencji</span>. Przyspiesza to cały proces projektowania i eliminuje techniczne błędy. Dzięki temu dostajesz nowoczesny produkt znacznie szybciej i taniej niż w dużej agencji.</p>
+                <p>Sprawnie poruszam się w środowisku GitHuba oraz WordPressa. Biorę na siebie całe zaplecze techniczne, włączając w to <span class="omnie-highlight">dobór i konfigurację domen oraz serwerów</span>. Ty mówisz czego potrzebujesz, ja oddaję ci gotową, działającą stronę.</p>
+            </div>
+        </section>
+
+        <section id="portfolio" style="padding-top: 80px;">
+            <h2 class="section-title reveal">Wybrane Projekty</h2>
             <div class="grid">
-                <div class="card-portfolio" onclick="openModal('portfolio1')">
+                <div class="card-portfolio reveal" onclick="openModal('portfolio1')">
                     <h4>[Projekt Pizzerii]</h4>
                     <p>Kliknij po szczegóły</p>
                 </div>
-                <div class="card-portfolio" onclick="openModal('portfolio2')">
+                <div class="card-portfolio reveal" style="transition-delay: 0.1s;" onclick="openModal('portfolio2')">
                     <h4>[Projekt Hydraulika]</h4>
                     <p>Kliknij po szczegóły</p>
                 </div>
@@ -253,8 +286,8 @@
         </section>
 
         <section id="faq" style="padding-top: 80px;">
-            <h2 class="section-title">Częste pytania</h2>
-            <div class="card no-click">
+            <h2 class="section-title reveal">Częste pytania</h2>
+            <div class="card no-click reveal">
                 <div class="faq-item">
                     <h4>Jak wygląda wycena?</h4>
                     <p>Każdy biznes potrzebuje czegoś innego. Napisz mi, czego oczekujesz, a ja przygotuję konkretną ofertę bez ukrytych kosztów.</p>
@@ -268,15 +301,19 @@
                     <p>Oddaję ci twardy kod. Nie masz panelu, w którym mógłbyś przypadkiem usunąć treści. Modyfikacje zostawiasz mi.</p>
                 </div>
             </div>
-            <div style="text-align: center;">
+            <div style="text-align: center;" class="reveal">
                 <button class="btn btn-outline" onclick="openModal('faqModal')">Zobacz wszystkie 10 pytań</button>
             </div>
+        </section>
+        
+        <section style="text-align: center;" class="reveal">
+            <button class="btn btn-final" onclick="openModal('contactModal')">Napisz lub zadzwoń. Zróbmy razem dobry projekt.</button>
         </section>
 
     </div>
 
     <footer>
-        <p>&copy; 2024 CodePace Studio. Wszelkie prawa zastrzeżone.</p>
+        <p>&copy; 2026 CodePace Studio. Wszelkie prawa zastrzeżone.</p>
         <span class="footer-link" onclick="openModal('privacyModal')">Polityka Prywatności</span>
     </footer>
 
@@ -369,13 +406,14 @@
     </div>
 
     <script>
+        // Obsługa modali
         function openModal(id) {
             document.getElementById(id).classList.add('active');
-            document.body.style.overflow = 'hidden'; // Blokuje scrollowanie strony pod spodem
+            document.body.style.overflow = 'hidden';
         }
         function closeModal(id) {
             document.getElementById(id).classList.remove('active');
-            document.body.style.overflow = 'auto'; // Włącza scrollowanie
+            document.body.style.overflow = 'auto';
         }
         window.onclick = function(event) {
             if (event.target.classList.contains('modal-overlay')) {
@@ -383,6 +421,21 @@
                 document.body.style.overflow = 'auto';
             }
         }
+
+        // Obsługa animacji przy przewijaniu (Intersection Observer)
+        document.addEventListener('DOMContentLoaded', function() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.reveal').forEach((el) => {
+                observer.observe(el);
+            });
+        });
     </script>
 </body>
 </html>
