@@ -9,6 +9,8 @@
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
+    <script src="baza-zadan.js"></script>
+
     <style>
         :root {
             --bg-color: #f8fafc;
@@ -67,7 +69,6 @@
         header h1 { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 900; letter-spacing: -2px; margin-bottom: 15px; color: var(--text-main); }
         header p { font-size: 1.2rem; color: var(--text-muted); max-width: 600px; margin: 0 auto; }
 
-        /* WIDOK GŁÓWNY */
         #view-home { display: block; animation: fadeIn 0.5s ease; }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
         .category-card { background: var(--card-bg); padding: 35px 25px; border-radius: 16px; box-shadow: var(--shadow); border: 2px solid transparent; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; }
@@ -76,7 +77,6 @@
         .category-card p { font-size: 0.95rem; color: var(--text-muted); line-height: 1.5; }
         .task-count { display: inline-block; margin-top: 20px; background: #eff6ff; color: var(--accent); padding: 5px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; }
 
-        /* WIDOK ZADAŃ */
         #view-tasks { display: none; animation: fadeIn 0.5s ease; }
         .back-btn { background: var(--card-bg); border: 1px solid #cbd5e1; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 30px; transition: 0.2s; }
         .back-btn:hover { background: #f1f5f9; border-color: var(--text-muted); }
@@ -85,17 +85,16 @@
 
         .task-list { display: flex; flex-direction: column; gap: 20px; }
         .task-card { background: var(--card-bg); padding: 30px; border-radius: 12px; box-shadow: var(--shadow); border-left: 4px solid var(--accent); }
+        .task-poddzial { font-weight: 800; color: var(--accent); margin-bottom: 15px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
         .task-content { font-size: 1.1rem; line-height: 1.8; margin-bottom: 20px; overflow-x: auto; }
         .show-answer-btn { background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; }
         .show-answer-btn:hover { background: var(--accent-hover); }
-        .answer-box { margin-top: 20px; padding: 20px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; display: none; overflow-x: auto; }
+        .answer-box { margin-top: 20px; padding: 20px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; display: none; overflow-x: auto; line-height: 1.8; }
         .answer-box.visible { display: block; animation: fadeIn 0.4s ease; }
 
-        /* STOPKA */
         footer { background: #0f172a; color: #94a3b8; padding: 40px 20px; text-align: center; margin-top: auto; }
         .footer-link { color: #cbd5e1; text-decoration: underline; cursor: pointer; font-size: 0.9rem; margin-top: 15px; display: inline-block; }
 
-        /* MODALE */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.9); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
         .modal-overlay.active { display: flex; }
         .modal-content { background: #fff; padding: 40px; border-radius: 16px; max-width: 600px; width: 90%; max-height: 85vh; overflow-y: auto; position: relative; }
@@ -134,8 +133,7 @@
                 <p style="color: var(--text-muted); margin-top: 10px;">Wybierz poddział i zacznij rozwiązywać zadania.</p>
             </div>
             <div class="task-list" id="tasks-container">
-                <div class="task-card" style="text-align: center; color: var(--text-muted);">Ładowanie modułu...</div>
-            </div>
+                </div>
         </div>
     </div>
 
@@ -185,18 +183,16 @@
             navList.innerHTML = '';
 
             categories.forEach(cat => {
-                // Kafelki na stronie głównej
                 const card = document.createElement('div');
                 card.className = 'category-card';
                 card.onclick = () => openCategory(cat.id, cat.title);
                 card.innerHTML = `
                     <h3>${cat.title}</h3>
                     <p>${cat.desc}</p>
-                    <span class="task-count">Wkrótce zadania</span>
+                    <span class="task-count">Kliknij, aby ćwiczyć</span>
                 `;
                 grid.appendChild(card);
 
-                // Lista w modalu nawigacyjnym
                 const listItem = document.createElement('div');
                 listItem.className = 'nav-list-item';
                 listItem.onclick = () => openCategory(cat.id, cat.title);
@@ -213,25 +209,29 @@
             window.scrollTo(0, 0);
             
             const container = document.getElementById('tasks-container');
-            container.innerHTML = `
-                <div class="task-card">
-                    <div class="task-content">
-                        <strong>Zadanie testowe:</strong><br><br>
-                        Rozwiąż równanie kwadratowe: \\( x^2 - 5x + 6 = 0 \\)
-                    </div>
-                    <button class="show-answer-btn" onclick="this.nextElementSibling.classList.toggle('visible')">Pokaż rozwiązanie</button>
-                    <div class="answer-box">
-                        Liczymy deltę:<br>
-                        \\( \\Delta = b^2 - 4ac = (-5)^2 - 4 \\cdot 1 \\cdot 6 = 25 - 24 = 1 \\)<br><br>
-                        Pierwiastki:<br>
-                        \\( x_1 = \\frac{-b - \\sqrt{\\Delta}}{2a} = \\frac{5 - 1}{2} = 2 \\)<br>
-                        \\( x_2 = \\frac{-b + \\sqrt{\\Delta}}{2a} = \\frac{5 + 1}{2} = 3 \\)
-                    </div>
-                </div>
-                <div class="task-card" style="text-align: center; color: var(--text-muted); border: none; box-shadow: none; background: transparent;">
-                    Tutaj wgramy docelowe zadania w kolejnych krokach.
-                </div>
-            `;
+            container.innerHTML = ''; 
+
+            // Wstrzykiwanie zadań z pliku JS
+            if (typeof bazaZadan !== 'undefined' && bazaZadan[id] && bazaZadan[id].length > 0) {
+                bazaZadan[id].forEach((zadanie, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'task-card';
+                    card.innerHTML = `
+                        <div class="task-poddzial">${zadanie.poddzial}</div>
+                        <div class="task-content">
+                            <strong>Zadanie ${index + 1}:</strong><br><br>
+                            ${zadanie.tresc}
+                        </div>
+                        <button class="show-answer-btn" onclick="this.nextElementSibling.classList.toggle('visible')">Pokaż rozwiązanie</button>
+                        <div class="answer-box">
+                            ${zadanie.rozwiazanie}
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } else {
+                container.innerHTML = `<div class="task-card" style="text-align: center; color: var(--text-muted); border: none; box-shadow: none; background: transparent;">Kolejne zadania wkrótce się tutaj pojawią. Pracujemy nad tym!</div>`;
+            }
 
             if (window.MathJax) {
                 MathJax.typesetPromise();
