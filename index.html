@@ -3,91 +3,171 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CodePace Studio | Tworzenie Stron Internetowych</title>
+    <title>CodePace Studio | Nowoczesne Strony WWW</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-color: #f8fafc;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --accent: #2563eb;
+            --card-bg: #ffffff;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f4f8;
-            color: #102a43;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
             margin: 0;
             padding: 0;
-            line-height: 1.6;
+            line-height: 1.7;
         }
+
+        nav {
+            background-color: var(--card-bg);
+            padding: 15px 20px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: var(--accent);
+        }
+
         header {
-            background-color: #102a43;
-            color: #f0f4f8;
-            padding: 50px 20px;
+            background-color: var(--text-main);
+            color: #fff;
+            padding: 150px 20px 100px;
             text-align: center;
         }
+
+        header h1 {
+            font-size: 3rem;
+            margin: 0 0 10px 0;
+            font-weight: 800;
+        }
+
         header p {
             font-size: 1.2rem;
-            opacity: 0.9;
+            color: #cbd5e1;
         }
+
         .container {
             width: 90%;
-            max-width: 800px;
-            margin: 30px auto;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 80px 0;
         }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
         .card {
-            background: #ffffff;
+            background: var(--card-bg);
             padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 10px 15px rgba(0,0,0,0.05);
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
             margin-bottom: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #e2e8f0;
         }
-        h2 {
-            color: #243b53;
-            border-bottom: 2px solid #d9e2ec;
-            padding-bottom: 10px;
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 25px rgba(0,0,0,0.05);
         }
-        .contact-info {
-            background-color: #f0f4f8;
-            padding: 20px;
+
+        h2, h3 {
+            color: var(--text-main);
+        }
+
+        p {
+            color: var(--text-muted);
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--accent);
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
             border-radius: 8px;
+            font-weight: 600;
             margin-top: 20px;
-            font-weight: bold;
+            transition: background-color 0.3s ease;
         }
-        .contact-info p {
-            margin: 5px 0;
+
+        .btn:hover {
+            background-color: #1d4ed8;
         }
     </style>
 </head>
 <body>
 
-    <header>
+    <nav>
+        <a href="#oferta">Oferta</a>
+        <a href="#proces">Jak pracuję</a>
+        <a href="#kontakt">Kontakt</a>
+    </nav>
+
+    <header id="start">
         <h1>CodePace Studio</h1>
-        <p>Nowoczesne strony internetowe | Modern Web Development</p>
+        <p>Tworzę bardzo szybkie i nowoczesne strony internetowe.</p>
     </header>
 
     <div class="container">
         
-        <div class="card">
-            <h2>Wersja Polska 🇵🇱</h2>
-            <p>Zajmuję się projektowaniem i kodowaniem responsywnych stron internetowych. Pomagam firmom oraz osobom prywatnym zaistnieć w sieci. Oferuję płatne tworzenie stron na wymiar, które działają płynnie na każdym urządzeniu i wyglądają profesjonalnie.</p>
+        <section id="oferta">
+            <h2 class="section-title">Co dokładnie dostaniesz?</h2>
             
-            <h3>Twoja nowa strona</h3>
-            <p>Każdy projekt wyceniam indywidualnie. Płacisz za konkretny efekt i czysty, dobrze napisany kod. Oferuję pełne wsparcie od pomysłu po publikację w internecie. Jeśli chcesz zobaczyć moje dotychczasowe realizacje, zajrzyj do sekcji portfolio (wkrótce).</p>
-
-            <div class="contact-info">
-                <p>Napisz lub zadzwoń. Zróbmy razem dobry projekt.</p>
-                <p>Email: codepacestudio@gmail.com</p>
-                <p>Telefon: +48 792 198 691</p>
+            <div class="card">
+                <h3>Strony firmowe i wizytówki</h3>
+                <p>Buduję strony, które ładują się w ułamku sekundy i wyglądają świetnie na każdym telefonie. Bez ociężałych systemów, sam czysty kod dostosowany do twojej branży.</p>
             </div>
-        </div>
 
-        <div class="card">
-            <h2>English Version 🇬🇧</h2>
-            <p>I design and code responsive websites. I help businesses and individuals establish their online presence. I offer paid custom web development services. My websites perform smoothly on any device and look professional.</p>
-            
-            <h3>Your New Website</h3>
-            <p>I price each project individually. You pay for concrete results and clean, well-written code. I provide full support from the initial idea to publishing online. If you want to see my previous work, check out the portfolio section (coming soon).</p>
-
-            <div class="contact-info">
-                <p>Message or call me. Let's build a great project together.</p>
-                <p>Email: codepacestudio@gmail.com</p>
-                <p>Phone: +48 792 198 691</p>
+            <div class="card">
+                <h3>Poprawki i modernizacje</h3>
+                <p>Twoja stara strona straszy klientów? Zaprojektuję ją od nowa, przeniosę na szybki serwer i zadbam o to, żeby w końcu zaczęła zarabiać.</p>
             </div>
-        </div>
+        </section>
+
+        <section id="proces">
+            <h2 class="section-title">Proste zasady współpracy</h2>
+            <div class="card">
+                <p>Nienawidzę owijania w bawełnę. Ty mówisz mi, jakiego biznesu prowadzisz, ja proponuję układ strony. Wyceniam projekt z góry. Nie ma żadnych ukrytych kosztów ani abonamentów za powietrze. Płacisz za gotowy, działający produkt.</p>
+            </div>
+        </section>
+
+        <section id="kontakt">
+            <h2 class="section-title">Zróbmy to</h2>
+            <div class="card" style="text-align: center;">
+                <h3>Napisz i zapytaj o darmową wycenę.</h3>
+                <p>Wiadomość nic nie kosztuje, a może uratować twój wizerunek w sieci.</p>
+                <a href="mailto:codepacestudio@gmail.com" class="btn">Napisz na e-mail</a>
+                <p style="margin-top: 20px; font-weight: bold; color: var(--text-main);">Telefon: +48 792 198 691</p>
+            </div>
+        </section>
 
     </div>
 
