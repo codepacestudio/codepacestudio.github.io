@@ -9,7 +9,20 @@
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
-    <script src="baza-zadan.js"></script>
+    <script>const bazaZadan = {};</script>
+
+    <script src="liczby.js"></script>
+    <script src="algebra.js"></script>
+    <script src="rownania.js"></script>
+    <script src="uklady.js"></script>
+    <script src="funkcje.js"></script>
+    <script src="ciagi.js"></script>
+    <script src="trygonometria.js"></script>
+    <script src="planimetria.js"></script>
+    <script src="analityczna.js"></script>
+    <script src="stereometria.js"></script>
+    <script src="kombinatoryka.js"></script>
+    <script src="statystyka.js"></script>
 
     <style>
         :root {
@@ -37,29 +50,10 @@
             overflow-x: hidden;
         }
 
-        nav {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 15px 0;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 100;
-            border-bottom: 2px solid var(--accent);
-            backdrop-filter: blur(10px);
-        }
-
-        .nav-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
+        nav { background: rgba(255, 255, 255, 0.95); padding: 15px 0; position: fixed; width: 100%; top: 0; z-index: 100; border-bottom: 2px solid var(--accent); backdrop-filter: blur(10px); }
+        .nav-content { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
         .logo { font-size: 1.5rem; font-weight: 900; color: var(--text-main); text-decoration: none; letter-spacing: -1px; cursor: pointer; }
         .logo span { color: var(--accent); }
-        
         .nav-btn { background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 0.9rem; }
         .nav-btn:hover { background: var(--accent-hover); }
 
@@ -173,7 +167,7 @@
             { id: 'analityczna', title: 'Geometria analityczna', desc: 'Równanie prostej, środek odcinka i odległość punktów.' },
             { id: 'stereometria', title: 'Stereometria', desc: 'Graniastosłupy, ostrosłupy, objętość i pole powierzchni.' },
             { id: 'kombinatoryka', title: 'Kombinatoryka i Prawdopodobieństwo', desc: 'Reguła mnożenia i prawdopodobieństwo klasyczne.' },
-            { id: 'statystyka', title: 'Statystyka', desc: 'Średnia arytmetyczna, mediana, dominanta i odchylenie.' }
+            { id: 'statystyka', title: 'Statystyka', desc: 'Średnia, mediana, dominanta i odchylenie.' }
         ];
 
         function renderCategories() {
@@ -211,7 +205,6 @@
             const container = document.getElementById('tasks-container');
             container.innerHTML = ''; 
 
-            // Wstrzykiwanie zadań z pliku JS
             if (typeof bazaZadan !== 'undefined' && bazaZadan[id] && bazaZadan[id].length > 0) {
                 bazaZadan[id].forEach((zadanie, index) => {
                     const card = document.createElement('div');
