@@ -30,7 +30,6 @@
         .reveal { opacity: 0; transform: translateY(30px); transition: 0.8s ease-out; }
         .reveal.active { opacity: 1; transform: translateY(0); }
 
-        /* NAWIGACJA */
         nav {
             position: fixed; top: 0; width: 100%; z-index: 1000;
             background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px);
@@ -44,12 +43,12 @@
         .nav-links a { color: var(--text-muted); text-decoration: none; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; transition: 0.3s; }
         .nav-links a:hover { color: var(--accent-white); }
 
-        /* HEADER */
+        /* NAPRAWIONY HEADER (Usunięte background-attachment: fixed dla iOS) */
         header {
             height: 70vh; display: flex; align-items: center; justify-content: center; text-align: center;
             background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.75)), 
                         url('https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=2070&auto=format&fit=crop');
-            background-size: cover; background-position: center; background-attachment: fixed;
+            background-size: cover; background-position: center; 
             padding: 20px; margin-bottom: 40px;
         }
         .hero-h1 { font-size: clamp(3rem, 8vw, 5.5rem); line-height: 1.1; margin-bottom: 15px; font-weight: 900; }
@@ -59,7 +58,6 @@
         .section-header { text-align: center; margin-bottom: 30px; }
         .section-header h2 { font-size: 2.5rem; }
 
-        /* PROMOCJE (SCROLL) */
         .promo-scroll { display: flex; gap: 20px; overflow-x: auto; padding: 10px 5px 30px; scrollbar-width: none; margin-bottom: 40px; }
         .promo-scroll::-webkit-scrollbar { display: none; }
         .scroll-hint { text-align: right; color: var(--gold); font-size: 0.8rem; font-weight: 700; margin-bottom: 10px; animation: pulse 2s infinite; }
@@ -73,7 +71,6 @@
         .promo-day { font-size: 0.7rem; font-weight: 800; color: var(--accent-red); text-transform: uppercase; letter-spacing: 2px; display: block; margin-bottom: 5px; }
         .promo-card h3 { color: var(--gold); font-size: 1.3rem; margin-bottom: 10px; }
 
-        /* SZUKAJKA I FILTRY (NAPRAWIONE ODSTĘPY) */
         .menu-controls { 
             position: sticky; top: 70px; z-index: 100; background: var(--bg); 
             padding: 25px 0; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 40px; 
@@ -92,7 +89,6 @@
         }
         .filter-btn.active { background: var(--accent-white); color: var(--bg); }
 
-        /* GRID MENU */
         .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
         .menu-item { 
             background: var(--card-bg); padding: 25px; border-radius: 20px; cursor: pointer; 
@@ -103,11 +99,11 @@
         .menu-item p { font-size: 0.85rem; color: var(--text-muted); min-height: 45px; margin-top: 10px; }
         .menu-price { color: var(--accent-green); font-weight: 900; font-size: 1.2rem; margin-top: 15px; }
 
-        /* O NAS */
+        /* NAPRAWIONA SEKCJA O NAS */
         .about-section { 
             background: linear-gradient(rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.95)), 
                         url('https://images.unsplash.com/photo-1579751626657-72bc17010498?q=80&w=2069&auto=format&fit=crop'); 
-            background-attachment: fixed; background-size: cover; padding: 100px 20px; text-align: center; 
+            background-size: cover; background-position: center; padding: 100px 20px; text-align: center; 
         }
         .about-content { max-width: 800px; margin: 0 auto; }
         .about-content h2 { font-size: 3rem; margin-bottom: 25px; }
@@ -116,12 +112,10 @@
         .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-top: 50px; }
         .info-card { background: var(--card-bg); padding: 30px; border-radius: 20px; border-top: 3px solid var(--accent-green); }
 
-        /* STOPKA */
         footer { background: #020617; padding: 60px 20px; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); }
         .footer-logo { font-size: 2rem; font-weight: 900; display: block; margin-bottom: 20px; }
         .footer-link { color: var(--text-muted); font-size: 0.8rem; text-decoration: underline; cursor: pointer; }
 
-        /* KOSZYK BAR */
         .cart-bar { 
             position: fixed; bottom: 30px; right: 30px; background: var(--accent-green); color: #000; 
             padding: 15px 30px; border-radius: 50px; font-weight: 900; z-index: 1000; cursor: pointer; 
@@ -130,7 +124,6 @@
         .cart-bar:hover { transform: scale(1.05); }
         .cart-count { background: #000; color: #fff; padding: 3px 10px; border-radius: 50px; font-size: 0.8rem; }
 
-        /* MODALE */
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.98); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(5px); }
         .modal-content { background: var(--card-bg); max-width: 500px; width: 100%; border-radius: 25px; padding: 35px; position: relative; max-height: 90vh; overflow-y: auto; border: 1px solid rgba(255,255,255,0.1); }
         .close-modal { position: absolute; top: 15px; right: 25px; font-size: 2.5rem; cursor: pointer; color: var(--text-muted); line-height: 1; }
@@ -178,37 +171,37 @@
                 <div class="promo-card" onclick="openPromo('pon')">
                     <span class="promo-day">Poniedziałek</span>
                     <h3>2x Pizza Klasyczna</h3>
-                    <p>Druga pizza 32cm z listy klasyków (1-10) za 50% ceny. Kliknij i wybierz.</p>
+                    <p>Druga pizza 32cm z klasyków za 50% ceny. Kliknij i skonfiguruj.</p>
                 </div>
                 <div class="promo-card" onclick="openPromo('wt')">
                     <span class="promo-day">Wtorek</span>
                     <h3>Zestaw z Pepsi</h3>
-                    <p>Dowolna pizza 42cm + Pepsi 1L w super cenie 49.99 zł. Skonfiguruj zestaw.</p>
+                    <p>Dowolna pizza 42cm + Pepsi 1L za 49.99 zł. Kliknij i wybierz.</p>
                 </div>
-                <div class="promo-card">
+                <div class="promo-card" onclick="addPromoBundle('Zestaw Środowy: Pizza + 2 Sosy Gratis', 32)">
                     <span class="promo-day">Środa</span>
                     <h3>Dzień Sosów</h3>
-                    <p>Do każdej zamówionej pizzy dowolne 2 sosy dostajesz całkowicie za darmo.</p>
+                    <p>Kliknij, aby dodać dedykowany zestaw z dwoma darmowymi sosami do koszyka.</p>
                 </div>
-                <div class="promo-card">
+                <div class="promo-card" onclick="alert('Darmowa dostawa aktywuje się automatycznie w podsumowaniu dla strefy 1 i 2.')">
                     <span class="promo-day">Czwartek</span>
                     <h3>Darmowa Dostawa</h3>
                     <p>Brak kosztów transportu w strefie 1 i 2 przez cały dzień.</p>
                 </div>
-                <div class="promo-card" style="border-color: var(--gold);">
+                <div class="promo-card" style="border-color: var(--gold);" onclick="addPromoBundle('Zestaw Piątkowy: Pizza Mega + 2x Lech (1 Gratis)', 58)">
                     <span class="promo-day">Piątek</span>
                     <h3>Lech 1+1 Gratis</h3>
-                    <p>Zamów Pizzę Mega (50cm) i odbierz drugiego Lecha 0.5L Gratis!</p>
+                    <p>Kliknij, aby dodać pakiet: Pizza 50cm i dwa piwa w cenie jednego!</p>
                 </div>
-                <div class="promo-card">
+                <div class="promo-card" onclick="addPromoBundle('Rodzinny Box: 4 Pizze', 99.99)">
                     <span class="promo-day">Sobota</span>
                     <h3>Rodzinne 3+1</h3>
-                    <p>Przy zakupie 3 dowolnych pizz, czwarta (najtańsza) kosztuje tylko 1 grosz.</p>
+                    <p>Kliknij, aby dodać imprezowy zestaw 4 pizz (czwarta za grosz).</p>
                 </div>
-                <div class="promo-card">
+                <div class="promo-card" onclick="alert('Zrób zamówienie powyżej 80 zł, a darmowa pizza deserowa wskoczy do systemu automatycznie!')">
                     <span class="promo-day">Niedziela</span>
                     <h3>Słodkie Zakończenie</h3>
-                    <p>Darmowa Pizza Deserowa z nutellą do każdego zamówienia powyżej 80 zł.</p>
+                    <p>Darmowa Pizza z nutellą do zamówień powyżej 80 zł.</p>
                 </div>
             </div>
         </section>
@@ -263,7 +256,7 @@
     </footer>
 
     <button class="cart-bar" onclick="openCart()">
-        🛒 KOSZYK (<span id="cartCount">0</span>) | <span id="cartTotal">0.00 zł</span>
+        🛒 TWOJE ZAMÓWIENIE (<span id="cartCount">0</span>) | <span id="cartTotal">0.00 zł</span>
     </button>
 
     <div class="modal" id="prodModal">
@@ -273,14 +266,14 @@
             <p id="mDesc" style="margin: 15px 0; color: var(--text-muted); font-size: 0.9rem;"></p>
             
             <div id="pizOpt">
-                <label style="font-size: 0.75rem; font-weight: 800; color: var(--accent-green);">ROZMIAR PIZZY:</label>
+                <label style="font-size: 0.75rem; font-weight: 800; color: var(--accent-green);">WYBIERZ ROZMIAR:</label>
                 <div style="display:flex; flex-wrap:wrap; margin-bottom: 15px;" class="size-selector">
                     <button class="sel-btn" onclick="setSize(0, this)">24cm</button>
                     <button class="sel-btn active" onclick="setSize(1, this)">32cm</button>
                     <button class="sel-btn" onclick="setSize(2, this)">42cm</button>
                     <button class="sel-btn" onclick="setSize(3, this)">50cm</button>
                 </div>
-                <label style="font-size: 0.75rem; font-weight: 800; color: var(--accent-green);">CIASTO:</label>
+                <label style="font-size: 0.75rem; font-weight: 800; color: var(--accent-green);">RODZAJ CIASTA:</label>
                 <div style="display:flex;" class="crust-selector">
                     <button class="sel-btn active" onclick="setCrust(0, this)">Cienkie</button>
                     <button class="sel-btn" onclick="setCrust(2, this)">Grube (+2zł)</button>
@@ -288,10 +281,7 @@
             </div>
             
             <div style="margin-top: 30px; display:flex; justify-content: space-between; align-items: center; border-top: 1px solid #334155; padding-top: 20px;">
-                <div>
-                    <span style="display:block; font-size: 0.8rem; color: var(--text-muted);">Cena:</span>
-                    <span id="mPrice" style="font-size: 2rem; font-weight: 900; color: var(--accent-green);"></span>
-                </div>
+                <div><span style="display:block; font-size: 0.8rem; color: var(--text-muted);">Cena:</span><span id="mPrice" style="font-size: 2rem; font-weight: 900; color: var(--accent-green);"></span></div>
                 <button class="btn-order" style="width: auto; margin:0; padding: 15px 40px;" onclick="addToCart()">DODAJ</button>
             </div>
         </div>
@@ -314,11 +304,17 @@
         <div class="modal-content">
             <span class="close-modal" onclick="closeModal('cartModal')">&times;</span>
             <h2 style="margin-bottom: 20px;">Twoje Zamówienie</h2>
-            <div id="cItems" style="margin-bottom: 25px; border-top: 1px solid #334155;"></div>
-            <div style="text-align: right; border-top: 2px solid var(--accent-green); padding-top: 20px;">
+            <div id="cItems" style="margin-bottom: 10px;"></div>
+            
+            <div id="upsellBlock" style="margin-top:20px; border-top:1px solid #334155; padding-top:15px;">
+                <h4 style="color:var(--gold); margin-bottom:10px; font-size:0.9rem;">Może coś do tego?</h4>
+                <div id="upsellContainer" style="display:flex; gap:8px; flex-wrap:wrap;"></div>
+            </div>
+
+            <div style="text-align: right; border-top: 2px solid var(--accent-green); padding-top: 20px; margin-top: 20px;">
                 <span style="display:block; color: var(--text-muted); font-size: 0.9rem;">Razem do zapłaty:</span>
                 <span id="cFinal" style="font-size: 2.5rem; font-weight: 900; color: var(--accent-green);">0.00 zł</span>
-                <button class="btn-order" onclick="alert('Dziękujemy! System jest w wersji demonstracyjnej.')">ZAMAWIAM</button>
+                <button class="btn-order" onclick="alert('Dziękujemy! System jest w wersji demonstracyjnej.')">ZAMAWIAM I PŁACĘ</button>
             </div>
         </div>
     </div>
@@ -327,7 +323,7 @@
         <div class="modal-content" style="text-align: center;">
             <span class="close-modal" onclick="closeModal('privacyModal')">&times;</span>
             <h3>Polityka Prywatności</h3>
-            <p style="margin-top: 20px; color: var(--text-muted);">Ta strona to projekt portfolio. Nie gromadzimy danych, nie obsługujemy prawdziwych płatności. Dane kontaktowe i nazwy są fikcyjne.</p>
+            <p style="margin-top: 20px; color: var(--text-muted);">Ta strona to projekt portfolio. Nie gromadzimy danych, nie obsługujemy prawdziwych płatności. Dane kontaktowe są fikcyjne.</p>
             <button class="btn-order" onclick="closeModal('privacyModal')">Rozumiem</button>
         </div>
     </div>
@@ -429,7 +425,7 @@
 
             const filtered = db.filter(p => {
                 const matchesCat = curCat === 'all' || p.cats.includes(curCat);
-                const matchesSearch = p.name.toLowerCase().includes(search) || p.desc.toLowerCase().includes(search);
+                const matchesSearch = p.name.toLowerCase().includes(search) || (p.desc && p.desc.toLowerCase().includes(search));
                 return matchesCat && matchesSearch;
             });
 
@@ -452,13 +448,13 @@
 
         // LOGIKA MODALU PRODUKTU
         function openModal(id) {
+            if(typeof id === 'string') { document.getElementById(id).style.display = 'flex'; return; }
             curProduct = db.find(p => p.id === id);
             curSizeIdx = 1; curCrustPrice = 0;
             document.getElementById('mTitle').innerText = curProduct.name;
             document.getElementById('mDesc').innerText = curProduct.desc;
             document.getElementById('pizOpt').style.display = curProduct.type === 'pizza' ? 'block' : 'none';
             
-            // Reset button states
             document.querySelectorAll('.size-selector .sel-btn').forEach((b, i) => { b.classList.toggle('active', i === 1); });
             document.querySelectorAll('.crust-selector .sel-btn').forEach((b, i) => { b.classList.toggle('active', i === 0); });
 
@@ -467,38 +463,33 @@
         }
 
         function setSize(i, btn) {
-            curSizeIdx = i;
-            document.querySelectorAll('.size-selector .sel-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            updatePrice();
+            curSizeIdx = i; document.querySelectorAll('.size-selector .sel-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active'); updatePrice();
         }
 
         function setCrust(p, btn) {
-            curCrustPrice = p;
-            document.querySelectorAll('.crust-selector .sel-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            updatePrice();
+            curCrustPrice = p; document.querySelectorAll('.crust-selector .sel-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active'); updatePrice();
         }
 
         function updatePrice() {
             let p = curProduct.price;
-            if(curProduct.type === 'pizza') {
-                const mult = [0.8, 1, 1.4, 1.8];
-                p = (p * mult[curSizeIdx]) + curCrustPrice;
-            }
+            if(curProduct.type === 'pizza') p = (p * [0.8, 1, 1.4, 1.8][curSizeIdx]) + curCrustPrice;
             document.getElementById('mPrice').innerText = p.toFixed(2) + ' zł';
             curProduct.finalPrice = p;
         }
 
-        // KOSZYK
+        // KOSZYK I UPSELLING
         function addToCart() {
             let labelText = "";
-            if(curProduct.type === 'pizza') {
-                labelText = ["24cm","32cm","42cm","50cm"][curSizeIdx] + (curCrustPrice ? " (Grube)" : " (Cienkie)");
-            }
+            if(curProduct.type === 'pizza') labelText = ["24cm","32cm","42cm","50cm"][curSizeIdx] + (curCrustPrice ? " (Grube)" : " (Cienkie)");
             cart.push({ ...curProduct, cartId: Date.now(), label: labelText });
-            updateUI();
-            closeModal('prodModal');
+            updateUI(); closeModal('prodModal');
+        }
+
+        function addPromoBundle(name, price) {
+            cart.push({name: name, finalPrice: price, cartId: Date.now(), label: "Gotowy Zestaw Oferty Specjalnej"});
+            updateUI(); openCart();
         }
 
         function updateUI() {
@@ -514,35 +505,39 @@
             cart.forEach(item => {
                 const div = document.createElement('div');
                 div.style.cssText = "display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.05); align-items:center;";
-                div.innerHTML = `
-                    <div><p style="font-weight:700;">${item.name}</p><p style="font-size:0.75rem; color:var(--text-muted);">${item.label || ''}</p></div>
-                    <div style="display:flex; align-items:center; gap:15px;">
-                        <span>${item.finalPrice.toFixed(2)} zł</span>
-                        <button style="background:none; border:none; color:var(--accent-red); cursor:pointer; font-weight:900;" onclick="rem(${item.cartId})">X</button>
-                    </div>`;
+                div.innerHTML = `<div><p style="font-weight:700;">${item.name}</p><p style="font-size:0.75rem; color:var(--text-muted);">${item.label || ''}</p></div>
+                    <div style="display:flex; align-items:center; gap:15px;"><span>${item.finalPrice.toFixed(2)} zł</span>
+                    <button style="background:none; border:none; color:var(--accent-red); cursor:pointer; font-weight:900;" onclick="rem(${item.cartId})">X</button></div>`;
                 list.appendChild(div);
             });
+            renderUpsell();
             document.getElementById('cartModal').style.display = 'flex';
         }
 
-        function rem(id) { cart = cart.filter(i => i.cartId !== id); updateUI(); openCart(); }
-        
-        function openModal(id) { 
-            if(typeof id === 'string') document.getElementById(id).style.display = 'flex'; // dla privacy
-            else { /* logika produktu wyżej */ }
+        function renderUpsell() {
+            const up = db.filter(m => [101, 103, 201, 207].includes(m.id));
+            const cont = document.getElementById('upsellContainer');
+            cont.innerHTML = '';
+            up.forEach(u => {
+                const b = document.createElement('button'); b.className = 'sel-btn'; b.style.padding = '8px 15px'; b.style.minWidth = 'auto';
+                b.innerHTML = `${u.name} <span style="color:var(--accent-green)">+${u.price.toFixed(2)}zł</span>`;
+                b.onclick = () => { cart.push({...u, finalPrice: u.price, cartId: Date.now()}); updateUI(); openCart(); };
+                cont.appendChild(b);
+            });
         }
+
+        function rem(id) { cart = cart.filter(i => i.cartId !== id); updateUI(); openCart(); }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-        // LOGIKA PROMOCJI
+        // LOGIKA KREATORÓW PROMOCJI (PON/WT)
         function openPromo(type) {
             curPromoType = type; promoSelections = [];
             const cont = document.getElementById('promoSelection');
-            cont.innerHTML = '';
-            document.getElementById('promoFinalAdd').style.display = 'none';
+            cont.innerHTML = ''; document.getElementById('promoFinalAdd').style.display = 'none';
 
             if(type === 'pon') {
-                document.getElementById('promoTitle').innerText = "Wybierz 2 Pizze Klasyczne (32cm)";
-                document.getElementById('promoDesc').innerText = "Wybierz dwie pozycje z klasyków. Druga jest tańsza o 50%.";
+                document.getElementById('promoTitle').innerText = "Kreator: 2x Klasyczna";
+                document.getElementById('promoDesc').innerText = "Wybierz dwie pizze z klasyków. Druga jest tańsza o 50%.";
                 db.filter(p => p.cats.includes('klasyk') && p.id <= 10).forEach(p => {
                     const btn = document.createElement('button'); btn.className = 'sel-btn'; btn.innerText = p.name;
                     btn.onclick = () => {
@@ -553,15 +548,13 @@
                 });
                 document.getElementById('promoPriceDisplay').innerText = "Zestaw: ok. 35.00 zł";
             } else if(type === 'wt') {
-                document.getElementById('promoTitle').innerText = "Zestaw Combo (42cm + Pepsi)";
-                document.getElementById('promoDesc').innerText = "Wybierz dowolną pizzę do zestawu:";
+                document.getElementById('promoTitle').innerText = "Kreator: Zestaw Combo";
+                document.getElementById('promoDesc').innerText = "Wybierz dowolną pizzę do zestawu z Pepsi 1L:";
                 db.filter(p => p.type === 'pizza').slice(0, 15).forEach(p => {
                     const btn = document.createElement('button'); btn.className = 'sel-btn'; btn.innerText = p.name;
                     btn.onclick = () => {
-                        promoSelections = [p];
-                        document.querySelectorAll('#promoSelection .sel-btn').forEach(x => x.classList.remove('active'));
-                        btn.classList.add('active');
-                        document.getElementById('promoFinalAdd').style.display = 'block';
+                        promoSelections = [p]; document.querySelectorAll('#promoSelection .sel-btn').forEach(x => x.classList.remove('active'));
+                        btn.classList.add('active'); document.getElementById('promoFinalAdd').style.display = 'block';
                     };
                     cont.appendChild(btn);
                 });
@@ -579,37 +572,17 @@
                 name = `COMBO WT: ${promoSelections[0].name} + Pepsi 1L`;
                 price = 49.99;
             }
-            cart.push({name, finalPrice: price, cartId: Date.now(), label: "Zestaw Promocyjny"});
+            cart.push({name, finalPrice: price, cartId: Date.now(), label: "Zestaw Konfigurowany"});
             updateUI(); closeModal('promoModal');
         }
 
-        // RESET SCROLLA (NAPRWA BŁĘDU)
+        // INIT I ANIMACJE
         window.onbeforeunload = function () { window.scrollTo(0, 0); };
         window.onload = () => {
             window.scrollTo(0, 0);
             document.body.classList.add('loaded');
-            
-            // Poprawka renderMenu dla openModal overrides
-            const originalOpenModal = openModal;
-            openModal = function(id) {
-                if(typeof id === 'string') document.getElementById(id).style.display = 'flex';
-                else {
-                    curProduct = db.find(p => p.id === id);
-                    curSizeIdx = 1; curCrustPrice = 0;
-                    document.getElementById('mTitle').innerText = curProduct.name;
-                    document.getElementById('mDesc').innerText = curProduct.desc;
-                    document.getElementById('pizOpt').style.display = curProduct.type === 'pizza' ? 'block' : 'none';
-                    document.querySelectorAll('.size-selector .sel-btn').forEach((b, i) => { b.classList.toggle('active', i === 1); });
-                    document.querySelectorAll('.crust-selector .sel-btn').forEach((b, i) => { b.classList.toggle('active', i === 0); });
-                    updatePrice();
-                    document.getElementById('prodModal').style.display = 'flex';
-                }
-            };
-
             renderMenu();
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('active'); });
-            }, {threshold: 0.1});
+            const observer = new IntersectionObserver((entries) => { entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('active'); }); }, {threshold: 0.1});
             document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
         };
     </script>
