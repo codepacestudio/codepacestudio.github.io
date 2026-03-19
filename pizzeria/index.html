@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>La Pizza Nostra | System Zamówień Premium</title>
+    <title>La Pizza Nostra | System Zamówień Premium 2026</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -14,93 +14,146 @@
             --accent-white: #f8fafc;
             --text-muted: #94a3b8;
             --gold: #fbbf24;
+            --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
 
+        /* Base & Scroll Fix */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--bg); color: var(--accent-white); line-height: 1.6; overflow-x: hidden; opacity: 0; transition: opacity 1s ease-in; }
-        body.loaded { opacity: 1; }
-        h1, h2, h3 { font-family: 'Playfair Display', serif; }
         html { scroll-behavior: smooth; }
+        body { 
+            background-color: var(--bg); 
+            color: var(--accent-white); 
+            line-height: 1.6; 
+            overflow-x: hidden;
+            opacity: 0; 
+            transition: opacity 0.8s ease-in;
+        }
+        body.loaded { opacity: 1; }
 
-        .reveal { opacity: 0; transform: translateY(30px); transition: 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+        h1, h2, h3, .brand { font-family: 'Playfair Display', serif; }
+
+        .reveal { opacity: 0; transform: translateY(40px); transition: 1s cubic-bezier(0.4, 0, 0.2, 1); }
         .reveal.active { opacity: 1; transform: translateY(0); }
 
+        /* Navigation */
         nav {
             position: fixed; top: 0; width: 100%; z-index: 1000;
-            background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(12px);
-            padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+            background: rgba(15, 23, 42, 0.96); backdrop-filter: blur(15px);
+            padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.08);
         }
         .nav-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
-        .logo { font-size: 1.6rem; font-weight: 900; color: var(--accent-white); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+        .logo { font-size: 1.7rem; font-weight: 900; color: var(--accent-white); text-decoration: none; display: flex; align-items: center; gap: 10px; }
         .logo span:nth-child(1) { color: var(--accent-green); }
         .logo span:nth-child(3) { color: var(--accent-red); }
-        .nav-links { display: flex; gap: 20px; }
-        .nav-links a { color: var(--text-muted); text-decoration: none; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
+        
+        .nav-links { display: flex; gap: 25px; }
+        .nav-links a { color: var(--text-muted); text-decoration: none; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1.5px; transition: 0.3s; }
         .nav-links a:hover { color: var(--accent-white); }
 
+        /* Header */
         header {
-            height: 60vh; display: flex; align-items: center; justify-content: center; text-align: center;
-            background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.8)), 
+            height: 75vh; display: flex; align-items: center; justify-content: center; text-align: center;
+            background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.75)), 
                         url('https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=2070&auto=format&fit=crop');
-            background-size: cover; background-position: center; padding: 20px;
+            background-size: cover; background-position: center; background-attachment: fixed;
+            padding: 20px; margin-bottom: 40px;
         }
-        .hero-h1 { font-size: clamp(3rem, 10vw, 5.5rem); line-height: 1.1; margin-bottom: 15px; font-weight: 900; }
+        .hero-h1 { font-size: clamp(3rem, 10vw, 6rem); line-height: 1; margin-bottom: 20px; font-weight: 900; letter-spacing: -2px; }
+        .hero-p { font-size: 1.2rem; color: var(--text-muted); max-width: 700px; margin: 0 auto; }
 
-        .container { max-width: 1200px; margin: 0 auto; padding: 60px 20px; }
+        /* Promocje - 7 Dni */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px 80px; }
+        .section-title { font-size: 2.8rem; margin-bottom: 40px; text-align: center; }
 
-        /* PROMOCJE DNIA */
-        .promo-scroll { display: flex; gap: 20px; overflow-x: auto; padding: 20px 5px; scrollbar-width: none; margin-bottom: 40px; }
+        .promo-scroll { display: flex; gap: 20px; overflow-x: auto; padding: 20px 5px; scrollbar-width: none; margin-bottom: 60px; }
         .promo-scroll::-webkit-scrollbar { display: none; }
         .promo-card { 
-            min-width: 300px; background: var(--card-bg); padding: 30px; border-radius: 25px; 
-            border: 1px solid rgba(255,255,255,0.05); transition: 0.4s; cursor: pointer; position: relative;
+            min-width: 320px; background: var(--card-bg); padding: 35px; border-radius: 30px; 
+            border: 2px solid rgba(255,255,255,0.05); transition: 0.4s; cursor: pointer; position: relative;
         }
-        .promo-card:hover { border-color: var(--accent-red); transform: translateY(-5px); }
-        .promo-card h3 { color: var(--gold); margin-bottom: 10px; font-size: 1.3rem; }
-        .promo-day { font-size: 0.7rem; font-weight: 800; color: var(--accent-red); text-transform: uppercase; letter-spacing: 2px; display: block; margin-bottom: 5px; }
+        .promo-card:hover { border-color: var(--accent-red); transform: translateY(-8px); box-shadow: var(--shadow); }
+        .promo-card h3 { color: var(--gold); margin-bottom: 12px; font-size: 1.4rem; }
+        .promo-day { font-size: 0.75rem; font-weight: 800; color: var(--accent-red); text-transform: uppercase; letter-spacing: 2px; display: block; margin-bottom: 8px; }
 
-        /* MENU CONTROLS */
-        .menu-controls { position: sticky; top: 75px; z-index: 100; background: var(--bg); padding: 25px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .search-input { width: 100%; max-width: 600px; margin: 0 auto 20px; display: block; padding: 15px 30px; border-radius: 50px; border: 2px solid var(--card-bg); background: var(--card-bg); color: white; outline: none; text-align: center; font-size: 1.1rem; }
-        .search-input:focus { border-color: var(--accent-green); }
-        .menu-filters { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
-        .filter-btn { background: #1e293b; border: none; color: var(--text-muted); padding: 12px 24px; border-radius: 50px; cursor: pointer; font-weight: 700; font-size: 0.8rem; transition: 0.3s; }
-        .filter-btn.active { background: var(--accent-white); color: var(--bg); }
+        /* Search & Filters */
+        .menu-controls { 
+            position: sticky; top: 75px; z-index: 900; background: var(--bg); 
+            padding: 25px 0; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 50px;
+        }
+        .search-container { max-width: 650px; margin: 0 auto 25px; }
+        .search-input { 
+            width: 100%; padding: 18px 35px; border-radius: 60px; border: 2px solid var(--card-bg); 
+            background: var(--card-bg); color: white; outline: none; text-align: center; font-size: 1.1rem; 
+            box-shadow: var(--shadow); transition: 0.3s;
+        }
+        .search-input:focus { border-color: var(--accent-green); background: #243147; }
 
-        /* GRID */
-        .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
-        .menu-item { background: var(--card-bg); padding: 30px; border-radius: 20px; cursor: pointer; transition: 0.3s; border: 1px solid transparent; display: flex; flex-direction: column; justify-content: space-between; }
-        .menu-item:hover { transform: translateY(-8px); border-color: rgba(255,255,255,0.15); background: #243147; }
-        .menu-item h3 { font-size: 1.15rem; display: flex; justify-content: space-between; align-items: center; }
-        .menu-price { color: var(--accent-green); font-weight: 800; font-size: 1.1rem; margin-top: 15px; }
+        .menu-filters { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+        .filter-btn { 
+            background: #1e293b; border: 1px solid transparent; color: var(--text-muted); 
+            padding: 12px 26px; border-radius: 50px; cursor: pointer; font-weight: 700; font-size: 0.85rem; 
+            transition: 0.3s; 
+        }
+        .filter-btn.active { background: var(--accent-white); color: var(--bg); box-shadow: 0 10px 20px rgba(255,255,255,0.1); }
 
-        /* O NAS SECTION */
-        .about-section { background: linear-gradient(rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.9)), url('https://images.unsplash.com/photo-1579751626657-72bc17010498?q=80&w=2069&auto=format&fit=crop'); background-attachment: fixed; background-size: cover; padding: 120px 20px; text-align: center; }
-        .about-content { max-width: 800px; margin: 0 auto; }
-        .about-content h2 { font-size: 3.5rem; margin-bottom: 25px; }
-        .about-content p { font-size: 1.1rem; color: #cbd5e1; margin-bottom: 20px; line-height: 1.8; }
+        /* Product Grid */
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; }
+        .menu-item { 
+            background: var(--card-bg); padding: 35px; border-radius: 25px; cursor: pointer; 
+            transition: 0.3s; border: 1px solid transparent; display: flex; flex-direction: column; justify-content: space-between;
+        }
+        .menu-item:hover { transform: translateY(-10px); border-color: rgba(255,255,255,0.15); background: #243147; box-shadow: var(--shadow); }
+        .menu-item h3 { font-size: 1.3rem; display: flex; justify-content: space-between; align-items: center; }
+        .menu-item p { font-size: 0.9rem; color: var(--text-muted); min-height: 50px; margin-top: 15px; }
+        .menu-price { color: var(--accent-green); font-weight: 800; font-size: 1.3rem; margin-top: 20px; display: block; }
 
-        /* MODALS */
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.98); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 20px; }
-        .modal-content { background: var(--card-bg); max-width: 550px; width: 100%; border-radius: 30px; padding: 40px; position: relative; max-height: 90vh; overflow-y: auto; border: 1px solid rgba(255,255,255,0.1); }
-        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 2.5rem; cursor: pointer; color: var(--text-muted); }
+        /* About Section (Parallax) */
+        .about-section { 
+            background: linear-gradient(rgba(15, 23, 42, 0.92), rgba(15, 23, 42, 0.92)), 
+                        url('https://images.unsplash.com/photo-1579751626657-72bc17010498?q=80&w=2069&auto=format&fit=crop'); 
+            background-attachment: fixed; background-size: cover; padding: 140px 20px; text-align: center;
+        }
+        .about-content { max-width: 900px; margin: 0 auto; }
+        .about-content h2 { font-size: 3.8rem; margin-bottom: 35px; letter-spacing: -1px; }
+        .about-content p { font-size: 1.25rem; color: #cbd5e1; margin-bottom: 25px; line-height: 1.9; }
 
-        .btn-order { width: 100%; padding: 18px; background: var(--accent-red); color: white; border: none; border-radius: 12px; font-weight: 800; font-size: 1.1rem; cursor: pointer; margin-top: 25px; transition: 0.3s; }
-        .btn-order:hover { background: #dc2626; transform: translateY(-2px); }
+        /* Delivery & Contact Info */
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; margin-top: 60px; }
+        .info-card { background: var(--card-bg); padding: 40px; border-radius: 30px; border-top: 4px solid var(--accent-green); }
+        .info-card h4 { font-size: 1.5rem; margin-bottom: 15px; }
 
-        .sel-btn { flex: 1; padding: 12px; border: 1px solid #334155; border-radius: 10px; background: transparent; color: white; cursor: pointer; font-weight: 700; font-size: 0.8rem; transition: 0.2s; min-width: 100px; margin: 5px; }
+        /* Modals */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.98); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(10px); }
+        .modal-content { background: var(--card-bg); max-width: 550px; width: 100%; border-radius: 35px; padding: 45px; position: relative; max-height: 90vh; overflow-y: auto; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 0 50px rgba(0,0,0,0.5); }
+        .close-modal { position: absolute; top: 20px; right: 30px; font-size: 3rem; cursor: pointer; color: var(--text-muted); line-height: 1; transition: 0.3s; }
+        .close-modal:hover { color: white; }
+
+        .sel-btn { flex: 1; padding: 15px; border: 1px solid #334155; border-radius: 15px; background: transparent; color: white; cursor: pointer; font-weight: 700; font-size: 0.9rem; transition: 0.3s; min-width: 120px; margin: 5px; }
         .sel-btn.active { background: var(--accent-green); color: #000; border-color: var(--accent-green); }
 
-        /* KOSZYK */
-        .cart-bar { position: fixed; bottom: 30px; right: 30px; background: var(--accent-green); color: #000; padding: 16px 28px; border-radius: 50px; font-weight: 800; z-index: 1000; cursor: pointer; display: flex; gap: 12px; align-items: center; box-shadow: 0 10px 40px rgba(34, 197, 94, 0.4); transition: 0.3s; border: none; }
-        .cart-bar:hover { transform: scale(1.05); }
+        .btn-order { width: 100%; padding: 20px; background: var(--accent-red); color: white; border: none; border-radius: 18px; font-weight: 800; font-size: 1.2rem; cursor: pointer; margin-top: 30px; box-shadow: 0 10px 20px rgba(239, 68, 68, 0.3); }
 
-        footer { background: #020617; padding: 80px 20px; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); }
+        /* Cart Bar */
+        .cart-bar { 
+            position: fixed; bottom: 35px; right: 35px; background: var(--accent-green); 
+            color: #000; padding: 18px 35px; border-radius: 60px; font-weight: 800; 
+            z-index: 1000; cursor: pointer; display: flex; gap: 15px; align-items: center; 
+            box-shadow: 0 15px 45px rgba(34, 197, 94, 0.4); border: none; transition: 0.3s;
+        }
+        .cart-bar:hover { transform: scale(1.05) translateY(-5px); }
+        .cart-count { background: #000; color: #fff; padding: 4px 10px; border-radius: 50px; font-size: 0.85rem; }
+
+        /* Footer */
+        footer { background: #020617; padding: 100px 20px; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); }
+        .footer-logo { font-size: 2.2rem; font-weight: 900; margin-bottom: 25px; display: block; }
+        .footer-p { color: var(--text-muted); max-width: 500px; margin: 0 auto; font-size: 0.9rem; }
 
         @media (max-width: 768px) {
-            .hero-h1 { font-size: 2.8rem; }
+            header { height: 60vh; }
+            .hero-h1 { font-size: 3.2rem; }
             .nav-links { display: none; }
-            .modal-content { padding: 30px 20px; }
+            .modal-content { padding: 35px 25px; }
+            .cart-bar { bottom: 20px; right: 20px; padding: 15px 25px; font-size: 0.9rem; }
         }
     </style>
 </head>
@@ -110,7 +163,7 @@
         <div class="nav-content">
             <a href="#top" class="logo"><span>La</span><span>Pizza</span><span>Nostra</span></a>
             <div class="nav-links">
-                <a href="#promos">Promocje</a>
+                <a href="#promos">Okazje</a>
                 <a href="#menu">Menu</a>
                 <a href="#about">O nas</a>
                 <a href="tel:+48000000000">Zadzwoń</a>
@@ -120,15 +173,15 @@
 
     <header>
         <div class="reveal active">
-            <span class="badge">Autentyczna receptura</span>
-            <h1 class="hero-h1">Smak Neapolu</h1>
-            <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto;">50 unikalnych smaków na cieście dojrzewającym 24 godziny. Wybierz swój ulubiony i zamów z dostawą.</p>
+            <span style="color: var(--accent-green); font-weight: 800; letter-spacing: 4px; text-transform: uppercase; font-size: 0.8rem; display: block; margin-bottom: 15px;">Prawdziwa Włoska Tradycja</span>
+            <h1 class="hero-h1">La Pizza Nostra</h1>
+            <p class="hero-p">Odkryj 50 unikalnych smaków na cieście dojrzewającym 24 godziny. Najlepsza receptura w Twoim mieście.</p>
         </div>
     </header>
 
     <div class="container">
         <section id="promos" class="reveal">
-            <div class="section-header"><h2>Oferty Tygodnia</h2></div>
+            <div class="section-title"><h2>Oferty Tygodnia</h2></div>
             <div class="promo-scroll">
                 <div class="promo-card" onclick="openPromo('pon')">
                     <span class="promo-day">Poniedziałek</span>
@@ -137,46 +190,47 @@
                 </div>
                 <div class="promo-card" onclick="openPromo('wt')">
                     <span class="promo-day">Wtorek</span>
-                    <h3>Zestaw z Pepsi</h3>
-                    <p>Dowolna pizza 42cm + Pepsi 1L w super cenie 49.99 zł.</p>
+                    <h3>Combo Pepsi</h3>
+                    <p>Dowolna pizza 42cm + Pepsi 1L w cenie 49.99 zł.</p>
                 </div>
                 <div class="promo-card">
                     <span class="promo-day">Środa</span>
-                    <h3>Dzień Sosów</h3>
+                    <h3>Zestaw Sosów</h3>
                     <p>Do każdej zamówionej pizzy dowolne 2 sosy gratis.</p>
                 </div>
                 <div class="promo-card">
                     <span class="promo-day">Czwartek</span>
-                    <h3>Darmowa Dostawa</h3>
-                    <p>Brak kosztów transportu w strefie 1 i 2 przez cały dzień.</p>
+                    <h3>Free Delivery</h3>
+                    <p>Darmowa dostawa w każdej strefie przez cały dzień.</p>
                 </div>
                 <div class="promo-card" style="border-color: var(--gold);">
                     <span class="promo-day">Piątek</span>
-                    <h3>Weekendowy Lech</h3>
-                    <p>Zamów Pizzę Mega i odbierz drugiego Lecha 0.5L Gratis!</p>
+                    <h3>Lech 1+1</h3>
+                    <p>Kup Pizzę Mega i odbierz drugiego Lecha 0.5L całkowicie za darmo!</p>
                 </div>
                 <div class="promo-card">
                     <span class="promo-day">Sobota</span>
-                    <h3>Rodzinne 3+1</h3>
+                    <h3>Family Pack</h3>
                     <p>Przy zakupie 3 dowolnych pizz, czwarta (najtańsza) za 1 grosz.</p>
                 </div>
                 <div class="promo-card">
                     <span class="promo-day">Niedziela</span>
-                    <h3>Słodka Niedziela</h3>
-                    <p>Darmowa Pizza Deserowa do każdego zamówienia powyżej 80 zł.</p>
+                    <h3>Sweet Sunday</h3>
+                    <p>Darmowa Pizza Deserowa do zamówień powyżej 80 zł.</p>
                 </div>
             </div>
         </section>
 
-        <section id="menu" class="reveal" style="margin-top: 60px;">
+        <section id="menu" class="reveal">
             <div class="menu-controls">
-                <input type="text" id="searchInput" class="search-input" placeholder="Wyszukaj pizzę, napój lub składnik..." oninput="renderMenu()">
+                <input type="text" id="searchInput" class="search-input" placeholder="Czego szukasz? (pizza, napój, składnik...)" oninput="renderMenu()">
                 <div class="menu-filters">
-                    <button class="filter-btn active" onclick="setFilter('all', this)">Wszystkie</button>
+                    <button class="filter-btn active" onclick="setFilter('all', this)">Wszystkie (65)</button>
                     <button class="filter-btn" onclick="setFilter('pizza', this)">Pizze</button>
                     <button class="filter-btn" onclick="setFilter('ostra', this)">Ostre</button>
                     <button class="filter-btn" onclick="setFilter('wege', this)">Wege</button>
-                    <button class="filter-btn" onclick="setFilter('dodatki', this)">Dodatki</button>
+                    <button class="filter-btn" onclick="setFilter('napoje', this)">Napoje</button>
+                    <button class="filter-btn" onclick="setFilter('sosy', this)">Sosy</button>
                 </div>
             </div>
             <div id="product-list" class="menu-grid"></div>
@@ -185,51 +239,69 @@
 
     <section id="about" class="about-section reveal">
         <div class="about-content">
-            <h2 style="font-family: 'Playfair Display', serif;">Włoska Pasja</h2>
-            <p>La Pizza Nostra to miejsce, gdzie rzemiosło spotyka się z tradycją. Nasze ciasto dojrzewa minimum 24 godziny, aby uzyskać idealną chrupkość. Korzystamy wyłącznie z certyfikowanych włoskich składników: mąki 00 i pomidorów San Marzano.</p>
-            <p>Odkryj 50 smaków, które zadowolą nawet najbardziej wymagających smakoszy. U nas masz wybór: tradycyjne cienkie ciasto lub puszyste brzegi.</p>
-            <div style="margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 30px; display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;">
-                <div><h4 style="color: var(--accent-green);">Strefa 1</h4><p>Dostawa 0 zł</p></div>
-                <div><h4 style="color: var(--gold);">Strefa 2</h4><p>Dostawa 10 zł</p></div>
-                <div><h4 style="color: var(--accent-red);">Kontakt</h4><p>+48 000 000 000</p></div>
+            <h2 style="font-weight: 900;">Pasja i Rzemiosło</h2>
+            <p>La Pizza Nostra to miejsce stworzone z miłości do neapolitańskiego rzemiosła. Nasze ciasto powstaje z mąki typu 00 i dojrzewa minimum 24 godziny, aby uzyskać niespotykaną lekkość i chrupkość.</p>
+            <p>Używamy tylko oryginalnych składników: pomidorów San Marzano i mozzarelli fior di latte. Każdy z 50 smaków w naszej karcie to autorska kompozycja, pieczona w temperaturze 450 stopni.</p>
+            
+            <div class="info-grid">
+                <div class="info-card">
+                    <h4 style="color: var(--accent-green);">Dostawa</h4>
+                    <p>Strefa 1: Darmowa (do 3 km)</p>
+                    <p>Strefa 2: 10 zł (powyżej 3 km)</p>
+                </div>
+                <div class="info-card" style="border-top-color: var(--gold);">
+                    <h4 style="color: var(--gold);">Otwarte</h4>
+                    <p>Pon - Czw: 12:00 - 22:00</p>
+                    <p>Pt - Niedziela: 10:00 - 23:00</p>
+                </div>
+                <div class="info-card" style="border-top-color: var(--accent-red);">
+                    <h4 style="color: var(--accent-red);">Kontakt</h4>
+                    <p>ul. Neapolitańska 14, Warszawa</p>
+                    <p>Tel: +48 000 000 000</p>
+                </div>
             </div>
         </div>
     </section>
 
     <footer>
-        <span class="logo" style="justify-content: center; font-size: 2rem; margin-bottom: 20px;"><span>La</span><span>Pizza</span><span>Nostra</span></span>
-        <p>ul. Neapolitańska 14, Warszawa | Projekt Portfolio 2026</p>
-        <p style="margin-top: 15px; font-size: 0.8rem; color: var(--text-muted);">© 2026 La Pizza Nostra. Wszystkie dane są fikcyjne i służą prezentacji umiejętności programistycznych.</p>
+        <span class="logo footer-logo"><span>La</span><span>Pizza</span><span>Nostra</span></span>
+        <p class="footer-p">Projekt demonstracyjny dla portfolio CodePace Studio 2026. Wszystkie nazwy, ceny i lokalizacje są fikcyjne i służą prezentacji technicznej.</p>
+        <div style="margin-top: 30px;">
+            <span style="cursor: pointer; text-decoration: underline; font-size: 0.8rem; color: var(--text-muted);">Polityka Prywatności</span>
+        </div>
     </footer>
 
     <button class="cart-bar" onclick="openCart()">
-        🛒 KOSZYK (<span id="cartCount">0</span>) | <span id="cartTotal">0.00 zł</span>
+        🛒 TWOJE ZAMÓWIENIE (<span id="cartCount">0</span>) | <span id="cartTotal">0.00 zł</span>
     </button>
 
     <div class="modal" id="prodModal">
         <div class="modal-content">
             <span class="close-modal" onclick="closeModal('prodModal')">&times;</span>
             <h2 id="mTitle"></h2>
-            <p id="mDesc" style="margin: 15px 0; color: var(--text-muted);"></p>
+            <p id="mDesc" style="margin: 20px 0; color: var(--text-muted); font-size: 0.95rem;"></p>
             
             <div id="pizOpt">
-                <label style="font-size: 0.7rem; font-weight: 800; color: var(--accent-green);">ROZMIAR:</label>
-                <div class="size-selector" style="display:flex; flex-wrap:wrap;">
+                <label style="font-size: 0.75rem; font-weight: 800; color: var(--accent-green);">WYBIERZ ROZMIAR:</label>
+                <div class="size-selector" style="display:flex; flex-wrap:wrap; margin-bottom: 20px;">
                     <button class="sel-btn" onclick="setSize(0, this)">24cm</button>
                     <button class="sel-btn active" onclick="setSize(1, this)">32cm</button>
                     <button class="sel-btn" onclick="setSize(2, this)">42cm</button>
                     <button class="sel-btn" onclick="setSize(3, this)">50cm</button>
                 </div>
-                <label style="font-size: 0.7rem; font-weight: 800; color: var(--accent-green); margin-top: 10px; display:block;">CIASTO:</label>
+                <label style="font-size: 0.75rem; font-weight: 800; color: var(--accent-green);">RODZAJ CIASTA:</label>
                 <div class="crust-selector" style="display:flex;">
                     <button class="sel-btn active" onclick="setCrust(0, this)">Cienkie</button>
                     <button class="sel-btn" onclick="setCrust(2, this)">Grube (+2zł)</button>
                 </div>
             </div>
             
-            <div style="margin-top: 30px; display:flex; justify-content: space-between; align-items: center; border-top: 1px solid #334155; padding-top: 20px;">
-                <span id="mPrice" style="font-size: 2rem; font-weight: 900; color: var(--accent-green);"></span>
-                <button class="btn-order" style="width: auto; margin:0; padding: 12px 35px;" onclick="add()">DODAJ</button>
+            <div style="margin-top: 40px; display:flex; justify-content: space-between; align-items: center; border-top: 1px solid #334155; padding-top: 25px;">
+                <div>
+                    <span style="display:block; font-size: 0.8rem; color: var(--text-muted);">Do zapłaty:</span>
+                    <span id="mPrice" style="font-size: 2.2rem; font-weight: 900; color: var(--accent-green);"></span>
+                </div>
+                <button class="btn-order" style="width: auto; margin:0; padding: 15px 45px;" onclick="addToCart()">DODAJ</button>
             </div>
         </div>
     </div>
@@ -238,12 +310,12 @@
         <div class="modal-content">
             <span class="close-modal" onclick="closeModal('promoModal')">&times;</span>
             <h2 id="promoTitle">Kreator Zestawu</h2>
-            <p id="promoDesc" style="margin: 10px 0 20px; color: var(--text-muted);"></p>
-            <div id="promoSelection">
+            <p id="promoDesc" style="margin: 15px 0 25px; color: var(--text-muted);"></p>
+            <div id="promoSelection" style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;">
                 </div>
-            <div style="margin-top: 30px; border-top: 1px solid #334155; padding-top: 20px; text-align: right;">
-                <span id="promoPriceDisplay" style="font-size: 1.8rem; font-weight: 900; color: var(--accent-green); display:block; margin-bottom: 15px;"></span>
-                <button class="btn-order" id="promoFinalAdd" onclick="confirmPromoAdd()">DODAJ ZESTAW DO KOSZYKA</button>
+            <div style="margin-top: 40px; border-top: 1px solid #334155; padding-top: 25px; text-align: right;">
+                <span id="promoPriceDisplay" style="font-size: 2rem; font-weight: 900; color: var(--accent-green); display:block; margin-bottom: 15px;"></span>
+                <button class="btn-order" id="promoFinalAdd" style="display:none;" onclick="confirmPromoAdd()">DODAJ ZESTAW DO KOSZYKA</button>
             </div>
         </div>
     </div>
@@ -251,215 +323,266 @@
     <div class="modal" id="cartModal">
         <div class="modal-content">
             <span class="close-modal" onclick="closeModal('cartModal')">&times;</span>
-            <h2>Twoje Zamówienie</h2>
-            <div id="cItems" style="margin: 20px 0; border-top: 1px solid #334155;"></div>
-            <div style="text-align: right; padding-top: 20px;">
-                <span style="display:block; color: var(--text-muted); font-size: 0.9rem;">Łącznie do zapłaty:</span>
-                <span id="cFinal" style="font-size: 2.5rem; font-weight: 900; color: var(--accent-green);">0.00 zł</span>
-                <button class="btn-order" onclick="alert('Demo zamówienia pomyślne!')">ZAMAWIAM</button>
+            <h2 style="margin-bottom: 25px;">Twoje Zamówienie</h2>
+            <div id="cItems" style="margin-bottom: 30px; border-top: 1px solid #334155;"></div>
+            <div style="text-align: right; padding-top: 25px; border-top: 2px solid var(--accent-green);">
+                <span style="display:block; color: var(--text-muted); font-size: 0.9rem;">Łączna suma:</span>
+                <span id="cFinal" style="font-size: 2.8rem; font-weight: 900; color: var(--accent-green);">0.00 zł</span>
+                <button class="btn-order" onclick="alert('Demo: Zamówienie przyjęte!')">ZAMAWIAM I PŁACĘ</button>
             </div>
         </div>
     </div>
 
-    <script>
-        // PEŁNA BAZA DANYCH (50 PIZZ + 10 NAPOJÓW + 5 SOSÓW)
-        const db = [
-            {id:1, type:'pizza', name:"Margherita", desc:"San Marzano, mozzarella, bazylia, oliwa", cats:['pizza','wege'], price:19},
-            {id:2, type:'pizza', name:"Capriciosa", desc:"Sos, mozzarella, szynka, pieczarki", cats:['pizza'], price:24},
-            {id:3, type:'pizza', name:"Diavola", desc:"Salami piccante, jalapeno, mozzarella", cats:['pizza','ostra'], price:28},
-            {id:4, type:'pizza', name:"Quattro Formaggi", desc:"Gorgonzola, parmezan, mozzarella, ricotta", cats:['pizza','wege'], price:29},
-            {id:5, type:'pizza', name:"Carbonara", desc:"Biały sos, boczek, żółtko, pecorino", cats:['pizza'], price:31},
-            {id:6, type:'pizza', name:"Prosciutto", desc:"Szynka parmeńska, rukola, parmezan", cats:['pizza'], price:33},
-            {id:7, type:'pizza', name:"Vegetariana", desc:"Cukinia, bakłażan, papryka, czosnek", cats:['pizza','wege'], price:26},
-            {id:8, type:'pizza', name:"Hawajska", desc:"Szynka gotowana, ananas, kukurydza", cats:['pizza'], price:24},
-            {id:9, type:'pizza', name:"Boscaiola", desc:"Salsiccia, borowiki, mozzarella, czosnek", cats:['pizza'], price:32},
-            {id:10, type:'pizza', name:"Marinara", desc:"Sos pomidorowy, czosnek, oregano (bez sera)", cats:['pizza','wege'], price:18},
-            {id:11, type:'pizza', name:"Etna", desc:"Salami, anchois, kapary, chilli", cats:['pizza','ostra'], price:31},
-            {id:12, type:'pizza', name:"Spinaci", desc:"Szpinak, czosnek, feta, pomidorki", cats:['pizza','wege'], price:26},
-            {id:13, type:'pizza', name:"Infernale", desc:"Nduja, habanero, salami, chilli", cats:['pizza','ostra'], price:34},
-            {id:14, type:'pizza', name:"Verde Bosco", desc:"Pesto, mozzarella, szparagi, pinole", cats:['pizza','wege'], price:30},
-            {id:15, type:'pizza', name:"Pollo BBQ", desc:"Kurczak, sos BBQ, kukurydza, cebula", cats:['pizza'], price:28},
-            {id:16, type:'pizza', name:"Carnivora", desc:"Salami, szynka, boczek, kabanos", cats:['pizza'], price:35},
-            {id:17, type:'pizza', name:"Gorgon", desc:"Gorgonzola, orzechy, gruszka, miód", cats:['pizza','wege'], price:31},
-            {id:18, type:'pizza', name:"Salame", desc:"Salami łagodne, oliwki czarne, kukurydza", cats:['pizza'], price:27},
-            {id:19, type:'pizza', name:"Tartufo", desc:"Oliwa truflowa, pieczarki, parmezan", cats:['pizza','wege'], price:33},
-            {id:20, type:'pizza', name:"Mexicana", desc:"Wołowina, fasola, kukurydza, jalapeno", cats:['pizza','ostra'], price:32},
-            {id:21, type:'pizza', name:"Buffalo", desc:"Mozzarella di bufala, bazylia, cherry", cats:['pizza','wege'], price:34},
-            {id:22, type:'pizza', name:"Americana", desc:"Frytki, parówki, mozzarella", cats:['pizza'], price:26},
-            {id:23, type:'pizza', name:"Chilli Cheese", desc:"Cheddar, mozzarella, płatki chilli", cats:['pizza','ostra','wege'], price:28},
-            {id:24, type:'pizza', name:"Pancetta", desc:"Boczek wędzony, cebula, pieczarki", cats:['pizza'], price:27},
-            {id:25, type:'pizza', name:"Salmone", desc:"Łosoś wędzony, kapary, serek", cats:['pizza'], price:36},
-            {id:26, type:'pizza', name:"Mortazza", desc:"Mortadella, pesto pistacjowe, burrata", cats:['pizza'], price:39},
-            {id:27, type:'pizza', name:"Ortolana", desc:"Mix warzyw z grilla, czosnek", cats:['pizza','wege'], price:27},
-            {id:28, type:'pizza', name:"Parmigiana", desc:"Bakłażan, parmezan, bazylia", cats:['pizza','wege'], price:28},
-            {id:29, type:'pizza', name:"Salsiccia e Friarielli", desc:"Włoska kiełbasa, liście rzepy", cats:['pizza'], price:33},
-            {id:30, type:'pizza', name:"Zucchine", desc:"Cukinia, krewetki, czosnek", cats:['pizza'], price:34},
-            {id:31, type:'pizza', name:"Diabolica", desc:"Habanero x2, nduja, ostre salami", cats:['pizza','ostra'], price:38},
-            {id:32, type:'pizza', name:"Bianca", desc:"Sos biały, mozzarella, czosnek, zioła", cats:['pizza','wege'], price:22},
-            {id:33, type:'pizza', name:"Salami Special", desc:"Salami, papryka, kukurydza, cebula", cats:['pizza'], price:29},
-            {id:34, type:'pizza', name:"Genovese", desc:"Pesto bazyliowe, ziemniaki, fasolka", cats:['pizza','wege'], price:28},
-            {id:35, type:'pizza', name:"Alpejska", desc:"Boczek, oscypek, żurawina", cats:['pizza'], price:31},
-            {id:36, type:'pizza', name:"Tutto", desc:"Mix wszystkich mięs z menu", cats:['pizza'], price:42},
-            {id:37, type:'pizza', name:"Verde", desc:"Brokuły, szpinak, feta, pestki", cats:['pizza','wege'], price:27},
-            {id:38, type:'pizza', name:"Gamberi", desc:"Krewetki koktajlowe, czosnek, chilli", cats:['pizza','ostra'], price:33},
-            {id:39, type:'pizza', name:"Cacciatore", desc:"Salami, pieczarki, oliwki", cats:['pizza'], price:28},
-            {id:40, type:'pizza', name:"Polonia", desc:"Kiełbasa, ogórek kiszony, cebula", cats:['pizza'], price:28},
-            {id:41, type:'pizza', name:"Burrata Special", desc:"Burrata, pesto, szynka parmeńska", cats:['pizza'], price:42},
-            {id:42, type:'pizza', name:"Gorgon Orzech", desc:"Gorgonzola, włoskie orzechy, gruszka", cats:['pizza','wege'], price:31},
-            {id:43, type:'pizza', name:"Picante Veg", desc:"Warzywa, jalapeno, chilli", cats:['pizza','ostra','wege'], price:27},
-            {id:44, type:'pizza', name:"Salame Dolce", desc:"Salami, kukurydza, papryka", cats:['pizza'], price:27},
-            {id:45, type:'pizza', name:"Frutti Premium", desc:"Mix owoców morza, czosnek, cytryna", cats:['pizza'], price:44},
-            {id:46, type:'pizza', name:"Bresaola", desc:"Wołowina dojrzewająca, trufla", cats:['pizza'], price:43},
-            {id:47, type:'pizza', name:"Dla Dzieci", desc:"Mała pizza, szynka, kukurydza", cats:['pizza'], price:21},
-            {id:48, type:'pizza', name:"Inferno", desc:"Najostrzejsza w karcie: 3x chilli", cats:['pizza','ostra'], price:36},
-            {id:49, type:'pizza', name:"Rustica", desc:"Boczek, jaja, szczypiorek", cats:['pizza'], price:29},
-            {id:50, type:'pizza', name:"Mamma Mia", desc:"Wybór szefa kuchni", cats:['pizza'], price:35},
+<script>
+    // --- PEŁNA BAZA DANYCH (50 PIZZ + 10 NAPOJÓW + 5 SOSÓW) ---
+    const db = [
+        // KLASYKI (1-10)
+        {id:1, type:'pizza', name:"Margherita", desc:"San Marzano, mozzarella fior di latte, bazylia, oliwa", cats:['pizza','wege','klasyk'], price:19},
+        {id:2, type:'pizza', name:"Marinara", desc:"Pomidory, czosnek, oregano, oliwa (bez sera)", cats:['pizza','wege','klasyk'], price:18},
+        {id:3, type:'pizza', name:"Capriciosa", desc:"Sos, mozzarella, szynka gotowana, pieczarki", cats:['pizza','klasyk'], price:24},
+        {id:4, type:'pizza', name:"Prosciutto e Funghi", desc:"Sos, mozzarella, prosciutto cotto, pieczarki", cats:['pizza','klasyk'], price:25},
+        {id:5, type:'pizza', name:"Cardinale", desc:"Sos, mozzarella, szynka, oliwki, kukurydza", cats:['pizza','klasyk'], price:26},
+        {id:6, type:'pizza', name:"Salame", desc:"Sos, mozzarella, włoskie salami łagodne", cats:['pizza','klasyk'], price:25},
+        {id:7, type:'pizza', name:"Hawajska", desc:"Sos, mozzarella, szynka, soczysty ananas", cats:['pizza','klasyk'], price:24},
+        {id:8, type:'pizza', name:"Quattro Formaggi", desc:"Mozzarella, gorgonzola, parmezan, ricotta", cats:['pizza','wege','klasyk'], price:29},
+        {id:9, type:'pizza', name:"Vegetariana", desc:"Cukinia, bakłażan, papryka, mozzarella", cats:['pizza','wege','klasyk'], price:26},
+        {id:10, type:'pizza', name:"Napoli", desc:"Sos, mozzarella, anchois, kapary, oliwki", cats:['pizza','klasyk'], price:27},
 
-            // SOSY (5)
-            {id:101, type:'dodatki', sub:'sosy', name:"Sos Czosnkowy", desc:"Klasyczny", cats:['dodatki'], price:3},
-            {id:102, type:'dodatki', sub:'sosy', name:"Sos Pomidorowy", desc:"Łagodny", cats:['dodatki'], price:3},
-            {id:103, type:'dodatki', sub:'sosy', name:"Sos BBQ", desc:"Dymny", cats:['dodatki'], price:4},
-            {id:104, type:'dodatki', sub:'sosy', name:"Sos Chilli", desc:"Ostry", cats:['dodatki'], price:4},
-            {id:105, type:'dodatki', sub:'sosy', name:"Sos Ziołowy", desc:"Mix ziół", cats:['dodatki'], price:4},
+        // OSTRE (11-25)
+        {id:11, type:'pizza', name:"Diavola", desc:"Salami piccante, jalapeno, mozzarella", cats:['pizza','ostra'], spicy:1, price:28},
+        {id:12, type:'pizza', name:"Infernale", desc:"Nduja, habanero, salami, płatki chilli", cats:['pizza','ostra'], spicy:3, price:34},
+        {id:13, type:'pizza', name:"Calabrese", desc:"Salami, czerwona cebula, oliwki, chilli", cats:['pizza','ostra'], spicy:2, price:30},
+        {id:14, type:'pizza', name:"Etna", desc:"Sos, mozzarella, kabanos ostra, habanero", cats:['pizza','ostra'], spicy:3, price:32},
+        {id:15, type:'pizza', name:"Vesuvio", desc:"Nduja, ricotta, bazylia, świeże chilli", cats:['pizza','ostra'], spicy:2, price:31},
+        {id:16, type:'pizza', name:"Mexicana", desc:"Wołowina, fasola, kukurydza, jalapeno", cats:['pizza','ostra'], spicy:1, price:32},
+        {id:17, type:'pizza', name:"Chilli Cheese", desc:"Cheddar, mozzarella, jalapeno, płatki chilli", cats:['pizza','ostra','wege'], spicy:1, price:28},
+        {id:18, type:'pizza', name:"Piekło-Niebo", desc:"Ricotta, miód, habanero, salami ostre", cats:['pizza','ostra'], spicy:2, price:35},
+        {id:19, type:'pizza', name:"Volcano", desc:"Biały sos, mozzarella, salami, piri-piri", cats:['pizza','ostra'], spicy:3, price:33},
+        {id:20, type:'pizza', name:"Arabiata", desc:"Czosnek, duża ilość chilli, pomidory, boczek", cats:['pizza','ostra'], spicy:2, price:27},
+        {id:21, type:'pizza', name:"Salami Hot", desc:"Ostre salami, cebula, czarne oliwki", cats:['pizza','ostra'], spicy:1, price:29},
+        {id:22, type:'pizza', name:"Diabolica", desc:"Podwójne habanero, nduja, ostra kiełbasa", cats:['pizza','ostra'], spicy:3, price:38},
+        {id:23, type:'pizza', name:"Buffalo Bill", desc:"Kurczak w ostrej marynacie, jalapeno", cats:['pizza','ostra'], spicy:1, price:29},
+        {id:24, type:'pizza', name:"Pepperoni Special", desc:"Podwójne salami pepperoni, chilli", cats:['pizza','ostra'], spicy:2, price:31},
+        {id:25, type:'pizza', name:"Firenze", desc:"Pesto rosso, mozzarella, salami, habanero", cats:['pizza','ostra'], spicy:2, price:32},
 
-            // NAPOJE (10)
-            {id:201, type:'dodatki', sub:'napoje', name:"Pepsi", desc:"0.33L", cats:['dodatki'], price:7},
-            {id:202, type:'dodatki', sub:'napoje', name:"Mirinda", desc:"0.33L", cats:['dodatki'], price:7},
-            {id:203, type:'dodatki', sub:'napoje', name:"7UP", desc:"0.33L", cats:['dodatki'], price:7},
-            {id:204, type:'dodatki', sub:'napoje', name:"Ice Tea Lipton", desc:"0.5L", cats:['dodatki'], price:9},
-            {id:205, type:'dodatki', sub:'napoje', name:"Sok Pomarańczowy", desc:"0.3L", cats:['dodatki'], price:8},
-            {id:206, type:'dodatki', sub:'napoje', name:"Sok Jabłkowy", desc:"0.3L", cats:['dodatki'], price:8},
-            {id:207, type:'dodatki', sub:'napoje', name:"Woda Gazowana", desc:"0.5L", cats:['dodatki'], price:5},
-            {id:208, type:'dodatki', sub:'napoje', name:"Woda Niegazowana", desc:"0.5L", cats:['dodatki'], price:5},
-            {id:209, type:'dodatki', sub:'napoje', name:"Lech Premium 0.5L", desc:"Piwo", cats:['dodatki'], price:12},
-            {id:210, type:'dodatki', sub:'napoje', name:"Lech Free 0.5L", desc:"Bezalkoholowe", cats:['dodatki'], price:12}
-        ];
+        // WEGE (26-40)
+        {id:26, type:'pizza', name:"Spinaci e Ricotta", desc:"Szpinak, ricotta, czosnek, pomidorki", cats:['pizza','wege'], price:27},
+        {id:27, type:'pizza', name:"Tartufo", desc:"Oliwa truflowa, pieczarki, parmezan", cats:['pizza','wege'], price:33},
+        {id:28, type:'pizza', name:"Gorgonzola e Pere", desc:"Biały sos, gorgonzola, gruszka, miód", cats:['pizza','wege'], price:31},
+        {id:29, type:'pizza', name:"Verde", desc:"Pesto, mozzarella, szparagi, rukola", cats:['pizza','wege'], price:30},
+        {id:30, type:'pizza', name:"Melanzane", desc:"Bakłażan, parmezan, świeża bazylia", cats:['pizza','wege'], price:27},
+        {id:31, type:'pizza', name:"Funghi Bianca", desc:"Mix grzybów, czosnek, biały sos", cats:['pizza','wege'], price:29},
+        {id:32, type:'pizza', name:"Rucola", desc:"Rukola, cherry, płatki grana padano", cats:['pizza','wege'], price:26},
+        {id:33, type:'pizza', name:"Genovese", desc:"Pesto bazyliowe, orzeszki pini, bufala", cats:['pizza','wege'], price:35},
+        {id:34, type:'pizza', name:"Ortolana", desc:"Mix grillowanych warzyw, zioła", cats:['pizza','wege'], price:28},
+        {id:35, type:'pizza', name:"Asparagi", desc:"Szparagi, jajko, mozzarella", cats:['pizza','wege'], price:29},
+        {id:36, type:'pizza', name:"Zucca", desc:"Pieczona dynia, ricotta, pestki dyni", cats:['pizza','wege'], price:30},
+        {id:37, type:'pizza', name:"Pesto Rosso Wege", desc:"Suszone pomidory, kapary, pesto", cats:['pizza','wege'], price:29},
+        {id:38, type:'pizza', name:"Formaggi Misto", desc:"Cheddar, feta, mozzarella, gorgonzola", cats:['pizza','wege'], price:32},
+        {id:39, type:'pizza', name:"Broccoli", desc:"Brokuły, feta, czosnek, słonecznik", cats:['pizza','wege'], price:28},
+        {id:40, type:'pizza', name:"Margherita 2.0", desc:"Bufala, San Marzano, oliwa gold", cats:['pizza','wege'], price:26},
 
-        let cart = [];
-        let cCat = 'all';
-        let cProd = null;
-        let cSize = 1;
-        let cCrust = 0;
-        let promoSelections = [];
+        // MIĘSNE / INNE (41-50)
+        {id:41, type:'pizza', name:"Carnivora", desc:"Salami, szynka, boczek, kabanos", cats:['pizza'], price:36},
+        {id:42, type:'pizza', name:"Frutti di Mare", desc:"Krewetki, małże, kalmary, pietruszka", cats:['pizza'], price:39},
+        {id:43, type:'pizza', name:"Carbonara Pizza", desc:"Boczek, żółtko, pecorino romano", cats:['pizza'], price:31},
+        {id:44, type:'pizza', name:"Bresaola Special", desc:"Wołowina dojrzewająca, trufla, rukola", cats:['pizza'], price:43},
+        {id:45, type:'pizza', name:"Pollo BBQ", desc:"Kurczak, sos BBQ, czerwona cebula", cats:['pizza'], price:29},
+        {id:46, type:'pizza', name:"Burrata Prosciutto", desc:"Świeża burrata, pesto, szynka crudo", cats:['pizza'], price:45},
+        {id:47, type:'pizza', name:"Kebab Pizza", desc:"Mięso kebab, sos czosnkowy, cebula", cats:['pizza'], price:28},
+        {id:48, type:'pizza', name:"Salsiccia", desc:"Włoska kiełbasa, borowiki, mozzarella", cats:['pizza'], price:34},
+        {id:49, type:'pizza', name:"Rustica", desc:"Boczek, jaja, szczypiorek, cebula", cats:['pizza'], price:30},
+        {id:50, type:'pizza', name:"Tutto", desc:"Wszystkie mięsa z menu na jednym placku", cats:['pizza'], price:48},
 
-        function renderMenu() {
-            const list = document.getElementById('product-list');
-            const s = document.getElementById('searchInput').value.toLowerCase();
-            list.innerHTML = '';
-            db.filter(p => (cCat === 'all' || p.cats.includes(cCat) || p.sub === cCat) && p.name.toLowerCase().includes(s)).forEach(p => {
-                const d = document.createElement('div');
-                d.className = 'menu-item reveal active';
-                d.onclick = () => openMod(p.id);
-                const icons = (p.cats.includes('wege') ? '🌱' : '') + (p.cats.includes('ostra') ? '🌶️' : '');
-                d.innerHTML = `<h3>${p.name} <span>${icons}</span></h3><p>${p.desc}</p><span class="menu-price">od ${p.price.toFixed(2)} zł</span>`;
-                list.appendChild(d);
-            });
+        // SOSY (5)
+        {id:101, type:'sosy', name:"Sos Czosnkowy", desc:"Klasyczny kremowy", cats:['sosy'], price:3.50},
+        {id:102, type:'sosy', name:"Sos Pomidorowy", desc:"Ziołowy San Marzano", cats:['sosy'], price:3.50},
+        {id:103, type:'sosy', name:"Sos BBQ", desc:"Dymny amerykański", cats:['sosy'], price:4.50},
+        {id:104, type:'sosy', name:"Sos Ostra Chwila", desc:"Bardzo pikantny chilli", cats:['sosy'], price:4.50},
+        {id:105, type:'sosy', name:"Sos Miodowo-Musztardowy", desc:"Słodko-ostry", cats:['sosy'], price:4.50},
+
+        // NAPOJE (10)
+        {id:201, type:'napoje', name:"Pepsi 0.33L", desc:"Puszka", cats:['napoje'], price:7},
+        {id:202, type:'napoje', name:"Mirinda 0.33L", desc:"Puszka", cats:['napoje'], price:7},
+        {id:203, type:'napoje', name:"7UP 0.33L", desc:"Puszka", cats:['napoje'], price:7},
+        {id:204, type:'napoje', name:"Pepsi 1.0L", desc:"Butelka", cats:['napoje'], price:14},
+        {id:205, type:'napoje', name:"Lipton Ice Tea 0.5L", desc:"Butelka", cats:['napoje'], price:9},
+        {id:206, type:'napoje', name:"Sok Pomarańczowy 0.3L", desc:"Szklanka", cats:['napoje'], price:8},
+        {id:207, type:'napoje', name:"Woda Mineralna 0.5L", desc:"Gazowana / Niegazowana", cats:['napoje'], price:5},
+        {id:208, type:'napoje', name:"Lech Premium 0.5L", desc:"Piwo w butelce", cats:['napoje'], price:12},
+        {id:209, type:'napoje', name:"Lech Free 0.5L", desc:"Piwo bezalkoholowe", cats:['napoje'], price:11},
+        {id:210, type:'napoje', name:"Kawa Espresso", desc:"Włoska kawa", cats:['napoje'], price:8}
+    ];
+
+    let cart = [];
+    let curCat = 'all';
+    let curProduct = null;
+    let curSizeIdx = 1;
+    let curCrustPrice = 0;
+    let curPromoType = null;
+    let promoSelections = [];
+
+    // --- RENDERING MENU ---
+    function renderMenu() {
+        const list = document.getElementById('product-list');
+        const search = document.getElementById('searchInput').value.toLowerCase();
+        list.innerHTML = '';
+
+        const filtered = db.filter(p => {
+            const matchesCat = curCat === 'all' || p.cats.includes(curCat);
+            const matchesSearch = p.name.toLowerCase().includes(search) || p.desc.toLowerCase().includes(search);
+            return matchesCat && matchesSearch;
+        });
+
+        filtered.forEach(p => {
+            const div = document.createElement('div');
+            div.className = 'menu-item reveal active';
+            div.onclick = () => openModal(p.id);
+            const icon = (p.cats.includes('wege') ? '🌱' : '') + (p.spicy ? '🌶️'.repeat(p.spicy) : '');
+            div.innerHTML = `<h3>${p.name} <span>${icon}</span></h3><p>${p.desc}</p><span class="menu-price">od ${p.price.toFixed(2)} zł</span>`;
+            list.appendChild(div);
+        });
+    }
+
+    function setFilter(c, btn) {
+        curCat = c;
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderMenu();
+    }
+
+    // --- MODAL PRODUKTU ---
+    function openModal(id) {
+        curProduct = db.find(p => p.id === id);
+        curSizeIdx = 1; curCrustPrice = 0;
+        document.getElementById('mTitle').innerText = curProduct.name;
+        document.getElementById('mDesc').innerText = curProduct.desc;
+        document.getElementById('pizOpt').style.display = curProduct.type === 'pizza' ? 'block' : 'none';
+        updatePrice();
+        document.getElementById('prodModal').style.display = 'flex';
+    }
+
+    function setSize(i, btn) {
+        curSizeIdx = i;
+        document.querySelectorAll('.size-selector .sel-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        updatePrice();
+    }
+
+    function setCrust(p, btn) {
+        curCrustPrice = p;
+        document.querySelectorAll('.crust-selector .sel-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        updatePrice();
+    }
+
+    function updatePrice() {
+        let p = curProduct.price;
+        if(curProduct.type === 'pizza') {
+            const mult = [0.8, 1, 1.4, 1.8];
+            p = (p * mult[curSizeIdx]) + curCrustPrice;
         }
+        document.getElementById('mPrice').innerText = p.toFixed(2) + ' zł';
+        curProduct.finalPrice = p;
+    }
 
-        function setFilter(c, btn) {
-            cCat = c; document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); renderMenu();
-        }
-
-        function openMod(id) {
-            cProd = db.find(p => p.id === id);
-            cSize = 1; cCrust = 0;
-            document.getElementById('mTitle').innerText = cProd.name;
-            document.getElementById('mDesc').innerText = cProd.desc;
-            document.getElementById('pizOpt').style.display = cProd.type === 'pizza' ? 'block' : 'none';
-            upPrice(); document.getElementById('prodModal').style.display = 'flex';
-        }
-
-        function setSize(i, b) { cSize = i; document.querySelectorAll('.size-selector .sel-btn').forEach(x => x.classList.remove('active')); b.classList.add('active'); upPrice(); }
-        function setCrust(i, b) { cCrust = i; document.querySelectorAll('.crust-selector .sel-btn').forEach(x => x.classList.remove('active')); b.classList.add('active'); upPrice(); }
-
-        function upPrice() {
-            let p = cProd.price;
-            if(cProd.type === 'pizza') p = (p * [0.8, 1, 1.4, 1.8][cSize]) + cCrust;
-            document.getElementById('mPrice').innerText = p.toFixed(2) + ' zł';
-            cProd.fPrice = p;
-        }
-
-        function add() {
-            cart.push({...cProd, cId: Date.now(), label: cProd.type === 'pizza' ? ["24cm","32cm","42cm","50cm"][cSize] : ""});
-            upUI(); closeModal('prodModal');
-        }
-
-        function openPromo(type) {
-            promoSelections = [];
-            const container = document.getElementById('promoSelection');
-            container.innerHTML = '';
-            document.getElementById('promoFinalAdd').style.display = 'none';
-            
-            if(type === 'pon') {
-                document.getElementById('promoTitle').innerText = "Poniedziałek: 2x Klasyk";
-                document.getElementById('promoDesc').innerText = "Wybierz dwie pizze 32cm z listy klasyków (1-10):";
-                document.getElementById('promoPriceDisplay').innerText = "Cena: ok. 35.00 zł";
-                db.filter(p => p.id <= 10).forEach(p => {
-                    const b = document.createElement('button'); b.className = 'sel-btn'; b.innerText = p.name;
-                    b.onclick = () => { 
-                        if(promoSelections.length < 2) { promoSelections.push(p); b.classList.add('active'); }
-                        if(promoSelections.length === 2) document.getElementById('promoFinalAdd').style.display = 'block';
-                    };
-                    container.appendChild(b);
-                });
-            } else if(type === 'wt') {
-                document.getElementById('promoTitle').innerText = "Wtorek: Pizza + Pepsi";
-                document.getElementById('promoDesc').innerText = "Wybierz pizzę 42cm do zestawu:";
-                document.getElementById('promoPriceDisplay').innerText = "Cena zestawu: 49.99 zł";
-                db.filter(p => p.type === 'pizza').slice(0, 15).forEach(p => {
-                    const b = document.createElement('button'); b.className = 'sel-btn'; b.innerText = p.name;
-                    b.onclick = () => { promoSelections = [p]; document.querySelectorAll('.sel-btn').forEach(x => x.classList.remove('active')); b.classList.add('active'); document.getElementById('promoFinalAdd').style.display = 'block'; };
-                    container.appendChild(b);
-                });
-            }
-            document.getElementById('promoModal').style.display = 'flex';
-        }
-
-        function confirmPromoAdd() {
-            let name = ""; let price = 0;
-            if(promoSelections.length === 2) {
-                name = `Promo Pon: ${promoSelections[0].name} + ${promoSelections[1].name}`;
-                price = (promoSelections[0].price + promoSelections[1].price * 0.5);
-            } else {
-                name = `Zestaw Wt: ${promoSelections[0].name} + Pepsi 1L`;
-                price = 49.99;
-            }
-            cart.push({name, fPrice: price, cId: Date.now(), label: "Zestaw"});
-            upUI(); closeModal('promoModal');
-        }
-
-        function upUI() {
-            document.getElementById('cartCount').innerText = cart.length;
-            const t = cart.reduce((s, i) => s + i.fPrice, 0);
-            document.getElementById('cartTotal').innerText = t.toFixed(2) + ' zł';
-            document.getElementById('cFinal').innerText = t.toFixed(2) + ' zł';
-        }
-
-        function openCart() {
-            const list = document.getElementById('cItems');
-            list.innerHTML = cart.length ? '' : '<p style="padding:20px;text-align:center;">Koszyk pusty.</p>';
-            cart.forEach(i => {
-                const d = document.createElement('div'); d.className = 'cart-item';
-                d.innerHTML = `<div><p style="font-weight:800;">${i.name}</p><p style="font-size:0.7rem;color:var(--text-muted);">${i.label || ''}</p></div><div><span>${i.fPrice.toFixed(2)} zł</span><button style="background:none;border:none;color:var(--accent-red);margin-left:15px;cursor:pointer;font-weight:800;" onclick="rem(${i.cId})">X</button></div>`;
-                list.appendChild(d);
-            });
-            document.getElementById('cartModal').style.display = 'flex';
-        }
-
-        function rem(id) { cart = cart.filter(i => i.cId !== id); upUI(); openCart(); }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-
-        // RESET SCROLL
-        window.onbeforeunload = function () { window.scrollTo(0, 0); };
-        window.onload = () => {
-            window.scrollTo(0, 0);
-            document.body.classList.add('loaded');
-            renderMenu();
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
-            }, { threshold: 0.1 });
-            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    // --- KOSZYK LOGIKA ---
+    function add() {
+        const item = {
+            ...curProduct,
+            cartId: Date.now(),
+            label: curProduct.type === 'pizza' ? ["24cm","32cm","42cm","50cm"][curSizeIdx] + (curCrustPrice ? " (Grube)" : " (Cienkie)") : ""
         };
-    </script>
-</body>
+        cart.push(item);
+        updateUI();
+        closeModal('prodModal');
+    }
+
+    function updateUI() {
+        document.getElementById('cartCount').innerText = cart.length;
+        const total = cart.reduce((s, i) => s + i.finalPrice, 0);
+        document.getElementById('cartTotal').innerText = total.toFixed(2) + ' zł';
+        document.getElementById('cFinal').innerText = total.toFixed(2) + ' zł';
+    }
+
+    function openCart() {
+        const l = document.getElementById('cItems');
+        l.innerHTML = cart.length ? '' : '<p style="padding:30px; text-align:center;">Koszyk jest pusty...</p>';
+        cart.forEach(i => {
+            const d = document.createElement('div');
+            d.style.cssText = "display:flex; justify-content:space-between; padding:15px 0; border-bottom:1px solid #334155; align-items:center;";
+            d.innerHTML = `<div><p style="font-weight:800;">${i.name}</p><p style="font-size:0.75rem; color:var(--text-muted);">${i.label || ''}</p></div>
+                           <div><span>${i.finalPrice.toFixed(2)} zł</span><button style="background:none; border:none; color:var(--accent-red); margin-left:15px; cursor:pointer; font-weight:800;" onclick="rem(${i.cartId})">USUŃ</button></div>`;
+            l.appendChild(d);
+        });
+        document.getElementById('cartModal').style.display = 'flex';
+    }
+
+    // --- PROMOCJE INTERAKTYWNE ---
+    function openPromo(type) {
+        curPromoType = type; promoSelections = [];
+        const cont = document.getElementById('promoSelection');
+        cont.innerHTML = '';
+        document.getElementById('promoFinalAdd').style.display = 'none';
+
+        if(type === 'pon') {
+            document.getElementById('promoTitle').innerText = "Wybierz 2 Pizze Klasyczne (32cm)";
+            document.getElementById('promoDesc').innerText = "Zasada: Druga pizza 50% taniej. Wybierz z listy poniżej:";
+            db.filter(p => p.cats.includes('klasyk') && p.id <= 10).forEach(p => {
+                const b = document.createElement('button'); b.className = 'sel-btn'; b.innerText = p.name;
+                b.onclick = () => {
+                    if(promoSelections.length < 2) { promoSelections.push(p); b.classList.add('active'); }
+                    if(promoSelections.length === 2) document.getElementById('promoFinalAdd').style.display = 'block';
+                };
+                cont.appendChild(b);
+            });
+            document.getElementById('promoPriceDisplay').innerText = "Cena zestawu: ok. 36.00 zł";
+        } else if(type === 'wt') {
+            document.getElementById('promoTitle').innerText = "Zestaw Combo (42cm + Pepsi)";
+            document.getElementById('promoDesc').innerText = "Wybierz dowolną pizzę z całej karty:";
+            db.filter(p => p.type === 'pizza').slice(0, 20).forEach(p => {
+                const b = document.createElement('button'); b.className = 'sel-btn'; b.innerText = p.name;
+                b.onclick = () => {
+                    promoSelections = [p]; 
+                    document.querySelectorAll('#promoSelection .sel-btn').forEach(x => x.classList.remove('active'));
+                    b.classList.add('active'); 
+                    document.getElementById('promoFinalAdd').style.display = 'block';
+                };
+                cont.appendChild(b);
+            });
+            document.getElementById('promoPriceDisplay').innerText = "Cena zestawu: 49.99 zł";
+        }
+        document.getElementById('promoModal').style.display = 'flex';
+    }
+
+    function confirmPromoAdd() {
+        let name = ""; let price = 0;
+        if(curPromoType === 'pon') {
+            name = `PROMO PON: ${promoSelections[0].name} + ${promoSelections[1].name}`;
+            price = promoSelections[0].price + (promoSelections[1].price * 0.5);
+        } else {
+            name = `COMBO: ${promoSelections[0].name} + Pepsi 1L`;
+            price = 49.99;
+        }
+        cart.push({name, finalPrice: price, cartId: Date.now(), label: "Zestaw Promocyjny"});
+        updateUI(); closeModal('promoModal');
+    }
+
+    function rem(id) { cart = cart.filter(i => i.cartId !== id); updateUI(); openCart(); }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+    // Start
+    window.onbeforeunload = function () { window.scrollTo(0, 0); };
+    window.onload = () => {
+        window.scrollTo(0, 0);
+        document.body.classList.add('loaded');
+        renderMenu();
+        const obs = new IntersectionObserver((entries) => {
+            entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('active'); });
+        }, {threshold: 0.1});
+        document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+    };
+</script>
+
+    </body>
 </html>
