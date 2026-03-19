@@ -1,21 +1,22 @@
-<style>
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodePace Studio | Nowoczesne Strony WWW & Wizytówki</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
         :root {
             --bg-color: #f8fafc;
             --text-main: #0f172a;
             --text-muted: #475569;
             --accent: #2563eb;
             --card-bg: #ffffff;
-            --nav-bg: rgba(15, 23, 42, 0.95); /* Dark nav to match the image */
+            --nav-bg: rgba(15, 23, 42, 0.95);
         }
 
-        /* --- Global Reset & Animations --- */
-        html {
-            scroll-behavior: smooth;
-            box-sizing: border-box;
-        }
-        *, *:before, *:after {
-            box-sizing: inherit;
-        }
+        html { scroll-behavior: smooth; box-sizing: border-box; }
+        *, *:before, *:after { box-sizing: inherit; }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -24,10 +25,15 @@
             margin: 0;
             padding: 0;
             line-height: 1.7;
-            padding-top: 70px; /* Space for fixed nav */
+            padding-top: 70px;
         }
 
-        /* --- Navigation --- */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-in { animation: fadeIn 0.8s ease-out forwards; opacity: 0; }
+
         nav {
             background-color: var(--nav-bg);
             padding: 15px 0;
@@ -40,63 +46,87 @@
             justify-content: center;
             backdrop-filter: blur(10px);
         }
-
-        nav .nav-container {
-            display: flex;
-            gap: 25px;
-            max-width: 900px;
-            width: 90%;
-            justify-content: center;
-        }
-
+        nav .nav-container { display: flex; gap: 25px; max-width: 900px; width: 90%; justify-content: center; }
         nav a {
-            text-decoration: none;
-            color: #f1f5f9; /* Light text for dark nav */
-            font-weight: 600;
-            font-size: 0.95rem;
-            transition: color 0.3s ease;
-            position: relative;
+            text-decoration: none; color: #f1f5f9; font-weight: 600; font-size: 0.95rem;
+            transition: color 0.3s ease; position: relative; cursor: pointer;
         }
-
-        nav a:hover { color: #fdfefe; opacity: 1; } /* Dark blue accent is invisible here, so we go slightly white */
+        nav a:hover { color: #fdfefe; opacity: 1; }
         nav a:after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            transform: scaleX(0);
-            height: 2px;
-            bottom: -3px;
-            left: 0;
-            background-color: var(--accent);
-            transform-origin: bottom right;
-            transition: transform 0.3s ease;
+            content: ''; position: absolute; width: 100%; transform: scaleX(0); height: 2px;
+            bottom: -3px; left: 0; background-color: var(--accent);
+            transform-origin: bottom right; transition: transform 0.3s ease;
         }
         nav a:hover:after { transform: scaleX(1); transform-origin: bottom left; }
 
-        /* --- New Header / Hero using generated image --- */
         header {
-            background-color: #0f172a; /* Fallback for image load */
-            padding: 100px 20px 80px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin-top: -70px; /* Overlap with fixed nav */
+            background-color: #0f172a; padding: 100px 20px 80px; text-align: center;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            margin-top: -70px;
         }
-
         header img.brand-logo {
-            max-width: 700px; /* Make the image the focus, adjust width as needed */
-            width: 100%;
-            height: auto;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-            margin-bottom: 20px;
+            max-width: 700px; width: 100%; height: auto; border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3); margin-bottom: 20px; animation: fadeIn 1s ease-out;
         }
 
-        /* Removed old text styles */
+        .container { width: 90%; max-width: 900px; margin: 0 auto; padding: 60px 0 80px; }
+        .section-title { font-size: 2.2rem; font-weight: 800; margin-bottom: 50px; text-align: center; color: var(--text-main); }
+        
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-bottom: 30px; }
+        .card {
+            background: var(--card-bg); padding: 40px; border-radius: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.01); border: 1px solid #f0f4f8;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+        .card:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 20px 30px rgba(0,0,0,0.06); border-color: #e2e8f0; }
+        
+        h2, h3, h4 { font-weight: 700; margin-top: 0; color: var(--text-main); }
+        h3 { font-size: 1.4rem; }
+        p { color: var(--text-muted); margin-top: 5px; }
 
-        /* --- (Rest of the old styles below) --- */
+        #portfolio .card-portfolio {
+            min-height: 250px; display: flex; flex-direction: column; justify-content: flex-end;
+            background-color: #e0f2fe; border-color: #bae6fd; padding: 20px; cursor: pointer;
+            border-radius: 20px; transition: transform 0.4s ease;
+        }
+        #portfolio .card-portfolio:hover { transform: scale(1.03); }
+        #portfolio .card-portfolio h4 { color: #0369a1; font-size: 1.2rem; }
+        #portfolio .card-portfolio p { color: #0c4a6e; opacity: 0.8; font-weight: 600; }
+
+        .btn {
+            display: inline-block; background-color: var(--accent); color: white;
+            padding: 14px 28px; text-decoration: none; border-radius: 10px; font-weight: 600;
+            margin-top: 25px; cursor: pointer; border: none; font-size: 1.1rem; transition: 0.3s ease;
+        }
+        .btn:hover { background-color: #1d4ed8; transform: translateY(-2px); }
+        .btn-whatsapp { background-color: #25D366; }
+        .btn-whatsapp:hover { background-color: #1ebe57; }
+
+        /* Styl okienek modalnych */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.8); z-index: 2000; justify-content: center;
+            align-items: center; backdrop-filter: blur(5px); opacity: 0; transition: opacity 0.3s ease;
+        }
+        .modal-overlay.active { display: flex; opacity: 1; }
+        .modal-content {
+            background: #fff; padding: 40px; border-radius: 20px; max-width: 500px;
+            width: 90%; position: relative; text-align: center;
+            transform: translateY(20px); transition: transform 0.3s ease;
+        }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+        .close-btn {
+            position: absolute; top: 15px; right: 20px; font-size: 2rem;
+            cursor: pointer; color: #94a3b8; line-height: 1;
+        }
+        .close-btn:hover { color: #0f172a; }
+        .small-print { font-size: 0.85rem; color: #94a3b8; margin-top: 15px; font-weight: 600; }
+        
+        .faq-item { text-align: left; margin-bottom: 25px; border-bottom: 1px solid #e2e8f0; padding-bottom: 15px; }
+        .faq-item h4 { color: var(--accent); margin-bottom: 5px; }
+
+        footer { background-color: #0f172a; color: #94a3b8; padding: 40px 20px; text-align: center; }
+        @media (max-width: 768px) { nav .nav-container { gap: 15px; } nav a { font-size: 0.85rem; } }
     </style>
 </head>
 <body>
@@ -105,12 +135,114 @@
         <div class="nav-container">
             <a href="#oferta">Oferta</a>
             <a href="#portfolio">Portfolio</a>
-            <a href="#proces">Jak pracuję</a>
-            <a href="#kontakt">Kontakt</a>
+            <a href="#faq">FAQ</a>
+            <a onclick="openModal('contactModal')">Kontakt</a>
         </div>
     </nav>
 
     <header id="start">
-        <img src="codepace.png" alt="CodePace Studio Web Development" class="brand-logo">
+        <img src="codepace.jpg" alt="CodePace Studio Web Development" class="brand-logo">
     </header>
 
+    <div class="container animate-in">
+        
+        <section id="oferta">
+            <h2 class="section-title">Co dokładnie dostaniesz?</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>Błyskawiczne Wizytówki</h3>
+                    <p>Skupiamy się na konkretach i szybkim zdobywaniu klientów z twojej okolicy. Koduję strony od zera.</p>
+                </div>
+                <div class="card">
+                    <h3>Projekty Mobilne</h3>
+                    <p>Większość ruchu w sieci to smartfony. Twoja nowa strona ładuje się błyskawicznie na każdym ekranie.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="portfolio" style="padding-top: 80px;">
+            <h2 class="section-title">Wybrane Projekty</h2>
+            <div class="grid">
+                <div class="card-portfolio" onclick="openModal('portfolio1')">
+                    <h4>[Projekt Pizzerii]</h4>
+                    <p>Kliknij po szczegóły</p>
+                </div>
+                <div class="card-portfolio" onclick="openModal('portfolio2')">
+                    <h4>[Projekt Hydraulika]</h4>
+                    <p>Kliknij po szczegóły</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="faq" style="padding-top: 80px;">
+            <h2 class="section-title">Częste pytania</h2>
+            <div class="card">
+                <div class="faq-item">
+                    <h4>Jak wygląda wycena?</h4>
+                    <p>Każdy biznes potrzebuje czegoś innego. Napisz mi czego oczekujesz, a ja przygotuję konkretną ofertę bez ukrytych kosztów.</p>
+                </div>
+                <div class="faq-item">
+                    <h4>Co z hostingiem i domeną?</h4>
+                    <p>Na start odpalamy wszystko na darmowym serwerze. Koszty utrzymania strony w pierwszym roku wynoszą zero złotych.</p>
+                </div>
+                <div class="faq-item">
+                    <h4>Czy sam zepsuję stronę?</h4>
+                    <p>Oddaję ci twardy kod. Nie masz skomplikowanego panelu, w którym mógłbyś przypadkiem usunąć treści. Jeśli potrzebujesz zmiany cennika, piszesz do mnie.</p>
+                </div>
+            </div>
+        </section>
+
+        <section style="padding-top: 60px; text-align: center;">
+            <button class="btn" onclick="openModal('contactModal')">Rozpocznij współpracę</button>
+        </section>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2024 CodePace Studio. Wszelkie prawa zastrzeżone.</p>
+    </footer>
+
+    <div class="modal-overlay" id="contactModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('contactModal')">&times;</span>
+            <h3>Porozmawiajmy o projekcie</h3>
+            <p>Napisz do mnie bezpośrednio na WhatsApp lub zadzwoń. Wycena nic nie kosztuje.</p>
+            <a href="https://wa.me/48792198691" target="_blank" class="btn btn-whatsapp" style="display: block; width: 100%; box-sizing: border-box;">Napisz na WhatsApp</a>
+            <p style="margin-top: 20px; font-weight: 800; font-size: 1.2rem; color: var(--text-main);">+48 792 198 691</p>
+            <p class="small-print">Jeśli nie odbieram, zostaw wiadomość SMS, napisz na maila (codepacestudio@gmail.com) albo złap mnie na WhatsAppie. Oddzwonię najszybciej jak to możliwe.</p>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="portfolio1">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('portfolio1')">&times;</span>
+            <h3>Projekt Pizzerii</h3>
+            <p>Tutaj wkrótce pojawi się pełny opis wdrożenia. Dodamy informacje o użytych technologiach, czasie realizacji i wyzwaniach, które pokonaliśmy podczas projektowania.</p>
+            <button class="btn" onclick="closeModal('portfolio1')">Zamknij</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="portfolio2">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('portfolio2')">&times;</span>
+            <h3>Projekt Hydraulika</h3>
+            <p>Tutaj wkrótce pojawi się pełny opis wdrożenia. Opiszę, jak zoptymalizowaliśmy stronę pod kątem lokalnych klientów szukających szybkiej pomocy.</p>
+            <button class="btn" onclick="closeModal('portfolio2')">Zamknij</button>
+        </div>
+    </div>
+
+    <script>
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal-overlay')) {
+                event.target.classList.remove('active');
+            }
+        }
+    </script>
+</body>
+</html>
