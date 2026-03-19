@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>La Pizza Nostra | Autentyczna Włoska Pizza</title>
+    <title>La Pizza Nostra | Autentyczna Włoska Pizza w Warszawie</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -16,14 +16,17 @@
             --gold: #fbbf24;
         }
 
+        /* Base Styles */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background-color: var(--bg); color: var(--accent-white); line-height: 1.6; overflow-x: hidden; }
         h1, h2, h3 { font-family: 'Playfair Display', serif; }
         html { scroll-behavior: smooth; }
 
+        /* Scroll Animations */
         .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
         .reveal.active { opacity: 1; transform: translateY(0); }
 
+        /* Navigation */
         nav {
             position: fixed; top: 0; width: 100%; z-index: 1000;
             background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px);
@@ -34,84 +37,79 @@
         .logo span:nth-child(1) { color: var(--accent-green); }
         .logo span:nth-child(2) { color: var(--accent-white); }
         .logo span:nth-child(3) { color: var(--accent-red); }
+        .nav-links { display: flex; gap: 20px; }
+        .nav-links a { color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: 0.3s; }
+        .nav-links a:hover { color: var(--accent-white); }
 
+        /* Hero */
         header {
-            height: 60vh; display: flex; align-items: center; justify-content: center; text-align: center;
+            height: 80vh; display: flex; align-items: center; justify-content: center; text-align: center;
             background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.8)), 
                         url('https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=2070&auto=format&fit=crop');
             background-size: cover; background-position: center; padding: 20px;
         }
-        .hero-h1 { font-size: clamp(3rem, 8vw, 5rem); line-height: 1; margin-bottom: 20px; }
+        .hero-h1 { font-size: clamp(3.5rem, 8vw, 6rem); line-height: 1; margin-bottom: 20px; }
+        .badge { display: inline-block; padding: 5px 15px; border: 1px solid var(--accent-green); color: var(--accent-green); border-radius: 50px; font-weight: 700; margin-bottom: 20px; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 2px; }
 
-        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
-        
-        /* WYSZUKIWARKA I FILTRY */
-        .menu-controls {
-            position: sticky; top: 80px; z-index: 100; background: var(--bg);
-            padding: 20px 0; margin-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-        .search-container { max-width: 600px; margin: 0 auto 20px; position: relative; }
-        .search-input {
-            width: 100%; padding: 15px 25px; border-radius: 50px; border: 2px solid var(--card-bg);
-            background: var(--card-bg); color: white; font-size: 1rem; transition: 0.3s;
-            outline: none; text-align: center;
-        }
-        .search-input:focus { border-color: var(--accent-green); background: #2d3a4f; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 80px 20px; }
+        .section-header { text-align: center; margin-bottom: 60px; }
+        .section-header h2 { font-size: 3rem; margin-bottom: 10px; }
 
-        .menu-filters { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
-        .filter-btn {
-            background: #1e293b; border: 1px solid transparent; color: var(--text-muted);
-            padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: 600; transition: 0.3s; font-size: 0.85rem;
-        }
+        /* Featured Section */
+        .featured-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-bottom: 100px; }
+        .featured-card { background: var(--card-bg); border-radius: 20px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); transition: 0.4s; cursor: pointer; position: relative;}
+        .featured-card:hover { border-color: var(--accent-green); transform: translateY(-10px); }
+        .featured-img { width: 100%; height: 220px; object-fit: cover; opacity: 0.7; }
+        .featured-body { padding: 25px; }
+        .tag-featured { position: absolute; top: 15px; right: 15px; background: var(--gold); color: #000; padding: 4px 10px; border-radius: 5px; font-weight: 800; font-size: 0.7rem; }
+
+        /* Search & Menu */
+        .menu-controls { position: sticky; top: 80px; z-index: 100; background: var(--bg); padding: 20px 0; margin-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .search-container { max-width: 600px; margin: 0 auto 20px; }
+        .search-input { width: 100%; padding: 15px 25px; border-radius: 50px; border: 2px solid var(--card-bg); background: var(--card-bg); color: white; outline: none; text-align: center; }
+        .search-input:focus { border-color: var(--accent-green); }
+        .menu-filters { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+        .filter-btn { background: #1e293b; border: none; color: var(--text-muted); padding: 12px 24px; border-radius: 50px; cursor: pointer; font-weight: 600; transition: 0.3s; }
         .filter-btn.active, .filter-btn:hover { background: var(--accent-white); color: var(--bg); }
 
         .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-        .menu-item {
-            background: var(--card-bg); padding: 25px; border-radius: 15px; cursor: pointer;
-            transition: 0.3s; border: 1px solid transparent; display: flex; flex-direction: column; justify-content: space-between;
-        }
-        .menu-item:hover { border-color: rgba(255,255,255,0.2); transform: translateY(-5px); background: #2d3a4f; }
-        .menu-item h3 { font-size: 1.1rem; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .menu-item p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 15px; min-height: 40px; }
-        .menu-price { color: var(--accent-green); font-weight: 800; }
+        .menu-item { background: var(--card-bg); padding: 25px; border-radius: 15px; cursor: pointer; transition: 0.3s; border: 1px solid transparent; }
+        .menu-item:hover { border-color: rgba(255,255,255,0.2); transform: translateY(-5px); }
+        .menu-item h3 { font-size: 1.15rem; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .menu-item p { font-size: 0.85rem; color: var(--text-muted); min-height: 40px; }
+        .menu-price { color: var(--accent-green); font-weight: 800; margin-top: 15px; display: block; }
 
-        /* Modal */
-        .modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.95); z-index: 2000; display: none;
-            align-items: center; justify-content: center; padding: 20px;
-        }
-        .modal-content {
-            background: var(--card-bg); max-width: 450px; width: 100%; border-radius: 25px;
-            padding: 30px; position: relative; border: 1px solid rgba(255,255,255,0.1);
-        }
-        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 2rem; cursor: pointer; color: var(--text-muted); }
-        
-        .size-selector, .crust-selector { display: flex; gap: 8px; margin: 15px 0; }
-        .size-btn, .crust-btn {
-            flex: 1; padding: 10px; border: 1px solid #334155; border-radius: 10px;
-            background: transparent; color: var(--accent-white); cursor: pointer; transition: 0.3s; font-size: 0.75rem;
-        }
-        .size-btn.active, .crust-btn.active { background: var(--accent-green); border-color: var(--accent-green); color: #000; font-weight: 700; }
+        /* About & Info */
+        .info-section { background: #111827; padding: 100px 20px; }
+        .about-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 50px; align-items: center; }
+        .about-text h2 { font-size: 2.5rem; margin-bottom: 20px; }
+        .about-text p { margin-bottom: 15px; color: var(--text-muted); }
 
-        .btn-order {
-            width: 100%; padding: 15px; background: var(--accent-red); color: white;
-            border: none; border-radius: 12px; font-weight: 800; cursor: pointer; margin-top: 15px;
-        }
+        .delivery-zones { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-top: 40px; }
+        .zone-card { padding: 30px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); width: 280px; text-align: center; }
+        .zone-green { border-color: var(--accent-green); }
+        .zone-gold { border-color: var(--gold); }
 
-        .floating-cta {
-            position: fixed; bottom: 20px; right: 20px; background: var(--accent-green);
-            color: #000; padding: 12px 25px; border-radius: 50px; font-weight: 800;
-            text-decoration: none; z-index: 900; font-size: 0.9rem;
-        }
+        /* Modals */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.95); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .modal-content { background: var(--card-bg); max-width: 500px; width: 100%; border-radius: 25px; padding: 40px; position: relative; max-height: 90vh; overflow-y: auto; }
+        .close-modal { position: absolute; top: 20px; right: 25px; font-size: 2rem; cursor: pointer; color: var(--text-muted); }
+        .size-selector, .crust-selector { display: flex; gap: 10px; margin: 20px 0; }
+        .size-btn, .crust-btn { flex: 1; padding: 12px; border: 1px solid #334155; border-radius: 10px; background: transparent; color: white; cursor: pointer; font-size: 0.8rem; transition: 0.3s; }
+        .size-btn.active, .crust-btn.active { background: var(--accent-green); color: #000; font-weight: 700; border-color: var(--accent-green); }
+        .btn-order { width: 100%; padding: 18px; background: var(--accent-red); color: white; border: none; border-radius: 12px; font-weight: 800; cursor: pointer; margin-top: 20px; }
 
-        footer { background: #020617; padding: 40px 20px; text-align: center; font-size: 0.8rem; color: var(--text-muted); }
+        /* Floating Button */
+        .floating-cta { position: fixed; bottom: 30px; right: 30px; background: var(--accent-green); color: #000; padding: 15px 30px; border-radius: 50px; font-weight: 800; text-decoration: none; z-index: 900; box-shadow: 0 10px 30px rgba(34, 197, 94, 0.4); }
+
+        footer { background: #020617; padding: 80px 20px; text-align: center; }
+        .footer-links { margin-top: 20px; display: flex; justify-content: center; gap: 20px; font-size: 0.8rem; color: var(--text-muted); }
+        .footer-links span { cursor: pointer; text-decoration: underline; }
 
         @media (max-width: 768px) {
-            .hero-h1 { font-size: 2.5rem; }
-            .nav-content { justify-content: center; }
+            .hero-h1 { font-size: 2.8rem; }
             .nav-links { display: none; }
-            .menu-controls { top: 60px; }
+            .menu-controls { top: 70px; }
         }
     </style>
 </head>
@@ -120,49 +118,138 @@
     <nav>
         <div class="nav-content">
             <a href="#" class="logo"><span>La</span><span>Pizza</span><span>Nostra</span></a>
+            <div class="nav-links">
+                <a href="#featured">Hity</a>
+                <a href="#menu">Menu</a>
+                <a href="#about">O nas</a>
+                <a href="#delivery">Dostawa</a>
+            </div>
         </div>
     </nav>
 
     <header>
         <div class="hero-content">
+            <span class="badge">Tradycja i Smak</span>
             <h1 class="hero-h1">La Pizza Nostra</h1>
-            <p>Prawdziwa włoska receptura w Twoim mieście.</p>
+            <p>50 rodzajów pizzy na autorskim cieście. Od cienkiego włoskiego po puszyste brzegi.</p>
         </div>
     </header>
 
     <div class="container">
-        
-        <div class="menu-controls">
-            <div class="search-container">
-                <input type="text" id="searchInput" class="search-input" placeholder="Wyszukaj pizzę po nazwie..." oninput="handleSearch()">
+        <section id="featured" class="reveal">
+            <div class="section-header">
+                <h2>Wybór Szefa Kuchni</h2>
+                <p>Sprawdź nasze najpopularniejsze pozycje w tym miesiącu.</p>
             </div>
-            <div class="menu-filters">
-                <button class="filter-btn active" onclick="setFilter('all', this)">Wszystkie</button>
-                <button class="filter-btn" onclick="setFilter('klasyk', this)">Klasyki</button>
-                <button class="filter-btn" onclick="setFilter('ostra', this)">Ostre</button>
-                <button class="filter-btn" onclick="setFilter('wegetariańska', this)">Wege</button>
-                <button class="filter-btn" onclick="setFilter('mięsna', this)">Mięsne</button>
+            <div class="featured-grid">
+                <div class="featured-card" onclick="openPizza(13)">
+                    <span class="tag-featured">PIEKIELNA</span>
+                    <img src="https://images.unsplash.com/photo-1593504049359-7b7d92c7385f?q=80&w=600" class="featured-img">
+                    <div class="featured-body">
+                        <h3>Piekielna Uczta 🌶️🌶️🌶️</h3>
+                        <p>Habanero, ostra kiełbasa i tabasco. Prawdziwe wyzwanie.</p>
+                        <span class="menu-price">od 32.00 zł</span>
+                    </div>
+                </div>
+                <div class="featured-card" onclick="openPizza(40)">
+                    <span class="tag-featured">KLASYK</span>
+                    <img src="https://images.unsplash.com/photo-1574071318508-1cdbad80ad38?q=80&w=600" class="featured-img">
+                    <div class="featured-body">
+                        <h3>Contadina</h3>
+                        <p>Wiejska kiełbasa, chrupiący boczek i czerwona cebula.</p>
+                        <span class="menu-price">od 31.00 zł</span>
+                    </div>
+                </div>
+                <div class="featured-card" onclick="openPizza(26)">
+                    <span class="tag-featured">WEGE HIT</span>
+                    <img src="https://images.unsplash.com/photo-1573823707740-4903e84cd93a?q=80&w=600" class="featured-img">
+                    <div class="featured-body">
+                        <h3>Pesto di Bufala 🌱</h3>
+                        <p>Pesto bazyliowe i oryginalna mozzarella di bufala.</p>
+                        <span class="menu-price">od 31.00 zł</span>
+                    </div>
+                </div>
             </div>
-        </div>
+        </section>
 
-        <div id="pizza-list" class="menu-grid"></div>
-        <div id="no-results" style="display:none; text-align:center; padding: 40px; color: var(--text-muted);">Nie znaleźliśmy pizzy o tej nazwie... Spróbuj wpisać coś innego!</div>
+        <section id="menu" class="reveal">
+            <div class="section-header">
+                <h2>Pełne Menu</h2>
+                <p>Znajdź swoją pizzę korzystając z wyszukiwarki i filtrów.</p>
+            </div>
+            <div class="menu-controls">
+                <div class="search-container">
+                    <input type="text" id="searchInput" class="search-input" placeholder="Wpisz nazwę pizzy (np. Margherita)..." oninput="handleSearch()">
+                </div>
+                <div class="menu-filters">
+                    <button class="filter-btn active" onclick="setFilter('all', this)">Wszystkie</button>
+                    <button class="filter-btn" onclick="setFilter('klasyk', this)">Klasyki</button>
+                    <button class="filter-btn" onclick="setFilter('ostra', this)">Ostre</button>
+                    <button class="filter-btn" onclick="setFilter('wegetariańska', this)">Wege</button>
+                    <button class="filter-btn" onclick="setFilter('mięsna', this)">Mięsne</button>
+                </div>
+            </div>
+            <div id="pizza-list" class="menu-grid"></div>
+        </section>
     </div>
 
+    <section id="about" class="info-section">
+        <div class="container reveal">
+            <div class="about-grid">
+                <div class="about-text">
+                    <h2>Rodzinna Pasja</h2>
+                    <p>W La Pizza Nostra wierzymy, że dobra pizza zaczyna się od czasu. Nasze ciasto dojrzewa 24 godziny, aby uzyskać idealną lekkość.</p>
+                    <p>Używamy wyłącznie włoskich składników: mąki typu 00, pomidorów San Marzano oraz świeżej mozzarelli fior di latte. U nas to Ty decydujesz – wybierz tradycyjne <strong>cienkie ciasto</strong> lub <strong>grubsze brzegi</strong>.</p>
+                </div>
+                <div class="card no-click" style="background: var(--card-bg); padding: 40px; border-radius: 20px;">
+                    <h3>Godziny Otwarcia</h3>
+                    <p style="margin-top: 20px;">Pon - Czw: 12:00 - 22:00</p>
+                    <p>Pt - Sob: 10:00 - 23:00</p>
+                    <p>Niedziela: 12:00 - 23:00</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="delivery" class="container reveal">
+        <div class="section-header">
+            <h2>Dostawa i Kontakt</h2>
+            <p>ul. Neapolitańska 14, Warszawa (Lokalizacja Fikcyjna)</p>
+        </div>
+        <div class="delivery-zones">
+            <div class="zone-card zone-green">
+                <h3 style="color: var(--accent-green);">Strefa Zielona</h3>
+                <p>Dostawa 0 zł</p>
+                <p style="font-size: 0.8rem;">Czas: 30-45 min</p>
+            </div>
+            <div class="zone-card zone-gold">
+                <h3 style="color: var(--gold);">Strefa Żółta</h3>
+                <p>Dostawa 10 zł</p>
+                <p style="font-size: 0.8rem;">Czas: 45-60 min</p>
+            </div>
+        </div>
+    </section>
+
     <footer>
-        <p>ul. Neapolitańska 14, Warszawa | Projekt Portfolio Dawid | 2026</p>
+        <div class="logo" style="justify-content: center; margin-bottom: 20px;">
+            <span>La</span><span>Pizza</span><span>Nostra</span>
+        </div>
+        <p>Projekt portfolio CodePace Studio 2026</p>
+        <div class="footer-links">
+            <span onclick="openModal('privacyModal')">Polityka Prywatności</span>
+            <span>Regulamin</span>
+        </div>
     </footer>
 
-    <a href="tel:+48792198691" class="floating-cta">Zadzwoń: +48 792 198 691</a>
+    <a href="tel:+48000000000" class="floating-cta">Zadzwoń: +48 000 000 000</a>
 
     <div class="modal" id="pizzaModal">
         <div class="modal-content">
             <span class="close-modal" onclick="closePizzaModal()">&times;</span>
             <h2 id="modalTitle"></h2>
             <p id="modalDesc"></p>
-            
-            <div style="margin-top: 20px;">
-                <label style="font-size: 0.7rem; font-weight: 800; color: var(--accent-green);">ROZMIAR:</label>
+            <div style="margin-top: 30px;">
+                <label style="font-size: 0.75rem; font-weight: 800; color: var(--accent-green);">ROZMIAR:</label>
                 <div class="size-selector">
                     <button class="size-btn" onclick="selectSize(0, this)">24cm</button>
                     <button class="size-btn active" onclick="selectSize(1, this)">32cm</button>
@@ -170,24 +257,32 @@
                     <button class="size-btn" onclick="selectSize(3, this)">50cm</button>
                 </div>
             </div>
-
             <div style="margin-top: 15px;">
-                <label style="font-size: 0.7rem; font-weight: 800; color: var(--accent-green);">CIASTO:</label>
+                <label style="font-size: 0.75rem; font-weight: 800; color: var(--accent-green);">RODZAJ CIASTA:</label>
                 <div class="crust-selector">
                     <button class="crust-btn active" onclick="selectCrust('cienkie', this)">Cienkie</button>
                     <button class="crust-btn" onclick="selectCrust('grube', this)">Grube (+2zł)</button>
                 </div>
             </div>
-
-            <div style="margin-top: 25px; border-top: 1px solid #334155; padding-top: 20px; display: flex; justify-content: space-between; align-items: center;">
-                <span id="modalPrice" style="font-size: 1.8rem; font-weight: 900; color: var(--accent-green);"></span>
-                <button class="btn-order" style="width: auto; padding: 12px 25px; margin:0;" onclick="alert('Strona demonstracyjna.')">ZAMÓW</button>
+            <div style="margin-top: 30px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #334155; padding-top: 20px;">
+                <span id="modalPrice" style="font-size: 2rem; font-weight: 900; color: var(--accent-green);"></span>
+                <button class="btn-order" style="width: auto; padding: 12px 25px; margin:0;" onclick="alert('Dziękujemy! System zamówień jest w trybie demonstracyjnym.')">ZAMÓW</button>
             </div>
+        </div>
+    </div>
+
+    <div class="modal" id="privacyModal">
+        <div class="modal-content" style="text-align: center;">
+            <span class="close-modal" onclick="closeModal('privacyModal')">&times;</span>
+            <h3>Polityka Prywatności</h3>
+            <p style="margin-top: 20px; color: var(--text-muted);">Niniejsza strona jest projektem demonstracyjnym i nie zbiera żadnych danych osobowych. Wszystkie nazwy, adresy i numery telefonów są fikcyjne i służą wyłącznie celom prezentacyjnym w portfolio CodePace Studio.</p>
+            <button class="btn-order" onclick="closeModal('privacyModal')">Rozumiem</button>
         </div>
     </div>
 
     <script>
         const pizzas = [
+            // KLASYKI
             {id:1, name:"Margherita", desc:"Sos pomidorowy, mozzarella, świeża bazylia, oliwa extra vergine", cats:['klasyk','wegetariańska'], spicy:0, price:19},
             {id:2, name:"Capriciosa", desc:"Sos pomidorowy, mozzarella, szynka gotowana, pieczarki", cats:['klasyk'], spicy:0, price:24},
             {id:3, name:"Hawajska", desc:"Sos pomidorowy, mozzarella, szynka gotowana, soczysty ananas", cats:['klasyk'], spicy:0, price:24},
@@ -198,6 +293,7 @@
             {id:8, name:"Prosciutto e Funghi", desc:"Sos pomidorowy, mozzarella, szynka crudo, pieczarki, rukola", cats:['klasyk','mięsna'], spicy:0, price:29},
             {id:9, name:"Tonno e Cipolla", desc:"Sos pomidorowy, mozzarella, tuńczyk, czerwona cebula", cats:['klasyk'], spicy:0, price:26},
             {id:10, name:"Marinara", desc:"Sos pomidorowy, czosnek, oregano, oliwa (bez sera)", cats:['klasyk','wegetariańska'], spicy:0, price:18},
+            // OSTRE
             {id:11, name:"Diavola", desc:"Sos pomidorowy, mozzarella, salami piccante, jalapeno", cats:['ostra','mięsna'], spicy:1, price:28},
             {id:12, name:"Calabrese", desc:"Sos pomidorowy, mozzarella, nduja, salami piccante, cebula", cats:['ostra','mięsna'], spicy:2, price:30},
             {id:13, name:"Piekielna Uczta", desc:"Sos pomidorowy, mozzarella, habanero, ostra kiełbasa, tabasco", cats:['ostra','mięsna'], spicy:3, price:32},
@@ -211,6 +307,7 @@
             {id:21, name:"Inferno", desc:"Sos pomidorowy, salami piccante, cebula, habanero", cats:['ostra','mięsna'], spicy:3, price:31},
             {id:22, name:"Volcano", desc:"Biały sos, mozzarella, pikantna kiełbasa, jalapeno", cats:['ostra','mięsna'], spicy:2, price:30},
             {id:23, name:"Spicy Veg", desc:"Sos pomidorowy, mix warzyw, jalapeno, płatki chilli", cats:['ostra','wegetariańska'], spicy:1, price:26},
+            // WEGE
             {id:24, name:"Spinaci", desc:"Sos pomidorowy, świeży szpinak, czosnek, feta", cats:['wegetariańska'], spicy:0, price:26},
             {id:25, name:"Verde Bosco", desc:"Sos pomidorowy, borowiki, mozzarella, natka pietruszki", cats:['wegetariańska'], spicy:0, price:29},
             {id:26, name:"Pesto di Bufala", desc:"Pesto bazyliowe, pomidorki cherry, mozzarella di bufala", cats:['wegetariańska'], spicy:0, price:31},
@@ -225,6 +322,7 @@
             {id:35, name:"Zucchine", desc:"Sos pomidorowy, grillowana cukinia, czosnek, parmezan", cats:['wegetariańska'], spicy:0, price:24},
             {id:36, name:"Formaggio Misto", desc:"Cheddar, mozzarella, feta, gorgonzola, oscypek", cats:['wegetariańska'], spicy:0, price:30},
             {id:37, name:"Veggie Hot", desc:"Sos pomidorowy, warzywa, chilli, czosnek", cats:['wegetariańska','ostra'], spicy:1, price:26},
+            // MIĘSNE
             {id:38, name:"Bresaola", desc:"Sos pomidorowy, suszona wołowina, rukola, parmezan", cats:['mięsna'], spicy:0, price:36},
             {id:39, name:"Carbonara", desc:"Biały sos, boczek, żółtko jajka, pecorino romano", cats:['mięsna'], spicy:0, price:29},
             {id:40, name:"Contadina", desc:"Sos pomidorowy, wiejska kiełbasa, boczek, cebula", cats:['mięsna'], spicy:0, price:31},
@@ -248,40 +346,30 @@
 
         function renderMenu() {
             const list = document.getElementById('pizza-list');
-            const noRes = document.getElementById('no-results');
             list.innerHTML = '';
-            
             const filtered = pizzas.filter(p => {
                 const matchesCat = currentCat === 'all' || p.cats.includes(currentCat);
                 const matchesSearch = p.name.toLowerCase().includes(currentSearch.toLowerCase());
                 return matchesCat && matchesSearch;
             });
-
-            if(filtered.length === 0) {
-                noRes.style.display = 'block';
-            } else {
-                noRes.style.display = 'none';
-                filtered.forEach(p => {
-                    const item = document.createElement('div');
-                    item.className = 'menu-item reveal active';
-                    item.onclick = () => openPizza(p.id);
-                    let icons = (p.cats.includes('wegetariańska') ? ' 🌱' : '') + ' 🌶️'.repeat(p.spicy);
-                    item.innerHTML = `<h3>${p.name} <span>${icons}</span></h3><p>${p.desc}</p><span class="menu-price">od ${p.price.toFixed(2)} zł</span>`;
-                    list.appendChild(item);
-                });
-            }
+            filtered.forEach(p => {
+                const item = document.createElement('div');
+                item.className = 'menu-item reveal active';
+                item.onclick = () => openPizza(p.id);
+                let icons = (p.cats.includes('wegetariańska') ? ' 🌱' : '') + ' 🌶️'.repeat(p.spicy);
+                item.innerHTML = `<h3>${p.name} <span>${icons}</span></h3><p>${p.desc}</p><span class="menu-price">od ${p.price.toFixed(2)} zł</span>`;
+                list.appendChild(item);
+            });
         }
 
         function setFilter(cat, btn) {
             currentCat = cat;
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            renderMenu();
+            btn.classList.add('active'); renderMenu();
         }
 
         function handleSearch() {
-            currentSearch = document.getElementById('searchInput').value;
-            renderMenu();
+            currentSearch = document.getElementById('searchInput').value; renderMenu();
         }
 
         function openPizza(id) {
@@ -289,19 +377,16 @@
             selectedSizeIdx = 1; crustExtra = 0;
             document.getElementById('modalTitle').innerText = currentPizza.name;
             document.getElementById('modalDesc').innerText = currentPizza.desc;
-            updatePrice();
-            document.getElementById('pizzaModal').style.display = 'flex';
+            updatePrice(); document.getElementById('pizzaModal').style.display = 'flex';
         }
 
         function closePizzaModal() { document.getElementById('pizzaModal').style.display = 'none'; }
         function selectSize(idx, btn) {
-            selectedSizeIdx = idx;
-            document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+            selectedSizeIdx = idx; document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active'); updatePrice();
         }
         function selectCrust(type, btn) {
-            crustExtra = (type === 'grube') ? 2 : 0;
-            document.querySelectorAll('.crust-btn').forEach(b => b.classList.remove('active'));
+            crustExtra = (type === 'grube') ? 2 : 0; document.querySelectorAll('.crust-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active'); updatePrice();
         }
         function updatePrice() {
@@ -310,7 +395,16 @@
             document.getElementById('modalPrice').innerText = total.toFixed(2) + ' zł';
         }
 
-        window.onload = () => renderMenu();
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        window.onload = () => {
+            renderMenu();
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        };
     </script>
 </body>
 </html>
