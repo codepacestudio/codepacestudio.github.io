@@ -25,18 +25,19 @@
         
         body {
             color: var(--text-main);
-            /* Delikatna kratka jak w zeszycie z matematyki */
             background-color: var(--bg-color);
             background-image: linear-gradient(var(--grid-color) 1px, transparent 1px), linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
             background-size: 30px 30px;
             background-position: center top;
+            display: flex;
+            flex-direction: column;
             min-height: 100vh;
             overflow-x: hidden;
         }
 
         nav {
             background: rgba(255, 255, 255, 0.95);
-            padding: 20px 0;
+            padding: 15px 0;
             position: fixed;
             width: 100%;
             top: 0;
@@ -54,53 +55,56 @@
             align-items: center;
         }
 
-        .logo { font-size: 1.5rem; font-weight: 900; color: var(--text-main); text-decoration: none; letter-spacing: -1px; }
+        .logo { font-size: 1.5rem; font-weight: 900; color: var(--text-main); text-decoration: none; letter-spacing: -1px; cursor: pointer; }
         .logo span { color: var(--accent); }
+        
+        .nav-btn { background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 0.9rem; }
+        .nav-btn:hover { background: var(--accent-hover); }
 
-        .container { max-width: 1200px; margin: 120px auto 60px; padding: 0 20px; }
+        .container { max-width: 1200px; margin: 120px auto 60px; padding: 0 20px; flex: 1; width: 100%; }
 
         header { text-align: center; margin-bottom: 60px; }
         header h1 { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 900; letter-spacing: -2px; margin-bottom: 15px; color: var(--text-main); }
         header p { font-size: 1.2rem; color: var(--text-muted); max-width: 600px; margin: 0 auto; }
 
-        /* WIDOK GŁÓWNY - SIATKA DZIAŁÓW */
+        /* WIDOK GŁÓWNY */
         #view-home { display: block; animation: fadeIn 0.5s ease; }
-        
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
-        
-        .category-card {
-            background: var(--card-bg); padding: 35px 25px; border-radius: 16px;
-            box-shadow: var(--shadow); border: 2px solid transparent;
-            cursor: pointer; transition: 0.3s; position: relative; overflow: hidden;
-        }
-        
+        .category-card { background: var(--card-bg); padding: 35px 25px; border-radius: 16px; box-shadow: var(--shadow); border: 2px solid transparent; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; }
         .category-card:hover { transform: translateY(-5px); border-color: var(--accent); box-shadow: 0 20px 40px -10px rgba(59, 130, 246, 0.2); }
         .category-card h3 { font-size: 1.3rem; font-weight: 800; margin-bottom: 10px; }
         .category-card p { font-size: 0.95rem; color: var(--text-muted); line-height: 1.5; }
         .task-count { display: inline-block; margin-top: 20px; background: #eff6ff; color: var(--accent); padding: 5px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; }
 
-        /* WIDOK ZADAŃ (UKRYTY NA START) */
+        /* WIDOK ZADAŃ */
         #view-tasks { display: none; animation: fadeIn 0.5s ease; }
-        
-        .back-btn {
-            background: var(--card-bg); border: 1px solid #cbd5e1; padding: 10px 20px;
-            border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 30px; transition: 0.2s;
-        }
+        .back-btn { background: var(--card-bg); border: 1px solid #cbd5e1; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 30px; transition: 0.2s; }
         .back-btn:hover { background: #f1f5f9; border-color: var(--text-muted); }
-
         .section-header { margin-bottom: 40px; }
         .section-header h2 { font-size: 2.5rem; font-weight: 900; letter-spacing: -1px; }
 
-        /* MIEJSCE NA ZADANIA */
         .task-list { display: flex; flex-direction: column; gap: 20px; }
         .task-card { background: var(--card-bg); padding: 30px; border-radius: 12px; box-shadow: var(--shadow); border-left: 4px solid var(--accent); }
-        .task-content { font-size: 1.1rem; line-height: 1.8; margin-bottom: 20px; }
-        
+        .task-content { font-size: 1.1rem; line-height: 1.8; margin-bottom: 20px; overflow-x: auto; }
         .show-answer-btn { background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; }
         .show-answer-btn:hover { background: var(--accent-hover); }
-        
-        .answer-box { margin-top: 20px; padding: 20px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; display: none; }
+        .answer-box { margin-top: 20px; padding: 20px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; display: none; overflow-x: auto; }
         .answer-box.visible { display: block; animation: fadeIn 0.4s ease; }
+
+        /* STOPKA */
+        footer { background: #0f172a; color: #94a3b8; padding: 40px 20px; text-align: center; margin-top: auto; }
+        .footer-link { color: #cbd5e1; text-decoration: underline; cursor: pointer; font-size: 0.9rem; margin-top: 15px; display: inline-block; }
+
+        /* MODALE */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.9); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+        .modal-overlay.active { display: flex; }
+        .modal-content { background: #fff; padding: 40px; border-radius: 16px; max-width: 600px; width: 90%; max-height: 85vh; overflow-y: auto; position: relative; }
+        .close-btn { position: absolute; top: 20px; right: 20px; font-size: 2rem; cursor: pointer; color: #64748b; line-height: 1; }
+        .close-btn:hover { color: #0f172a; }
+
+        .nav-list { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+        .nav-list-item { padding: 15px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s; display: flex; justify-content: space-between; align-items: center; }
+        .nav-list-item:hover { background: #eff6ff; border-color: var(--accent); color: var(--accent); }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -109,21 +113,18 @@
 
     <nav>
         <div class="nav-content">
-            <a href="#" class="logo" onclick="goHome()">Matura<span>.</span>PRO</a>
-            <div style="font-weight: 600; font-size: 0.9rem; color: var(--text-muted);">Baza Zadań CKE</div>
+            <span class="logo" onclick="goHome()">Matura<span>.</span>PRO</span>
+            <button class="nav-btn" onclick="openNavModal()">Spis Działów</button>
         </div>
     </nav>
 
     <div class="container">
-        
         <div id="view-home">
             <header>
                 <h1>Matematyka Podstawowa</h1>
                 <p>Kompletna baza zadań przygotowujących do matury. Wybierz dział, trenuj na gotowych przykładach i sprawdzaj rozwiązania krok po kroku.</p>
             </header>
-
-            <div class="grid" id="category-grid">
-                </div>
+            <div class="grid" id="category-grid"></div>
         </div>
 
         <div id="view-tasks">
@@ -132,65 +133,90 @@
                 <h2 id="current-category-title">Nazwa Działu</h2>
                 <p style="color: var(--text-muted); margin-top: 10px;">Wybierz poddział i zacznij rozwiązywać zadania.</p>
             </div>
-            
             <div class="task-list" id="tasks-container">
-                <div class="task-card" style="text-align: center; color: var(--text-muted);">
-                    Ładowanie modułu...
-                </div>
+                <div class="task-card" style="text-align: center; color: var(--text-muted);">Ładowanie modułu...</div>
             </div>
         </div>
+    </div>
 
+    <footer>
+        <p>&copy; 2026 Matura.PRO. Wszelkie prawa zastrzeżone.</p>
+        <span class="footer-link" onclick="openPrivacyModal()">Polityka Prywatności</span>
+    </footer>
+
+    <div class="modal-overlay" id="navModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('navModal')">&times;</span>
+            <h2 style="font-weight: 900; margin-bottom: 10px;">Spis Treści</h2>
+            <p style="color: var(--text-muted);">Wybierz dział, aby przejść do zadań.</p>
+            <div class="nav-list" id="nav-modal-list"></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="privacyModal">
+        <div class="modal-content" style="text-align: center;">
+            <span class="close-btn" onclick="closeModal('privacyModal')">&times;</span>
+            <h2 style="font-weight: 900; margin-bottom: 20px;">Polityka Prywatności</h2>
+            <p style="color: var(--text-muted); margin-bottom: 20px; line-height: 1.6;">Platforma Matura.PRO nie zbiera żadnych ukrytych danych, nie wykorzystuje inwazyjnych ciasteczek śledzących i nie wymaga zakładania konta. Uczysz się w pełni anonimowo.</p>
+            <button class="nav-btn" onclick="closeModal('privacyModal')">Rozumiem</button>
+        </div>
     </div>
 
     <script>
-        // Główna struktura działów do matury podstawowej
         const categories = [
-            { id: 'liczby', title: 'Liczby rzeczywiste', desc: 'Potęgi, pierwiastki, logarytmy, procenty i błąd względny.', count: 30 },
-            { id: 'algebra', title: 'Wyrażenia algebraiczne', desc: 'Wzory skróconego mnożenia, przekształcanie wyrażeń.', count: 20 },
-            { id: 'rownania', title: 'Równania i nierówności', desc: 'Liniowe, kwadratowe, wymierne i ich zastosowania.', count: 30 },
-            { id: 'uklady', title: 'Układy równań', desc: 'Metoda podstawiania, przeciwnych współczynników i zadania tekstowe.', count: 20 },
-            { id: 'funkcje', title: 'Funkcje i ich własności', desc: 'Dziedzina, zbiór wartości, funkcja liniowa i kwadratowa.', count: 30 },
-            { id: 'ciagi', title: 'Ciągi liczbowe', desc: 'Ciąg arytmetyczny, geometryczny i wzory ogólne.', count: 20 },
-            { id: 'trygonometria', title: 'Trygonometria', desc: 'Sinus, cosinus, tangens kąta ostrego i jedynka trygonometryczna.', count: 20 },
-            { id: 'planimetria', title: 'Planimetria', desc: 'Trójkąty, czworokąty, okręgi, kąty i twierdzenie Pitagorasa.', count: 30 },
-            { id: 'analityczna', title: 'Geometria analityczna', desc: 'Równanie prostej, środek odcinka i odległość punktów.', count: 20 },
-            { id: 'stereometria', title: 'Stereometria', desc: 'Graniastosłupy, ostrosłupy, objętość i pole powierzchni.', count: 20 },
-            { id: 'kombinatoryka', title: 'Kombinatoryka i Prawdopodobieństwo', desc: 'Reguła mnożenia i prawdopodobieństwo klasyczne.', count: 20 },
-            { id: 'statystyka', title: 'Statystyka', desc: 'Średnia arytmetyczna, mediana, dominanta i odchylenie.', count: 20 }
+            { id: 'liczby', title: 'Liczby rzeczywiste', desc: 'Potęgi, pierwiastki, logarytmy, procenty i błąd względny.' },
+            { id: 'algebra', title: 'Wyrażenia algebraiczne', desc: 'Wzory skróconego mnożenia, przekształcanie wyrażeń.' },
+            { id: 'rownania', title: 'Równania i nierówności', desc: 'Liniowe, kwadratowe, wymierne i ich zastosowania.' },
+            { id: 'uklady', title: 'Układy równań', desc: 'Metoda podstawiania, przeciwnych współczynników i zadania tekstowe.' },
+            { id: 'funkcje', title: 'Funkcje i ich własności', desc: 'Dziedzina, zbiór wartości, funkcja liniowa i kwadratowa.' },
+            { id: 'ciagi', title: 'Ciągi liczbowe', desc: 'Ciąg arytmetyczny, geometryczny i wzory ogólne.' },
+            { id: 'trygonometria', title: 'Trygonometria', desc: 'Sinus, cosinus, tangens kąta ostrego i jedynka trygonometryczna.' },
+            { id: 'planimetria', title: 'Planimetria', desc: 'Trójkąty, czworokąty, okręgi, kąty i twierdzenie Pitagorasa.' },
+            { id: 'analityczna', title: 'Geometria analityczna', desc: 'Równanie prostej, środek odcinka i odległość punktów.' },
+            { id: 'stereometria', title: 'Stereometria', desc: 'Graniastosłupy, ostrosłupy, objętość i pole powierzchni.' },
+            { id: 'kombinatoryka', title: 'Kombinatoryka i Prawdopodobieństwo', desc: 'Reguła mnożenia i prawdopodobieństwo klasyczne.' },
+            { id: 'statystyka', title: 'Statystyka', desc: 'Średnia arytmetyczna, mediana, dominanta i odchylenie.' }
         ];
 
-        // Funkcja renderująca kafelki na stronie głównej
         function renderCategories() {
             const grid = document.getElementById('category-grid');
+            const navList = document.getElementById('nav-modal-list');
             grid.innerHTML = '';
+            navList.innerHTML = '';
 
             categories.forEach(cat => {
+                // Kafelki na stronie głównej
                 const card = document.createElement('div');
                 card.className = 'category-card';
                 card.onclick = () => openCategory(cat.id, cat.title);
-                
                 card.innerHTML = `
                     <h3>${cat.title}</h3>
                     <p>${cat.desc}</p>
                     <span class="task-count">Wkrótce zadania</span>
                 `;
                 grid.appendChild(card);
+
+                // Lista w modalu nawigacyjnym
+                const listItem = document.createElement('div');
+                listItem.className = 'nav-list-item';
+                listItem.onclick = () => openCategory(cat.id, cat.title);
+                listItem.innerHTML = `<span>${cat.title}</span> <span>&rarr;</span>`;
+                navList.appendChild(listItem);
             });
         }
 
-        // Nawigacja
         function openCategory(id, title) {
+            closeModal('navModal');
             document.getElementById('view-home').style.display = 'none';
             document.getElementById('view-tasks').style.display = 'block';
             document.getElementById('current-category-title').innerText = title;
             window.scrollTo(0, 0);
             
-            // Tutaj będziemy w przyszłości wczytywać odpowiednie dane z pliku zadań
             const container = document.getElementById('tasks-container');
             container.innerHTML = `
                 <div class="task-card">
                     <div class="task-content">
-                        <strong>Przykład działania MathJax:</strong><br><br>
+                        <strong>Zadanie testowe:</strong><br><br>
                         Rozwiąż równanie kwadratowe: \\( x^2 - 5x + 6 = 0 \\)
                     </div>
                     <button class="show-answer-btn" onclick="this.nextElementSibling.classList.toggle('visible')">Pokaż rozwiązanie</button>
@@ -203,11 +229,10 @@
                     </div>
                 </div>
                 <div class="task-card" style="text-align: center; color: var(--text-muted); border: none; box-shadow: none; background: transparent;">
-                    Tutaj wgramy zadania z podziałem na poddziały w kolejnych krokach.
+                    Tutaj wgramy docelowe zadania w kolejnych krokach.
                 </div>
             `;
 
-            // Odświeżenie silnika matematycznego po wstrzyknięciu nowych zadań
             if (window.MathJax) {
                 MathJax.typesetPromise();
             }
@@ -219,10 +244,18 @@
             window.scrollTo(0, 0);
         }
 
-        // Uruchomienie przy starcie
-        window.onload = () => {
-            renderCategories();
-        };
+        function openNavModal() { document.getElementById('navModal').classList.add('active'); document.body.style.overflow = 'hidden'; }
+        function openPrivacyModal() { document.getElementById('privacyModal').classList.add('active'); document.body.style.overflow = 'hidden'; }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); document.body.style.overflow = 'auto'; }
+
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal-overlay')) {
+                event.target.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        window.onload = () => { renderCategories(); };
     </script>
 </body>
 </html>
