@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glow & Go | Ekskluzywne Studio Urody</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #111827;
+            --bg-color: #faf5f5;
+            --card-bg: #ffffff;
+            --accent: #d4af37; /* Złoty */
+            --accent-light: #fef08a;
+            --text-dark: #1f2937;
+            --text-muted: #6b7280;
+            --shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+            --border: 1px solid #f3e8e8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        html { scroll-behavior: smooth; }
+        body { background-color: var(--bg-color); color: var(--text-dark); overflow-x: hidden; }
+
+        h1, h2, h3, .serif { font-family: 'Playfair Display', serif; }
+
+        .reveal { opacity: 0; transform: translateY(30px); transition: 0.8s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* NAWIGACJA */
+        nav { background: rgba(255, 255, 255, 0.95); padding: 20px 0; position: fixed; width: 100%; top: 0; z-index: 1000; box-shadow: 0 2px 20px rgba(0,0,0,0.03); backdrop-filter: blur(10px); }
+        .nav-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
+        .logo { font-size: 1.8rem; font-weight: 700; color: var(--primary); text-decoration: none; font-family: 'Playfair Display', serif; letter-spacing: 1px; }
+        .logo span { color: var(--accent); font-style: italic; }
+        .nav-links { display: flex; gap: 30px; }
+        .nav-links a { color: var(--primary); text-decoration: none; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; font-weight: 600; }
+        .nav-links a:hover { color: var(--accent); }
+
+        /* HEADER */
+        header {
+            height: 80vh; display: flex; align-items: center; justify-content: center; text-align: center;
+            background: linear-gradient(rgba(17, 24, 39, 0.6), rgba(17, 24, 39, 0.8)), url('https://images.unsplash.com/photo-1560066984-138dadb4c035?q=80&w=1974&auto=format&fit=crop');
+            background-size: cover; background-position: center; margin-top: 70px; color: white; padding: 20px;
+        }
+        .header-content h1 { font-size: clamp(3rem, 6vw, 5rem); margin-bottom: 20px; font-weight: 500; }
+        .header-content p { font-size: 1.1rem; color: #e5e7eb; max-width: 600px; margin: 0 auto 40px; font-weight: 300; letter-spacing: 1px; }
+        .btn { padding: 16px 36px; background: var(--accent); color: white; border: none; border-radius: 4px; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; transition: 0.3s; font-weight: 600; }
+        .btn:hover { background: #b8972e; transform: translateY(-2px); }
+
+        /* KATEGORIE */
+        .container { max-width: 1200px; margin: 0 auto; padding: 80px 20px; }
+        .section-title { text-align: center; font-size: 2.5rem; color: var(--primary); margin-bottom: 50px; font-weight: 500; }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .cat-card { background: var(--card-bg); padding: 40px; border-radius: 8px; text-align: center; cursor: pointer; transition: 0.4s; box-shadow: var(--shadow); border: var(--border); }
+        .cat-card:hover { transform: translateY(-10px); border-color: var(--accent); }
+        .cat-icon { font-size: 2.5rem; margin-bottom: 20px; display: block; }
+        .cat-card h3 { font-size: 1.4rem; color: var(--primary); margin-bottom: 15px; }
+        .cat-card p { color: var(--text-muted); font-size: 0.95rem; }
+
+        /* KOSZYK FLOATING */
+        .cart-bar { position: fixed; bottom: 30px; right: 30px; background: var(--primary); color: white; padding: 15px 30px; border-radius: 50px; font-weight: 600; z-index: 1000; cursor: pointer; display: flex; gap: 15px; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; }
+        .cart-bar:hover { background: var(--accent); color: white; border-color: var(--accent); }
+        .cart-count { background: var(--accent); color: white; padding: 2px 10px; border-radius: 50px; font-size: 0.8rem; }
+
+        /* MODALE WSPÓLNE */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(17, 24, 39, 0.8); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(5px); }
+        .modal-content { background: var(--card-bg); max-width: 600px; width: 100%; border-radius: 12px; position: relative; max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 50px rgba(0,0,0,0.2); }
+        .modal-header { padding: 30px; border-bottom: var(--border); position: sticky; top: 0; background: var(--card-bg); z-index: 10; border-radius: 12px 12px 0 0; }
+        .modal-header h2 { font-size: 1.8rem; color: var(--primary); }
+        .close-btn { position: absolute; top: 25px; right: 30px; font-size: 2rem; color: var(--text-muted); cursor: pointer; line-height: 1; transition: 0.2s; }
+        .close-btn:hover { color: var(--accent); }
+        .modal-body { padding: 30px; }
+
+        /* LISTA WARIANTÓW (MENU) */
+        .variant-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: var(--border); }
+        .variant-item:last-child { border-bottom: none; }
+        .variant-info h4 { color: var(--primary); font-size: 1.1rem; margin-bottom: 5px; }
+        .variant-info p { color: var(--text-muted); font-size: 0.85rem; }
+        .variant-price { font-weight: 700; color: var(--accent); font-size: 1.1rem; }
+        .add-btn { background: transparent; border: 1px solid var(--accent); color: var(--accent); padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; transition: 0.2s; margin-left: 15px; }
+        .add-btn:hover { background: var(--accent); color: white; }
+
+        /* KOSZYK MODAL */
+        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: var(--border); }
+        .cart-total { display: flex; justify-content: space-between; align-items: center; padding-top: 20px; margin-top: 10px; font-size: 1.5rem; font-weight: 700; color: var(--primary); border-top: 2px solid var(--primary); }
+
+        /* KALENDARZ */
+        .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .cal-btn { background: none; border: 1px solid var(--border); padding: 8px 15px; cursor: pointer; font-weight: 600; border-radius: 4px; transition: 0.2s; }
+        .cal-btn:hover { background: var(--bg-color); }
+        .cal-month { font-size: 1.2rem; font-weight: 700; text-transform: uppercase; color: var(--primary); }
+        
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; margin-bottom: 20px; }
+        .cal-day-name { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; margin-bottom: 10px; }
+        .cal-day { padding: 12px 5px; border-radius: 4px; border: 1px solid transparent; cursor: pointer; transition: 0.2s; font-weight: 500; }
+        .cal-day:hover:not(.empty):not(.disabled) { border-color: var(--accent); }
+        .cal-day.active { background: var(--accent); color: white; border-color: var(--accent); }
+        .cal-day.disabled { opacity: 0.3; cursor: not-allowed; }
+        .cal-day.empty { cursor: default; }
+
+        .time-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 20px; }
+        .time-btn { padding: 10px; border: 1px solid var(--border); background: white; border-radius: 4px; cursor: pointer; font-weight: 600; transition: 0.2s; }
+        .time-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .time-btn:disabled { opacity: 0.3; cursor: not-allowed; background: var(--bg-color); }
+
+        .form-control { width: 100%; padding: 15px; border: 1px solid #d1d5db; border-radius: 4px; margin-bottom: 15px; font-size: 0.95rem; outline: none; }
+        .form-control:focus { border-color: var(--accent); }
+
+        footer { background: var(--primary); color: #9ca3af; padding: 60px 20px; text-align: center; }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .header-content h1 { font-size: 2.5rem; }
+            .modal-content { height: 100%; max-height: 100vh; border-radius: 0; }
+            .time-grid { grid-template-columns: repeat(3, 1fr); }
+            .cart-bar { bottom: 20px; right: 20px; font-size: 0.9rem; padding: 12px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="nav-content">
+            <a href="#" class="logo">Glow <span>&</span> Go</a>
+            <div class="nav-links">
+                <a href="#uslugi">Zabiegi</a>
+                <a href="#o-nas">O nas</a>
+                <a href="#" onclick="openCart()">Twój koszyk</a>
+            </div>
+        </div>
+    </nav>
+
+    <header>
+        <div class="header-content reveal active">
+            <h1 class="serif">Zadbaj o siebie. Zasługujesz na to.</h1>
+            <p>Najwyższej klasy usługi kosmetologiczne, precyzyjny piercing i medycyna estetyczna w jednym miejscu. Zbuduj swój pakiet i zarezerwuj termin.</p>
+            <button class="btn" onclick="document.getElementById('uslugi').scrollIntoView();">Przeglądaj usługi</button>
+        </div>
+    </header>
+
+    <section id="uslugi" class="container">
+        <h2 class="section-title serif reveal">Nasze Menu Usług</h2>
+        <div class="grid">
+            <div class="cat-card reveal" onclick="openCategory('paznokcie')">
+                <span class="cat-icon">💅</span>
+                <h3 class="serif">Stylizacja Paznokci</h3>
+                <p>Przedłużanie, hybryda, żel i zdobienia. Wybierz długość i kształt.</p>
+            </div>
+            <div class="cat-card reveal" onclick="openCategory('rzesy')">
+                <span class="cat-icon">👁️</span>
+                <h3 class="serif">Stylizacja Rzęs</h3>
+                <p>Od delikatnego 1:1 po spektakularne Russian Volume.</p>
+            </div>
+            <div class="cat-card reveal" onclick="openCategory('piercing')">
+                <span class="cat-icon">✨</span>
+                <h3 class="serif">Piercing Profesjonalny</h3>
+                <p>Septum, tragus, pępek, sutki i więcej. Sterylnie i bezpiecznie.</p>
+            </div>
+            <div class="cat-card reveal" onclick="openCategory('usta')">
+                <span class="cat-icon">💋</span>
+                <h3 class="serif">Powiększanie Ust</h3>
+                <p>Modelowanie na płasko, nawilżanie i korekta asymetrii.</p>
+            </div>
+            <div class="cat-card reveal" onclick="openCategory('permanentny')">
+                <span class="cat-icon">🖋️</span>
+                <h3 class="serif">Makijaż Permanentny</h3>
+                <p>Perfekcyjne brwi ombre, kreski i pełne wypełnienie ust.</p>
+            </div>
+            <div class="cat-card reveal" onclick="openCategory('twarz')">
+                <span class="cat-icon">💆‍♀️</span>
+                <h3 class="serif">Medycyna Estetyczna</h3>
+                <p>Botoks, stymulatory tkankowe i zaawansowana mezoterapia.</p>
+            </div>
+            <div class="cat-card reveal" onclick="openCategory('laser')">
+                <span class="cat-icon">⚡</span>
+                <h3 class="serif">Depilacja Laserowa</h3>
+                <p>Trwałe usuwanie owłosienia najnowszym laserem diodowym.</p>
+            </div>
+            <div class="cat-card reveal" onclick="openCategory('masaze')">
+                <span class="cat-icon">🌿</span>
+                <h3 class="serif">Masaże i SPA</h3>
+                <p>Masaż relaksacyjny, Kobido twarzy i gorące kamienie.</p>
+            </div>
+            <div class="cat-card reveal" onclick="openCategory('brwi')">
+                <span class="cat-icon">📐</span>
+                <h3 class="serif">Stylizacja Brwi</h3>
+                <p>Geometria, henna pudrowa i trwała laminacja włosków.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <h2 class="serif" style="color:white; margin-bottom: 15px;">Glow <span style="color:var(--accent); font-style:italic;">&</span> Go</h2>
+        <p>ul. Piękna 24/7, Warszawa | +48 000 000 000</p>
+        <p style="margin-top: 20px; font-size: 0.8rem; opacity: 0.5;">Projekt demonstracyjny dla portfolio CodePace Studio 2026.</p>
+    </footer>
+
+    <div class="cart-bar" onclick="openCart()">
+        🛍️ KOSZYK (<span id="cartCount" class="cart-count">0</span>) | <span id="cartTotal">0 zł</span>
+    </div>
+
+    <div class="modal" id="categoryModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="catTitle" class="serif">Kategoria</h2>
+                <span class="close-btn" onclick="closeModal('categoryModal')">&times;</span>
+            </div>
+            <div class="modal-body" id="catVariants">
+                </div>
+        </div>
+    </div>
+
+    <div class="modal" id="cartModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="serif">Twój Koszyk</h2>
+                <span class="close-btn" onclick="closeModal('cartModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="cartItemsContainer"></div>
+                <div class="cart-total">
+                    <span>Razem:</span>
+                    <span id="cartTotalModal" style="color:var(--accent);">0 zł</span>
+                </div>
+                <button class="btn" style="width:100%; margin-top:30px;" onclick="goToBooking()" id="bookBtn">Wybierz Termin</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="bookingModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="serif">Wybierz Termin</h2>
+                <span class="close-btn" onclick="closeModal('bookingModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                
+                <div class="cal-header">
+                    <button class="cal-btn" onclick="changeMonth(-1)">&#10094; Poprzedni</button>
+                    <span class="cal-month" id="monthDisplay">MAJ 2026</span>
+                    <button class="cal-btn" onclick="changeMonth(1)">Następny &#10095;</button>
+                </div>
+
+                <div class="cal-grid" id="calendarGrid"></div>
+
+                <div id="timeSection" style="display:none; margin-top:30px; border-top:var(--border); padding-top:20px;">
+                    <h4 style="margin-bottom:15px; color:var(--primary);">Dostępne godziny:</h4>
+                    <div class="time-grid" id="timeGrid"></div>
+                </div>
+
+                <div id="formSection" style="display:none; margin-top:30px; border-top:var(--border); padding-top:20px;">
+                    <h4 style="margin-bottom:15px; color:var(--primary);">Twoje dane:</h4>
+                    <input type="text" id="cName" class="form-control" placeholder="Imię i Nazwisko" oninput="valForm()">
+                    <input type="tel" id="cPhone" class="form-control" placeholder="Numer telefonu" oninput="valForm()">
+                    <button class="btn" id="confirmBtn" style="width:100%; margin-top:10px;" disabled onclick="finishBooking()">Potwierdź Rezerwację</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // BAZA DANYCH - PEŁNE PORTFOLIO USŁUG
+        const db = {
+            'paznokcie': {
+                title: 'Stylizacja Paznokci',
+                items: [
+                    { id: 101, name: 'Manicure Hybrydowy', desc: 'Baza proteinowa, kolor, top', price: 100 },
+                    { id: 102, name: 'Przedłużanie Żelowe - Krótkie', desc: 'Długość do opuszka, jeden kolor', price: 130 },
+                    { id: 103, name: 'Przedłużanie Żelowe - Długie', desc: 'Dowolna długość, jeden kolor', price: 160 },
+                    { id: 104, name: 'Kształt: Migdał / Owal', desc: 'Dodatek do usługi', price: 10 },
+                    { id: 105, name: 'Kształt: Kwadrat / Balerina', desc: 'Dodatek do usługi', price: 10 },
+                    { id: 106, name: 'Zdobienie French / Babyboomer', desc: 'Dodatek do stylizacji na wszystkich paznokciach', price: 30 }
+                ]
+            },
+            'rzesy': {
+                title: 'Stylizacja Rzęs',
+                items: [
+                    { id: 201, name: 'Metoda 1:1 (Lekkie)', desc: 'Bardzo naturalny efekt zagęszczenia', price: 130 },
+                    { id: 202, name: 'Metoda 2D-3D (Volume)', desc: 'Złoty środek, widoczne pogrubienie', price: 160 },
+                    { id: 203, name: 'Metoda 4D-6D (Mega Volume)', desc: 'Gęste, ciemne rzęsy, efekt glamour', price: 190 },
+                    { id: 204, name: 'Russian Volume', desc: 'Maksymalna gęstość, bardzo cienkie rzęsy', price: 230 },
+                    { id: 205, name: 'Kępki (Makijaż okolicznościowy)', desc: 'Jednorazowe kępki doklejane do makijażu', price: 80 }
+                ]
+            },
+            'piercing': {
+                title: 'Piercing Profesjonalny',
+                items: [
+                    { id: 301, name: 'Lobe / Standardowe ucho', desc: 'Cena z podstawowym kolczykiem tytanowym', price: 80 },
+                    { id: 302, name: 'Helix / Forward Helix', desc: 'Cena z podstawowym kolczykiem tytanowym', price: 110 },
+                    { id: 303, name: 'Tragus / Conch', desc: 'Cena z podstawowym kolczykiem tytanowym', price: 120 },
+                    { id: 304, name: 'Industrial', desc: 'Cena z podstawowym kolczykiem tytanowym', price: 160 },
+                    { id: 305, name: 'Nostril (Nos z boku)', desc: 'Cena z podstawowym kolczykiem tytanowym', price: 120 },
+                    { id: 306, name: 'Septum (Przegroda nosa)', desc: 'Cena z podstawowym kolczykiem tytanowym', price: 140 },
+                    { id: 307, name: 'Labret / Warga', desc: 'Cena z podstawowym kolczykiem tytanowym', price: 130 },
+                    { id: 308, name: 'Pępek', desc: 'Cena z podstawowym kolczykiem tytanowym', price: 150 },
+                    { id: 309, name: 'Sutek', desc: 'Cena z podstawowym kolczykiem tytanowym', price: 160 },
+                    { id: 310, name: 'Brew', desc: 'Cena z podstawowym kolczykiem tytanowym', price: 110 }
+                ]
+            },
+            'usta': {
+                title: 'Powiększanie i Modelowanie Ust',
+                items: [
+                    { id: 401, name: 'Kwas Hialuronowy 0.5 ml', desc: 'Subtelne nawilżenie i wyrównanie', price: 550 },
+                    { id: 402, name: 'Kwas Hialuronowy 1.0 ml', desc: 'Widoczne powiększenie, preparat premium', price: 850 },
+                    { id: 403, name: 'Modelowanie metodą "Na Płasko"', desc: 'Technika rosyjska, wywinięcie wargi', price: 900 },
+                    { id: 404, name: 'Nawilżanie ust (bez kwasu sieciowanego)', desc: 'Głęboka regeneracja preparatem witaminowym', price: 400 },
+                    { id: 405, name: 'Rozpuszczanie kwasu (Hialuronidaza)', desc: 'Usuwanie starych grudek przed nowym zabiegiem', price: 350 }
+                ]
+            },
+            'permanentny': {
+                title: 'Makijaż Permanentny',
+                items: [
+                    { id: 501, name: 'Brwi Ombre / Powder effect', desc: 'Delikatne przejście, pudrowy efekt', price: 750 },
+                    { id: 502, name: 'Brwi Microblading', desc: 'Metoda włoskowa, super naturalna', price: 800 },
+                    { id: 503, name: 'Usta - Kontur z wypełnieniem', desc: 'Pełny kolor, efekt pomadki', price: 900 },
+                    { id: 504, name: 'Kreska Górna (Zagęszczenie rzęs)', desc: 'Subtelna kreska w linii rzęs', price: 450 },
+                    { id: 505, name: 'Kreska Dekoracyjna', desc: 'Wyciągnięta kreska typu Eyeliner', price: 600 }
+                ]
+            },
+            'twarz': {
+                title: 'Medycyna Estetyczna',
+                items: [
+                    { id: 601, name: 'Botoks (1 partia)', desc: 'Lwia zmarszczka, kurze łapki lub czoło', price: 400 },
+                    { id: 602, name: 'Botoks (3 partie)', desc: 'Pełne wygładzenie górnej części twarzy', price: 900 },
+                    { id: 603, name: 'Stymulatory tkankowe (Profhilo)', desc: 'Silny lifting bez użycia wypełniaczy', price: 1000 },
+                    { id: 604, name: 'Mezoterapia mikroigłowa (Dermapen)', desc: 'Regeneracja, blizny, przebarwienia', price: 350 },
+                    { id: 605, name: 'Nici PDO (liftingujące)', desc: 'Cena za sztukę', price: 100 }
+                ]
+            },
+            'laser': {
+                title: 'Depilacja Laserowa',
+                items: [
+                    { id: 701, name: 'Wąsik / Broda', desc: 'Jeden zabieg', price: 100 },
+                    { id: 702, name: 'Pachy', desc: 'Jeden zabieg', price: 150 },
+                    { id: 703, name: 'Bikini Głębokie', desc: 'Jeden zabieg', price: 250 },
+                    { id: 704, name: 'Łydki', desc: 'Jeden zabieg', price: 200 },
+                    { id: 705, name: 'Całe Nogi', desc: 'Jeden zabieg', price: 350 }
+                ]
+            },
+            'masaze': {
+                title: 'Masaże i SPA',
+                items: [
+                    { id: 801, name: 'Masaż Twarzy KOBIDO', desc: 'Niechirurgiczny lifting twarzy (60 min)', price: 200 },
+                    { id: 802, name: 'Masaż Relaksacyjny Całego Ciała', desc: 'Na ciepłej oliwie z aromaterapią (60 min)', price: 180 },
+                    { id: 803, name: 'Masaż Gorącymi Kamieniami', desc: 'Głęboki relaks mięśni (90 min)', price: 220 },
+                    { id: 804, name: 'Masaż Antycellulitowy bańką chińską', desc: 'Uda i pośladki (40 min)', price: 150 },
+                    { id: 805, name: 'Masaż stóp i dłoni', desc: 'Zabieg refleksologiczny (30 min)', price: 100 }
+                ]
+            },
+            'brwi': {
+                title: 'Stylizacja Brwi',
+                items: [
+                    { id: 901, name: 'Henna Pudrowa + Geometria', desc: 'Farbowanie skóry i włosków, trzymanie do 14 dni', price: 100 },
+                    { id: 902, name: 'Laminacja Brwi + Geometria', desc: 'Trwałe ułożenie niesfornych włosków', price: 130 },
+                    { id: 903, name: 'Regulacja woskiem', desc: 'Precyzyjne usunięcie meszku', price: 40 },
+                    { id: 904, name: 'Zwykła Henna + Regulacja', desc: 'Klasyczna usługa', price: 60 },
+                    { id: 905, name: 'Botoks witaminowy na brwi', desc: 'Dodatek nawilżający po zabiegach', price: 30 }
+                ]
+            }
+        };
+
+        let cart = [];
+
+        // UI MODALI
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; document.body.style.overflow = 'hidden'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; document.body.style.overflow = 'auto'; }
+
+        // OTWIERANIE KATEGORII
+        function openCategory(catKey) {
+            const data = db[catKey];
+            document.getElementById('catTitle').innerText = data.title;
+            const container = document.getElementById('catVariants');
+            container.innerHTML = '';
+
+            data.items.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'variant-item';
+                div.innerHTML = `
+                    <div class="variant-info">
+                        <h4>${item.name}</h4>
+                        <p>${item.desc}</p>
+                    </div>
+                    <div style="display:flex; align-items:center;">
+                        <span class="variant-price">${item.price} zł</span>
+                        <button class="add-btn" onclick="addToCart(${item.id}, '${item.name}', ${item.price})">Dodaj</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+            openModal('categoryModal');
+        }
+
+        // KOSZYK
+        function addToCart(id, name, price) {
+            cart.push({ cartId: Date.now(), id, name, price });
+            updateCartUI();
+            
+            // Animacja paska
+            const bar = document.querySelector('.cart-bar');
+            bar.style.transform = 'scale(1.1)';
+            setTimeout(() => bar.style.transform = 'scale(1)', 200);
+        }
+
+        function updateCartUI() {
+            document.getElementById('cartCount').innerText = cart.length;
+            const total = cart.reduce((s, i) => s + i.price, 0);
+            document.getElementById('cartTotal').innerText = total + ' zł';
+            document.getElementById('cartTotalModal').innerText = total + ' zł';
+
+            const btn = document.getElementById('bookBtn');
+            btn.disabled = cart.length === 0;
+            btn.style.opacity = cart.length === 0 ? '0.5' : '1';
+        }
+
+        function openCart() {
+            const cont = document.getElementById('cartItemsContainer');
+            if (cart.length === 0) {
+                cont.innerHTML = '<p style="text-align:center; color:var(--text-muted); padding:30px;">Koszyk jest pusty. Wybierz zabiegi z menu.</p>';
+            } else {
+                cont.innerHTML = '';
+                cart.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'cart-item';
+                    div.innerHTML = `
+                        <span style="font-weight:600; color:var(--primary);">${item.name}</span>
+                        <div style="display:flex; align-items:center; gap:20px;">
+                            <span style="font-weight:700;">${item.price} zł</span>
+                            <span style="color:#ef4444; font-weight:900; cursor:pointer;" onclick="remCart(${item.cartId})">X</span>
+                        </div>
+                    `;
+                    cont.appendChild(div);
+                });
+            }
+            closeModal('categoryModal');
+            openModal('cartModal');
+        }
+
+        function remCart(cartId) {
+            cart = cart.filter(i => i.cartId !== cartId);
+            updateCartUI();
+            openCart();
+        }
+
+        // LOGIKA KALENDARZA (CAŁY ROK)
+        let currDate = new Date();
+        let selDateStr = null;
+        let selTimeStr = null;
+        const monthNames = ["Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec", "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień"];
+        const dayNames = ["Pn", "Wt", "Śr", "Cz", "Pt", "Sb", "Nd"];
+
+        function goToBooking() {
+            if(cart.length === 0) return;
+            closeModal('cartModal');
+            currDate = new Date(); // Reset na obecny miesiąc
+            selDateStr = null; selTimeStr = null;
+            document.getElementById('timeSection').style.display = 'none';
+            document.getElementById('formSection').style.display = 'none';
+            renderCalendar();
+            openModal('bookingModal');
+        }
+
+        function changeMonth(dir) {
+            currDate.setMonth(currDate.getMonth() + dir);
+            renderCalendar();
+            document.getElementById('timeSection').style.display = 'none';
+            document.getElementById('formSection').style.display = 'none';
+        }
+
+        function renderCalendar() {
+            const year = currDate.getFullYear();
+            const month = currDate.getMonth();
+            document.getElementById('monthDisplay').innerText = `${monthNames[month]} ${year}`;
+            
+            const grid = document.getElementById('calendarGrid');
+            grid.innerHTML = '';
+
+            // Nagłówki dni
+            dayNames.forEach(d => {
+                grid.innerHTML += `<div class="cal-day-name">${d}</div>`;
+            });
+
+            // Pierwszy dzień miesiąca (0 = Niedziela, zamieniamy na 1-7 (Pn-Nd))
+            let firstDay = new Date(year, month, 1).getDay();
+            if (firstDay === 0) firstDay = 7; 
+            
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const today = new Date();
+            today.setHours(0,0,0,0);
+
+            // Puste dni przed startem
+            for(let i = 1; i < firstDay; i++) {
+                grid.innerHTML += `<div class="cal-day empty"></div>`;
+            }
+
+            // Właściwe dni
+            for(let i = 1; i <= daysInMonth; i++) {
+                const dayDate = new Date(year, month, i);
+                const isPast = dayDate < today;
+                const isSunday = dayDate.getDay() === 0;
+                
+                let classes = 'cal-day';
+                if(isPast || isSunday) classes += ' disabled';
+                if(selDateStr === dayDate.toDateString()) classes += ' active';
+
+                const div = document.createElement('div');
+                div.className = classes;
+                div.innerText = i;
+                
+                if(!isPast && !isSunday) {
+                    div.onclick = () => selectCalDate(dayDate, div);
+                }
+                grid.appendChild(div);
+            }
+        }
+
+        function selectCalDate(dateObj, el) {
+            document.querySelectorAll('.cal-day').forEach(d => d.classList.remove('active'));
+            el.classList.add('active');
+            selDateStr = dateObj.toDateString();
+            selTimeStr = null;
+            
+            // Generuj losowe godziny
+            const times = ["09:00", "10:30", "12:00", "13:30", "15:00", "16:30", "18:00", "19:30"];
+            const tGrid = document.getElementById('timeGrid');
+            tGrid.innerHTML = '';
+            
+            times.forEach(t => {
+                const btn = document.createElement('button');
+                btn.className = 'time-btn';
+                btn.innerText = t;
+                if(Math.random() > 0.6) btn.disabled = true; // Zabezpieczenie wizualne zajętych terminów
+                else btn.onclick = () => selectTime(t, btn);
+                tGrid.appendChild(btn);
+            });
+
+            document.getElementById('timeSection').style.display = 'block';
+            document.getElementById('formSection').style.display = 'none';
+        }
+
+        function selectTime(time, el) {
+            document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
+            el.classList.add('active');
+            selTimeStr = time;
+            document.getElementById('formSection').style.display = 'block';
+            
+            setTimeout(() => {
+                document.querySelector('.modal-content').scrollTo({ top: 1000, behavior: 'smooth' });
+            }, 100);
+            valForm();
+        }
+
+        function valForm() {
+            const n = document.getElementById('cName').value.trim();
+            const p = document.getElementById('cPhone').value.trim();
+            document.getElementById('confirmBtn').disabled = !(n.length > 2 && p.length > 8 && selTimeStr);
+        }
+
+        function finishBooking() {
+            const n = document.getElementById('cName').value;
+            const total = cart.reduce((s, i) => s + i.price, 0);
+            
+            alert(`✅ REZERWACJA ZAKOŃCZONA SUKCESEM!\n\nStudio: Glow & Go\nKlient: ${n}\nTermin: ${selDateStr} o godz. ${selTimeStr}\nKwota do zapłaty w salonie: ${total} zł\nLiczba zabiegów: ${cart.length}\n\nDo zobaczenia!`);
+            
+            cart = [];
+            updateCartUI();
+            closeModal('bookingModal');
+        }
+
+        // ANIMACJE STARTOWE
+        document.addEventListener('DOMContentLoaded', () => {
+            const obs = new IntersectionObserver((e) => { e.forEach(x => { if(x.isIntersecting) x.target.classList.add('active'); }); }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+        });
+    </script>
+</body>
+</html>
