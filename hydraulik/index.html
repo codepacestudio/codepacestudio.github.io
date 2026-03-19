@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HydroPro | Pogotowie Hydrauliczne i Usługi 24/7</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f172a;
+            --primary-light: #1e293b;
+            --accent-blue: #2563eb;
+            --accent-blue-hover: #1d4ed8;
+            --accent-red: #ef4444;
+            --bg-light: #f8fafc;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --white: #ffffff;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --border: 1px solid #e2e8f0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        html { scroll-behavior: smooth; }
+        body { background-color: var(--bg-light); color: var(--text-dark); line-height: 1.6; overflow-x: hidden; }
+        
+        h1, h2, h3 { font-family: 'Montserrat', sans-serif; }
+
+        .reveal { opacity: 0; transform: translateY(40px); transition: 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* NAWIGACJA */
+        nav {
+            background: var(--white); padding: 15px 0; position: fixed; width: 100%; top: 0;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05); z-index: 1000;
+        }
+        .nav-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
+        .logo { font-size: 1.5rem; font-weight: 900; color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 10px; }
+        .logo span { color: var(--accent-blue); }
+        .nav-links { display: flex; gap: 25px; align-items: center; }
+        .nav-links a { color: var(--primary); text-decoration: none; font-weight: 700; font-size: 0.9rem; text-transform: uppercase; transition: 0.3s; }
+        .nav-links a:hover { color: var(--accent-blue); }
+        .nav-phone { background: var(--accent-red); color: var(--white) !important; padding: 10px 20px; border-radius: 8px; }
+
+        /* HEADER */
+        header {
+            min-height: 80vh; display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.8)), 
+                        url('https://images.unsplash.com/photo-1585704032915-c3400ca199e7?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover; background-position: center; margin-top: 70px; text-align: center; color: var(--white); padding: 20px;
+        }
+        .header-content { max-width: 800px; }
+        .badge { background: var(--accent-red); color: var(--white); padding: 8px 16px; border-radius: 4px; font-weight: 900; letter-spacing: 1px; display: inline-block; margin-bottom: 20px; }
+        .header-content h1 { font-size: clamp(2.5rem, 6vw, 4.5rem); line-height: 1.1; margin-bottom: 20px; text-transform: uppercase; }
+        .header-content p { font-size: 1.2rem; color: #cbd5e1; margin-bottom: 40px; }
+        
+        .btn-group { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+        .btn { padding: 18px 36px; border-radius: 8px; font-weight: 800; font-size: 1.1rem; cursor: pointer; text-decoration: none; border: none; transition: 0.3s; text-transform: uppercase; }
+        .btn-primary { background: var(--accent-blue); color: var(--white); }
+        .btn-primary:hover { background: var(--accent-blue-hover); transform: translateY(-2px); }
+        .btn-danger { background: var(--accent-red); color: var(--white); }
+        .btn-danger:hover { background: #dc2626; transform: translateY(-2px); }
+
+        /* SEKCJE */
+        .container { max-width: 1200px; margin: 0 auto; padding: 80px 20px; }
+        .section-title { font-size: 2.5rem; text-align: center; margin-bottom: 50px; color: var(--primary); }
+
+        /* USŁUGI GRID */
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
+        .service-card { background: var(--white); padding: 40px; border-radius: 12px; box-shadow: var(--shadow); border-bottom: 4px solid var(--accent-blue); transition: 0.3s; }
+        .service-card:hover { transform: translateY(-10px); }
+        .service-icon { font-size: 3rem; margin-bottom: 20px; display: block; }
+        .service-card h3 { font-size: 1.3rem; margin-bottom: 15px; color: var(--primary); }
+        .service-card p { color: var(--text-muted); font-size: 0.95rem; }
+
+        /* REZERWACJA MODAL (KALENDARZ) */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.9); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(5px); }
+        .modal-content { background: var(--bg-light); max-width: 600px; width: 100%; border-radius: 16px; position: relative; max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 50px rgba(0,0,0,0.3); }
+        
+        .modal-header { background: var(--primary); padding: 25px 30px; color: var(--white); border-radius: 16px 16px 0 0; position: relative; }
+        .modal-header h2 { font-size: 1.5rem; }
+        .close-btn { position: absolute; top: 20px; right: 25px; font-size: 2rem; color: var(--white); cursor: pointer; opacity: 0.7; transition: 0.3s; }
+        .close-btn:hover { opacity: 1; }
+
+        .modal-body { padding: 30px; }
+        
+        /* Kalendarz UI */
+        .step-title { font-weight: 800; color: var(--primary); margin-bottom: 15px; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
+        .step-title span { background: var(--accent-blue); color: white; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 0.9rem; }
+        
+        .dates-wrapper { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 15px; scrollbar-width: thin; margin-bottom: 25px; }
+        .date-card { background: var(--white); border: 2px solid #e2e8f0; min-width: 80px; padding: 15px 10px; border-radius: 10px; text-align: center; cursor: pointer; transition: 0.2s; }
+        .date-card.active { border-color: var(--accent-blue); background: #eff6ff; }
+        .date-day { font-size: 0.8rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; }
+        .date-num { font-size: 1.5rem; font-weight: 900; color: var(--primary); margin: 5px 0; }
+        .date-month { font-size: 0.8rem; color: var(--text-muted); }
+
+        .times-wrapper { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 30px; }
+        .time-btn { background: var(--white); border: 2px solid #e2e8f0; padding: 12px; border-radius: 8px; font-weight: 700; color: var(--primary); cursor: pointer; transition: 0.2s; }
+        .time-btn.active { background: var(--accent-blue); color: var(--white); border-color: var(--accent-blue); }
+        .time-btn:disabled { opacity: 0.4; cursor: not-allowed; background: #f1f5f9; }
+
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; color: var(--primary); font-size: 0.9rem; }
+        .form-control { width: 100%; padding: 14px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 1rem; outline: none; transition: 0.3s; font-family: 'Inter', sans-serif; }
+        .form-control:focus { border-color: var(--accent-blue); }
+        select.form-control { cursor: pointer; }
+
+        /* INFO SEKCJA */
+        .info-section { background: var(--primary); color: var(--white); padding: 80px 20px; text-align: center; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; max-width: 1000px; margin: 0 auto; }
+        .stat-box h4 { font-size: 3.5rem; color: var(--accent-blue); margin-bottom: 10px; font-family: 'Montserrat', sans-serif; line-height: 1; }
+        .stat-box p { font-size: 1.1rem; color: #cbd5e1; font-weight: 600; text-transform: uppercase; }
+
+        footer { background: #020617; color: #94a3b8; padding: 60px 20px; text-align: center; }
+        .footer-logo { font-size: 1.8rem; font-weight: 900; color: var(--white); margin-bottom: 20px; display: block; }
+        .footer-logo span { color: var(--accent-blue); }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .header-content h1 { font-size: 2.2rem; }
+            .btn-group { flex-direction: column; width: 100%; }
+            .btn { width: 100%; text-align: center; }
+            .modal-content { height: 100%; max-height: 100vh; border-radius: 0; }
+            .modal-header { border-radius: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="nav-content">
+            <a href="#" class="logo">Hydro<span>Pro</span></a>
+            <div class="nav-links">
+                <a href="#uslugi">Usługi</a>
+                <a href="#dlaczego-my">Dlaczego my</a>
+                <a href="#" onclick="openBooking()">Zarezerwuj</a>
+                <a href="tel:+48000000000" class="nav-phone">AWARIA 24/7</a>
+            </div>
+        </div>
+    </nav>
+
+    <header>
+        <div class="header-content reveal active">
+            <span class="badge">Dojeżdżamy w 45 minut</span>
+            <h1>Twój niezawodny hydraulik</h1>
+            <p>Pękła rura? Zatkany odpływ? A może planujesz remont łazienki? Rozwiązujemy problemy hydrauliczne szybko, czysto i z gwarancją jakości na lata.</p>
+            <div class="btn-group">
+                <a href="tel:+48000000000" class="btn btn-danger">Dzwoń: 000 000 000</a>
+                <button class="btn btn-primary" onclick="openBooking()">Zarezerwuj wizytę</button>
+            </div>
+        </div>
+    </header>
+
+    <section id="uslugi" class="container">
+        <h2 class="section-title reveal">W czym możemy pomóc?</h2>
+        <div class="services-grid">
+            <div class="service-card reveal">
+                <span class="service-icon">🔧</span>
+                <h3>Pogotowie 24/7</h3>
+                <p>Natychmiastowa reakcja na pęknięte rury, zalania i poważne awarie. Jesteśmy u ciebie w niecałą godzinę od zgłoszenia.</p>
+            </div>
+            <div class="service-card reveal" style="transition-delay: 0.1s;">
+                <span class="service-icon">🚽</span>
+                <h3>Biały Montaż</h3>
+                <p>Profesjonalna instalacja toalet, umywalek, wanien i kabin prysznicowych. Pracujemy na materiałach klienta lub własnych.</p>
+            </div>
+            <div class="service-card reveal" style="transition-delay: 0.2s;">
+                <span class="service-icon">🌊</span>
+                <h3>Udrażnianie Rur</h3>
+                <p>Mechaniczne i ciśnieniowe przepychanie zlewów, pionów i poziomów kanalizacyjnych. Skutecznie usuwamy każdy zator.</p>
+            </div>
+            <div class="service-card reveal">
+                <span class="service-icon">🔥</span>
+                <h3>Instalacje Grzewcze</h3>
+                <p>Montaż i serwis kaloryferów, ogrzewania podłogowego oraz naprawa piecyków gazowych i bojlerów.</p>
+            </div>
+            <div class="service-card reveal" style="transition-delay: 0.1s;">
+                <span class="service-icon">💧</span>
+                <h3>Wykrywanie Przecieków</h3>
+                <p>Bezinwazyjne lokalizowanie wycieków wody za pomocą kamer termowizyjnych i mierników wilgotności.</p>
+            </div>
+            <div class="service-card reveal" style="transition-delay: 0.2s;">
+                <span class="service-icon">⚙️</span>
+                <h3>Remonty Instalacji</h3>
+                <p>Kompleksowa wymiana starych rur stalowych na nowoczesne systemy zgrzewane lub zaciskane. Wycena u klienta.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="dlaczego-my" class="info-section">
+        <div class="reveal">
+            <h2 style="font-size: 2.5rem; margin-bottom: 60px;">Liczby mówią same za siebie</h2>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <h4>45<span style="font-size:2rem;">min</span></h4>
+                    <p>Średni czas dojazdu</p>
+                </div>
+                <div class="stat-box">
+                    <h4>15</h4>
+                    <p>Lat doświadczenia</p>
+                </div>
+                <div class="stat-box">
+                    <h4>24/7</h4>
+                    <p>Dostępność pogotowia</p>
+                </div>
+                <div class="stat-box">
+                    <h4>100%</h4>
+                    <p>Udzielanej gwarancji</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container" style="text-align: center; padding-top: 100px;">
+        <h2 class="section-title reveal">Zarezerwuj wizytę bez dzwonienia</h2>
+        <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto 40px;" class="reveal">Szanujemy twój czas. Wybierz usługę, dogodny dla ciebie termin i zostaw adres. System automatycznie wpisze cię w grafik naszego technika.</p>
+        <button class="btn btn-primary reveal" onclick="openBooking()" style="padding: 20px 50px; font-size: 1.2rem;">Otwórz kalendarz</button>
+    </div>
+
+    <footer>
+        <span class="footer-logo">Hydro<span>Pro</span></span>
+        <p>Projekt demonstracyjny dla portfolio CodePace Studio 2026.</p>
+        <p style="margin-top: 10px; font-size: 0.8rem;">Wszystkie dane, usługi i kalendarz są w pełni funkcjonalnym systemem w wersji demonstracyjnej.</p>
+    </footer>
+
+    <div class="modal" id="bookingModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Rezerwacja Wizyty</h2>
+                <p style="font-size: 0.9rem; margin-top: 5px; color: #cbd5e1;">Wybierz termin i podaj dane do dojazdu.</p>
+                <span class="close-btn" onclick="closeBooking()">&times;</span>
+            </div>
+            
+            <div class="modal-body">
+                <div class="step-title"><span>1</span> Wybierz rodzaj usługi</div>
+                <div class="form-group">
+                    <select id="serviceSelect" class="form-control" onchange="validateForm()">
+                        <option value="" disabled selected>-- Wybierz z listy --</option>
+                        <option value="awaria">Nagła awaria (wyciek, pęknięta rura)</option>
+                        <option value="zator">Udrażnianie rur / zlewów</option>
+                        <option value="bialy-montaz">Biały montaż (kabin, toalet, umywalek)</option>
+                        <option value="ogrzewanie">Problem z ogrzewaniem / kaloryferem</option>
+                        <option value="wycena">Wycena większego remontu</option>
+                    </select>
+                </div>
+
+                <div class="step-title" style="margin-top: 30px;"><span>2</span> Wybierz dzień</div>
+                <div class="dates-wrapper" id="datesContainer">
+                    </div>
+
+                <div class="step-title" id="timeTitle" style="display: none;"><span>3</span> Wybierz godzinę</div>
+                <div class="times-wrapper" id="timesContainer" style="display: none;">
+                    <button class="time-btn" onclick="selectTime('08:00', this)">08:00</button>
+                    <button class="time-btn" onclick="selectTime('10:00', this)">10:00</button>
+                    <button class="time-btn" onclick="selectTime('12:00', this)">12:00</button>
+                    <button class="time-btn" onclick="selectTime('14:00', this)">14:00</button>
+                    <button class="time-btn" onclick="selectTime('16:00', this)">16:00</button>
+                    <button class="time-btn" onclick="selectTime('18:00', this)">18:00</button>
+                </div>
+
+                <div id="clientDetails" style="display: none; border-top: 1px solid #e2e8f0; padding-top: 25px; margin-top: 10px;">
+                    <div class="step-title"><span>4</span> Twoje dane</div>
+                    <div class="form-group">
+                        <label>Imię i Nazwisko</label>
+                        <input type="text" id="clientName" class="form-control" placeholder="Jan Kowalski" oninput="validateForm()">
+                    </div>
+                    <div class="form-group">
+                        <label>Telefon kontaktowy</label>
+                        <input type="tel" id="clientPhone" class="form-control" placeholder="+48 000 000 000" oninput="validateForm()">
+                    </div>
+                    <div class="form-group">
+                        <label>Dokładny adres</label>
+                        <input type="text" id="clientAddress" class="form-control" placeholder="ul. Przykładowa 12/4, Warszawa" oninput="validateForm()">
+                    </div>
+                    
+                    <button id="submitBtn" class="btn btn-primary" style="width: 100%; margin-top: 15px;" disabled onclick="confirmBooking()">Potwierdź rezerwację</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Animacje scrollowania
+        document.addEventListener('DOMContentLoaded', () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => { if (entry.isIntersecting) entry.target.classList.add('active'); });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+        });
+
+        // Zmienne systemowe rezerwacji
+        let selectedDateFull = null;
+        let selectedTimeValue = null;
+
+        const dniTygodnia = ['Ndz', 'Pon', 'Wto', 'Śro', 'Czw', 'Pią', 'Sob'];
+        const miesiace = ['Sty', 'Lut', 'Mar', 'Kwi', 'Maj', 'Cze', 'Lip', 'Sie', 'Wrz', 'Paź', 'Lis', 'Gru'];
+
+        // Generowanie kalendarza na 14 dni do przodu
+        function generateCalendar() {
+            const container = document.getElementById('datesContainer');
+            container.innerHTML = '';
+            
+            let today = new Date();
+            
+            for (let i = 0; i < 14; i++) {
+                let d = new Date(today);
+                d.setDate(today.getDate() + i);
+                
+                // Pomijamy niedziele
+                if(d.getDay() === 0) continue;
+
+                let dayName = dniTygodnia[d.getDay()];
+                let dayNum = d.getDate();
+                let monthName = miesiace[d.getMonth()];
+                let fullDateString = `${dayNum} ${monthName} ${d.getFullYear()}`;
+
+                let card = document.createElement('div');
+                card.className = 'date-card';
+                card.innerHTML = `
+                    <div class="date-day">${i === 0 ? 'Dziś' : dayName}</div>
+                    <div class="date-num">${dayNum}</div>
+                    <div class="date-month">${monthName}</div>
+                `;
+                
+                card.onclick = () => selectDate(card, fullDateString);
+                container.appendChild(card);
+            }
+        }
+
+        // Logika wyboru daty
+        function selectDate(cardElement, dateString) {
+            document.querySelectorAll('.date-card').forEach(el => el.classList.remove('active'));
+            cardElement.classList.add('active');
+            selectedDateFull = dateString;
+            
+            // Pokaż wybór godzin i zresetuj poprzedni wybór
+            document.getElementById('timeTitle').style.display = 'flex';
+            document.getElementById('timesContainer').style.display = 'grid';
+            document.getElementById('clientDetails').style.display = 'none';
+            selectedTimeValue = null;
+            document.querySelectorAll('.time-btn').forEach(btn => btn.classList.remove('active'));
+            
+            // Losowa symulacja zajętych terminów, żeby system wyglądał prawdziwie
+            document.querySelectorAll('.time-btn').forEach(btn => {
+                btn.disabled = false;
+                if(Math.random() > 0.7) btn.disabled = true; 
+            });
+            validateForm();
+        }
+
+        // Logika wyboru godziny
+        function selectTime(timeString, btnElement) {
+            if(btnElement.disabled) return;
+            document.querySelectorAll('.time-btn').forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+            selectedTimeValue = timeString;
+            
+            // Pokaż formularz danych
+            document.getElementById('clientDetails').style.display = 'block';
+            
+            // Scroll do formularza w modalu
+            const modalContent = document.querySelector('.modal-content');
+            setTimeout(() => {
+                modalContent.scrollTo({ top: modalContent.scrollHeight, behavior: 'smooth' });
+            }, 100);
+            
+            validateForm();
+        }
+
+        // Walidacja głównego przycisku
+        function validateForm() {
+            const service = document.getElementById('serviceSelect').value;
+            const name = document.getElementById('clientName').value.trim();
+            const phone = document.getElementById('clientPhone').value.trim();
+            const address = document.getElementById('clientAddress').value.trim();
+            
+            const btn = document.getElementById('submitBtn');
+            
+            if (service && selectedDateFull && selectedTimeValue && name.length > 2 && phone.length > 8 && address.length > 5) {
+                btn.disabled = false;
+            } else {
+                btn.disabled = true;
+            }
+        }
+
+        function openBooking() {
+            generateCalendar();
+            document.getElementById('bookingModal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            
+            // Reset systemu przy każdym otwarciu
+            document.getElementById('serviceSelect').value = "";
+            document.querySelectorAll('.date-card').forEach(el => el.classList.remove('active'));
+            document.getElementById('timeTitle').style.display = 'none';
+            document.getElementById('timesContainer').style.display = 'none';
+            document.getElementById('clientDetails').style.display = 'none';
+            document.getElementById('clientName').value = "";
+            document.getElementById('clientPhone').value = "";
+            document.getElementById('clientAddress').value = "";
+            selectedDateFull = null;
+            selectedTimeValue = null;
+            validateForm();
+        }
+
+        function closeBooking() {
+            document.getElementById('bookingModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function confirmBooking() {
+            const name = document.getElementById('clientName').value;
+            const address = document.getElementById('clientAddress').value;
+            const service = document.getElementById('serviceSelect').options[document.getElementById('serviceSelect').selectedIndex].text;
+            
+            const message = `✅ REZERWACJA POTWIERDZONA!\n\nUsługa: ${service}\nTermin: ${selectedDateFull} o godz. ${selectedTimeValue}\nKlient: ${name}\nAdres: ${address}\n\nNasz technik zjawi się we wskazanym oknie czasowym.`;
+            
+            alert(message);
+            closeBooking();
+        }
+    </script>
+</body>
+</html>
