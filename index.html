@@ -30,7 +30,6 @@
             overflow-x: hidden;
         }
 
-        /* ANIMACJE */
         @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
         .reveal { opacity: 0; transform: translateY(50px); transition: 0.9s cubic-bezier(0.16, 1, 0.3, 1); }
         .reveal.active { opacity: 1; transform: translateY(0); }
@@ -38,7 +37,6 @@
         .delay-2 { transition-delay: 0.2s; }
         .delay-3 { transition-delay: 0.3s; }
 
-        /* NAWIGACJA */
         nav {
             background: var(--nav-bg); padding: 15px 0; position: fixed; width: 100%; top: 0;
             box-shadow: 0 4px 20px rgba(0,0,0,0.03); z-index: 1000; display: flex; justify-content: center; backdrop-filter: blur(15px);
@@ -50,7 +48,6 @@
         }
         nav a:hover { color: var(--accent); }
 
-        /* HEADER PREMIUM */
         header {
             background: #020617;
             background-image: 
@@ -75,7 +72,6 @@
         }
         .btn:hover { background-color: var(--accent-hover); transform: translateY(-3px); box-shadow: 0 15px 30px rgba(37,99,235,0.4); }
 
-        /* KONTYNERY I KARTY */
         .container { width: 90%; max-width: 1100px; margin: 0 auto; padding: 100px 0; }
         .section-title { font-size: 3rem; font-weight: 900; margin-bottom: 60px; text-align: center; letter-spacing: -1px; }
 
@@ -90,17 +86,14 @@
         .card h3 { font-size: 1.5rem; font-weight: 800; margin-bottom: 15px; }
         .card p { color: var(--text-muted); font-size: 1.05rem; }
 
-        /* SEKCJA LICZBY */
         .stats-section { background: #0f172a; padding: 80px 20px; color: white; margin: 60px 0; border-radius: 30px; display: flex; justify-content: space-around; flex-wrap: wrap; gap: 30px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
         .stat-item h4 { font-size: 4rem; font-weight: 900; color: var(--accent-green); margin-bottom: 5px; line-height: 1; }
         .stat-item p { font-size: 1.1rem; color: #94a3b8; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* PROCES WSPÓŁPRACY */
         .process-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; position: relative; }
         .process-step { background: transparent; padding: 20px; text-align: center; }
         .step-number { width: 60px; height: 60px; background: var(--accent); color: white; font-size: 1.5rem; font-weight: 900; display: flex; align-items: center; justify-content: center; border-radius: 50%; margin: 0 auto 20px; box-shadow: 0 10px 20px rgba(37,99,235,0.3); }
 
-        /* PORTFOLIO Z 4 PROJEKTAMI */
         #portfolio .card-portfolio {
             min-height: 400px; display: flex; flex-direction: column; justify-content: flex-end;
             padding: 40px; cursor: pointer; border-radius: 24px; transition: 0.4s ease; text-decoration: none;
@@ -115,12 +108,10 @@
         .portfolio-content { position: relative; z-index: 2; }
         .portfolio-tag { display: inline-block; background: var(--accent-green); color: #000; padding: 6px 14px; border-radius: 50px; font-size: 0.75rem; font-weight: 800; margin-bottom: 15px; text-transform: uppercase; }
 
-        /* FAQ */
         .faq-box { background: var(--card-bg); border-radius: 24px; padding: 50px; box-shadow: var(--shadow-soft); }
         .faq-preview { margin-bottom: 30px; border-bottom: 1px solid #f1f5f9; padding-bottom: 20px; }
         .faq-preview h4 { color: var(--text-main); font-size: 1.2rem; margin-bottom: 10px; }
 
-        /* MODALE */
         .modal-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(15, 23, 42, 0.9); z-index: 2000; justify-content: center;
@@ -235,7 +226,16 @@
             <h2 class="section-title reveal">Wybrane Realizacje</h2>
             <div class="grid">
                 
-                <a href="pizzeria/index.html" target="_blank" class="card-portfolio reveal" style="background: url('https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800&q=80') center/cover;">
+                <a href="matura/index.html" target="_blank" class="card-portfolio reveal" style="background: url('https://images.unsplash.com/photo-1518133910546-b6c2fb7d79e3?w=800&q=80') center/cover;">
+                    <div class="portfolio-content">
+                        <span class="portfolio-tag">Aplikacja Webowa</span>
+                        <h4 style="color: #fff; font-size: 2rem; margin-bottom: 10px; font-weight: 900;">Matura.PRO</h4>
+                        <p style="color: #cbd5e1; font-weight: 400; font-size: 1.1rem; margin-bottom: 25px;">Potężna platforma edukacyjna. Baza 360 interaktywnych zadań matematycznych, modułowa architektura i renderowanie skomplikowanych wzorów w locie.</p>
+                        <span style="color: var(--accent-green); font-weight: 800; font-size: 1rem;">ZOBACZ PROJEKT ↗</span>
+                    </div>
+                </a>
+
+                <a href="pizzeria/index.html" target="_blank" class="card-portfolio reveal delay-1" style="background: url('https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800&q=80') center/cover;">
                     <div class="portfolio-content">
                         <span class="portfolio-tag">Live Demo</span>
                         <h4 style="color: #fff; font-size: 2rem; margin-bottom: 10px; font-weight: 900;">La Pizza Nostra</h4>
@@ -244,7 +244,7 @@
                     </div>
                 </a>
                 
-                <a href="hydraulik/index.html" target="_blank" class="card-portfolio reveal delay-1" style="background: url('https://images.unsplash.com/photo-1585704032915-c3400ca199e7?w=800&q=80') center/cover;">
+                <a href="hydraulik/index.html" target="_blank" class="card-portfolio reveal delay-2" style="background: url('https://images.unsplash.com/photo-1585704032915-c3400ca199e7?w=800&q=80') center/cover;">
                     <div class="portfolio-content">
                         <span class="portfolio-tag">Live Demo</span>
                         <h4 style="color: #fff; font-size: 2rem; margin-bottom: 10px; font-weight: 900;">HydroPro Hydraulik</h4>
@@ -253,7 +253,7 @@
                     </div>
                 </a>
 
-                <a href="beauty/index.html" target="_blank" class="card-portfolio reveal delay-2" style="background: url('https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&q=80') center/cover;">
+                <a href="beauty/index.html" target="_blank" class="card-portfolio reveal delay-3" style="background: url('https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&q=80') center/cover;">
                     <div class="portfolio-content">
                         <span class="portfolio-tag">Live Demo</span>
                         <h4 style="color: #fff; font-size: 2rem; margin-bottom: 10px; font-weight: 900;">Glow & Go Beauty</h4>
@@ -262,7 +262,7 @@
                     </div>
                 </a>
 
-                <a href="detailing/index.html" target="_blank" class="card-portfolio reveal delay-3" style="background: url('https://images.unsplash.com/photo-1601362840469-51e4d8d58785?w=800&q=80') center/cover;">
+                <a href="detailing/index.html" target="_blank" class="card-portfolio reveal" style="background: url('https://images.unsplash.com/photo-1601362840469-51e4d8d58785?w=800&q=80') center/cover;">
                     <div class="portfolio-content">
                         <span class="portfolio-tag">Live Demo</span>
                         <h4 style="color: #fff; font-size: 2rem; margin-bottom: 10px; font-weight: 900;">Carbon Auto Spa</h4>
