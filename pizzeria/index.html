@@ -43,7 +43,6 @@
         .nav-links a { color: var(--text-muted); text-decoration: none; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; transition: 0.3s; }
         .nav-links a:hover { color: var(--accent-white); }
 
-        /* NAPRAWIONY HEADER (Usunięte background-attachment: fixed dla iOS) */
         header {
             height: 70vh; display: flex; align-items: center; justify-content: center; text-align: center;
             background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.75)), 
@@ -99,7 +98,6 @@
         .menu-item p { font-size: 0.85rem; color: var(--text-muted); min-height: 45px; margin-top: 10px; }
         .menu-price { color: var(--accent-green); font-weight: 900; font-size: 1.2rem; margin-top: 15px; }
 
-        /* NAPRAWIONA SEKCJA O NAS */
         .about-section { 
             background: linear-gradient(rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.95)), 
                         url('https://images.unsplash.com/photo-1579751626657-72bc17010498?q=80&w=2069&auto=format&fit=crop'); 
@@ -214,6 +212,7 @@
                     <button class="filter-btn" onclick="setFilter('pizza', this)">Pizze (50)</button>
                     <button class="filter-btn" onclick="setFilter('ostra', this)">Ostre</button>
                     <button class="filter-btn" onclick="setFilter('wege', this)">Wege</button>
+                    <button class="filter-btn" onclick="setFilter('mięsna', this)">Mięsne</button>
                     <button class="filter-btn" onclick="setFilter('napoje', this)">Napoje</button>
                     <button class="filter-btn" onclick="setFilter('sosy', this)">Sosy</button>
                 </div>
@@ -332,62 +331,62 @@
         // PEŁNA BAZA 65 PRODUKTÓW
         const db = [
             // 10 KLASYKÓW
-            {id:1, type:'pizza', name:"Margherita", desc:"San Marzano, mozzarella fior di latte, bazylia", cats:['pizza','wege','klasyk'], price:19},
-            {id:2, type:'pizza', name:"Marinara", desc:"Pomidory, dużo czosnku, oregano (bez sera)", cats:['pizza','wege','klasyk'], price:18},
-            {id:3, type:'pizza', name:"Capriciosa", desc:"Sos, mozzarella, szynka gotowana, pieczarki", cats:['pizza','klasyk'], price:24},
-            {id:4, type:'pizza', name:"Prosciutto e Funghi", desc:"Mozzarella, prosciutto cotto, pieczarki", cats:['pizza','klasyk'], price:25},
-            {id:5, type:'pizza', name:"Cardinale", desc:"Sos, mozzarella, szynka, oliwki, kukurydza", cats:['pizza','klasyk'], price:26},
-            {id:6, type:'pizza', name:"Salame", desc:"Sos, mozzarella, włoskie salami łagodne", cats:['pizza','klasyk'], price:25},
-            {id:7, type:'pizza', name:"Hawajska", desc:"Sos, mozzarella, szynka, soczysty ananas", cats:['pizza','klasyk'], price:24},
-            {id:8, type:'pizza', name:"Quattro Formaggi", desc:"Mozzarella, gorgonzola, parmezan, ricotta", cats:['pizza','wege','klasyk'], price:29},
-            {id:9, type:'pizza', name:"Vegetariana", desc:"Cukinia, bakłażan, papryka, czosnek", cats:['pizza','wege','klasyk'], price:26},
-            {id:10, type:'pizza', name:"Napoli", desc:"Sos, mozzarella, anchois, kapary, oliwki", cats:['pizza','klasyk'], price:27},
+            {id:1, type:'pizza', name:"Margherita", desc:"Sos pomidorowy, San Marzano, mozzarella fior di latte, bazylia", cats:['pizza','wege','klasyk'], price:19},
+            {id:2, type:'pizza', name:"Marinara", desc:"Sos pomidorowy, dużo czosnku, oregano (bez sera)", cats:['pizza','wege','klasyk'], price:18},
+            {id:3, type:'pizza', name:"Capriciosa", desc:"Sos pomidorowy, mozzarella, szynka gotowana, pieczarki", cats:['pizza','klasyk','mięsna'], price:24},
+            {id:4, type:'pizza', name:"Prosciutto e Funghi", desc:"Sos pomidorowy, mozzarella, prosciutto cotto, pieczarki", cats:['pizza','klasyk','mięsna'], price:25},
+            {id:5, type:'pizza', name:"Cardinale", desc:"Sos pomidorowy, mozzarella, szynka, oliwki, kukurydza", cats:['pizza','klasyk','mięsna'], price:26},
+            {id:6, type:'pizza', name:"Salame", desc:"Sos pomidorowy, mozzarella, włoskie salami łagodne", cats:['pizza','klasyk','mięsna'], price:25},
+            {id:7, type:'pizza', name:"Hawajska", desc:"Sos pomidorowy, mozzarella, szynka, soczysty ananas", cats:['pizza','klasyk','mięsna'], price:24},
+            {id:8, type:'pizza', name:"Quattro Formaggi", desc:"Sos pomidorowy, mozzarella, gorgonzola, parmezan, ricotta", cats:['pizza','wege','klasyk'], price:29},
+            {id:9, type:'pizza', name:"Vegetariana", desc:"Sos pomidorowy, cukinia, bakłażan, papryka, czosnek", cats:['pizza','wege','klasyk'], price:26},
+            {id:10, type:'pizza', name:"Napoli", desc:"Sos pomidorowy, mozzarella, anchois, kapary, oliwki", cats:['pizza','klasyk','mięsna'], price:27},
 
             // 15 OSTRYCH
-            {id:11, type:'pizza', name:"Diavola", desc:"Salami piccante, jalapeno, mozzarella", cats:['pizza','ostra'], spicy:1, price:28},
-            {id:12, type:'pizza', name:"Infernale", desc:"Nduja, habanero, salami, płatki chilli", cats:['pizza','ostra'], spicy:3, price:34},
-            {id:13, type:'pizza', name:"Calabrese", desc:"Salami, czerwona cebula, oliwki, chilli", cats:['pizza','ostra'], spicy:2, price:30},
-            {id:14, type:'pizza', name:"Etna", desc:"Sos, mozzarella, ostra kiełbasa, habanero", cats:['pizza','ostra'], spicy:3, price:32},
-            {id:15, type:'pizza', name:"Vesuvio", desc:"Nduja, ricotta, bazylia, świeże chilli", cats:['pizza','ostra'], spicy:2, price:31},
-            {id:16, type:'pizza', name:"Mexicana", desc:"Wołowina, fasola, kukurydza, jalapeno", cats:['pizza','ostra'], spicy:1, price:32},
-            {id:17, type:'pizza', name:"Chilli Cheese", desc:"Cheddar, mozzarella, jalapeno", cats:['pizza','ostra','wege'], spicy:1, price:28},
-            {id:18, type:'pizza', name:"Piekło-Niebo", desc:"Ricotta, miód, habanero, salami ostre", cats:['pizza','ostra'], spicy:2, price:35},
-            {id:19, type:'pizza', name:"Volcano", desc:"Biały sos, mozzarella, salami, piri-piri", cats:['pizza','ostra'], spicy:3, price:33},
-            {id:20, type:'pizza', name:"Arabiata", desc:"Czosnek, chilli, pomidory, boczek", cats:['pizza','ostra'], spicy:2, price:27},
-            {id:21, type:'pizza', name:"Salami Hot", desc:"Ostre salami, cebula, czarne oliwki", cats:['pizza','ostra'], spicy:1, price:29},
-            {id:22, type:'pizza', name:"Diabolica", desc:"Podwójne habanero, nduja, ostra kiełbasa", cats:['pizza','ostra'], spicy:3, price:38},
-            {id:23, type:'pizza', name:"Buffalo Bill", desc:"Kurczak na ostro, jalapeno, kukurydza", cats:['pizza','ostra'], spicy:1, price:29},
-            {id:24, type:'pizza', name:"Pepperoni Special", desc:"Podwójne salami pepperoni, chilli", cats:['pizza','ostra'], spicy:2, price:31},
-            {id:25, type:'pizza', name:"Firenze", desc:"Pesto rosso, mozzarella, salami, habanero", cats:['pizza','ostra'], spicy:2, price:32},
+            {id:11, type:'pizza', name:"Diavola", desc:"Sos pomidorowy, salami piccante, jalapeno, mozzarella", cats:['pizza','ostra','mięsna'], spicy:1, price:28},
+            {id:12, type:'pizza', name:"Infernale", desc:"Sos pomidorowy, nduja, habanero, salami, płatki chilli", cats:['pizza','ostra','mięsna'], spicy:3, price:34},
+            {id:13, type:'pizza', name:"Calabrese", desc:"Sos pomidorowy, salami, czerwona cebula, oliwki, chilli", cats:['pizza','ostra','mięsna'], spicy:2, price:30},
+            {id:14, type:'pizza', name:"Etna", desc:"Sos pomidorowy, mozzarella, ostra kiełbasa, habanero", cats:['pizza','ostra','mięsna'], spicy:3, price:32},
+            {id:15, type:'pizza', name:"Vesuvio", desc:"Sos pomidorowy, nduja, ricotta, bazylia, świeże chilli", cats:['pizza','ostra','mięsna'], spicy:2, price:31},
+            {id:16, type:'pizza', name:"Mexicana", desc:"Sos pomidorowy, wołowina, fasola, kukurydza, jalapeno", cats:['pizza','ostra','mięsna'], spicy:1, price:32},
+            {id:17, type:'pizza', name:"Chilli Cheese", desc:"Sos pomidorowy, cheddar, mozzarella, jalapeno", cats:['pizza','ostra','wege'], spicy:1, price:28},
+            {id:18, type:'pizza', name:"Piekło-Niebo", desc:"Biały sos, ricotta, miód, habanero, salami ostre", cats:['pizza','ostra','mięsna'], spicy:2, price:35},
+            {id:19, type:'pizza', name:"Volcano", desc:"Biały sos, mozzarella, salami, piri-piri", cats:['pizza','ostra','mięsna'], spicy:3, price:33},
+            {id:20, type:'pizza', name:"Arabiata", desc:"Sos pomidorowy, czosnek, chilli, pomidory, boczek", cats:['pizza','ostra','mięsna'], spicy:2, price:27},
+            {id:21, type:'pizza', name:"Salami Hot", desc:"Sos pomidorowy, ostre salami, cebula, czarne oliwki", cats:['pizza','ostra','mięsna'], spicy:1, price:29},
+            {id:22, type:'pizza', name:"Diabolica", desc:"Sos pomidorowy, podwójne habanero, nduja, ostra kiełbasa", cats:['pizza','ostra','mięsna'], spicy:3, price:38},
+            {id:23, type:'pizza', name:"Buffalo Bill", desc:"Sos pomidorowy, kurczak na ostro, jalapeno, kukurydza", cats:['pizza','ostra','mięsna'], spicy:1, price:29},
+            {id:24, type:'pizza', name:"Pepperoni Special", desc:"Sos pomidorowy, podwójne salami pepperoni, chilli", cats:['pizza','ostra','mięsna'], spicy:2, price:31},
+            {id:25, type:'pizza', name:"Firenze", desc:"Sos pesto rosso, mozzarella, salami, habanero", cats:['pizza','ostra','mięsna'], spicy:2, price:32},
 
             // 15 WEGE
-            {id:26, type:'pizza', name:"Spinaci e Ricotta", desc:"Szpinak, ricotta, czosnek, pomidorki", cats:['pizza','wege'], price:27},
-            {id:27, type:'pizza', name:"Tartufo", desc:"Oliwa truflowa, pieczarki, parmezan", cats:['pizza','wege'], price:33},
+            {id:26, type:'pizza', name:"Spinaci e Ricotta", desc:"Biały sos, szpinak, ricotta, czosnek, pomidorki", cats:['pizza','wege'], price:27},
+            {id:27, type:'pizza', name:"Tartufo", desc:"Biały sos, oliwa truflowa, pieczarki, parmezan", cats:['pizza','wege'], price:33},
             {id:28, type:'pizza', name:"Gorgonzola e Pere", desc:"Biały sos, gorgonzola, gruszka, miód", cats:['pizza','wege'], price:31},
-            {id:29, type:'pizza', name:"Verde", desc:"Pesto, mozzarella, szparagi, rukola", cats:['pizza','wege'], price:30},
-            {id:30, type:'pizza', name:"Melanzane", desc:"Bakłażan, parmezan, świeża bazylia", cats:['pizza','wege'], price:27},
-            {id:31, type:'pizza', name:"Funghi Bianca", desc:"Mix grzybów leśnych, czosnek, biały sos", cats:['pizza','wege'], price:29},
-            {id:32, type:'pizza', name:"Rucola", desc:"Rukola, pomidorki cherry, grana padano", cats:['pizza','wege'], price:26},
-            {id:33, type:'pizza', name:"Genovese", desc:"Pesto bazyliowe, orzeszki pini, bufala", cats:['pizza','wege'], price:35},
-            {id:34, type:'pizza', name:"Ortolana", desc:"Mix grillowanych warzyw, zioła", cats:['pizza','wege'], price:28},
-            {id:35, type:'pizza', name:"Asparagi", desc:"Szparagi, jajko sadzone, mozzarella", cats:['pizza','wege'], price:29},
-            {id:36, type:'pizza', name:"Zucca", desc:"Pieczona dynia, ricotta, pestki dyni", cats:['pizza','wege'], price:30},
-            {id:37, type:'pizza', name:"Pesto Rosso", desc:"Suszone pomidory, kapary, czerwone pesto", cats:['pizza','wege'], price:29},
-            {id:38, type:'pizza', name:"Formaggi Misto", desc:"Cheddar, feta, mozzarella, gorgonzola", cats:['pizza','wege'], price:32},
-            {id:39, type:'pizza', name:"Broccoli", desc:"Brokuły, feta, czosnek, słonecznik", cats:['pizza','wege'], price:28},
-            {id:40, type:'pizza', name:"Margherita 2.0", desc:"Bufala, San Marzano, złota oliwa", cats:['pizza','wege'], price:26},
+            {id:29, type:'pizza', name:"Verde", desc:"Sos pesto, mozzarella, szparagi, rukola", cats:['pizza','wege'], price:30},
+            {id:30, type:'pizza', name:"Melanzane", desc:"Sos pomidorowy, bakłażan, parmezan, świeża bazylia", cats:['pizza','wege'], price:27},
+            {id:31, type:'pizza', name:"Funghi Bianca", desc:"Biały sos, mix grzybów leśnych, czosnek", cats:['pizza','wege'], price:29},
+            {id:32, type:'pizza', name:"Rucola", desc:"Sos pomidorowy, rukola, pomidorki cherry, grana padano", cats:['pizza','wege'], price:26},
+            {id:33, type:'pizza', name:"Genovese", desc:"Sos pesto, bazyliowe orzeszki pini, bufala", cats:['pizza','wege'], price:35},
+            {id:34, type:'pizza', name:"Ortolana", desc:"Sos pomidorowy, mix grillowanych warzyw, zioła", cats:['pizza','wege'], price:28},
+            {id:35, type:'pizza', name:"Asparagi", desc:"Biały sos, szparagi, jajko sadzone, mozzarella", cats:['pizza','wege'], price:29},
+            {id:36, type:'pizza', name:"Zucca", desc:"Krem z dyni, pieczona dynia, ricotta, pestki", cats:['pizza','wege'], price:30},
+            {id:37, type:'pizza', name:"Pesto Rosso", desc:"Sos pesto rosso, suszone pomidory, kapary", cats:['pizza','wege'], price:29},
+            {id:38, type:'pizza', name:"Formaggi Misto", desc:"Sos pomidorowy, cheddar, feta, mozzarella, gorgonzola", cats:['pizza','wege'], price:32},
+            {id:39, type:'pizza', name:"Broccoli", desc:"Biały sos, brokuły, feta, czosnek, słonecznik", cats:['pizza','wege'], price:28},
+            {id:40, type:'pizza', name:"Margherita 2.0", desc:"Sos pomidorowy, bufala, San Marzano, złota oliwa", cats:['pizza','wege'], price:26},
 
             // 10 MIĘSNE/INNE
-            {id:41, type:'pizza', name:"Carnivora", desc:"Salami, szynka, boczek, kabanos", cats:['pizza'], price:36},
-            {id:42, type:'pizza', name:"Frutti di Mare", desc:"Krewetki, małże, kalmary, czosnek", cats:['pizza'], price:39},
-            {id:43, type:'pizza', name:"Carbonara", desc:"Boczek, żółtko, pecorino romano", cats:['pizza'], price:31},
-            {id:44, type:'pizza', name:"Bresaola Special", desc:"Wołowina dojrzewająca, trufla, rukola", cats:['pizza'], price:43},
-            {id:45, type:'pizza', name:"Pollo BBQ", desc:"Kurczak, sos BBQ, czerwona cebula", cats:['pizza'], price:29},
-            {id:46, type:'pizza', name:"Burrata Prosciutto", desc:"Świeża burrata, pesto, szynka crudo", cats:['pizza'], price:45},
-            {id:47, type:'pizza', name:"Kebab", desc:"Mięso kebab, sos czosnkowy, cebula", cats:['pizza'], price:28},
-            {id:48, type:'pizza', name:"Salsiccia", desc:"Włoska kiełbasa, borowiki, mozzarella", cats:['pizza'], price:34},
-            {id:49, type:'pizza', name:"Rustica", desc:"Boczek, jaja, szczypiorek, cebula", cats:['pizza'], price:30},
-            {id:50, type:'pizza', name:"Tutto", desc:"Wszystkie mięsa z menu na jednym placku", cats:['pizza'], price:48},
+            {id:41, type:'pizza', name:"Carnivora", desc:"Sos pomidorowy, salami, szynka, boczek, kabanos", cats:['pizza','mięsna'], price:36},
+            {id:42, type:'pizza', name:"Frutti di Mare", desc:"Sos pomidorowy, krewetki, małże, kalmary, czosnek", cats:['pizza','mięsna'], price:39},
+            {id:43, type:'pizza', name:"Carbonara", desc:"Biały sos, boczek, żółtko, pecorino romano", cats:['pizza','mięsna'], price:31},
+            {id:44, type:'pizza', name:"Bresaola Special", desc:"Sos pomidorowy, wołowina dojrzewająca, trufla, rukola", cats:['pizza','mięsna'], price:43},
+            {id:45, type:'pizza', name:"Pollo BBQ", desc:"Sos BBQ, kurczak, czerwona cebula", cats:['pizza','mięsna'], price:29},
+            {id:46, type:'pizza', name:"Burrata Prosciutto", desc:"Sos pomidorowy, świeża burrata, pesto, szynka crudo", cats:['pizza','mięsna'], price:45},
+            {id:47, type:'pizza', name:"Kebab", desc:"Sos pomidorowy, mięso kebab, sos czosnkowy, cebula", cats:['pizza','mięsna'], price:28},
+            {id:48, type:'pizza', name:"Salsiccia", desc:"Sos pomidorowy, włoska kiełbasa, borowiki, mozzarella", cats:['pizza','mięsna'], price:34},
+            {id:49, type:'pizza', name:"Rustica", desc:"Sos pomidorowy, boczek, jaja, szczypiorek, cebula", cats:['pizza','mięsna'], price:30},
+            {id:50, type:'pizza', name:"Tutto", desc:"Sos pomidorowy, wszystkie mięsa z menu na jednym placku", cats:['pizza','mięsna'], price:48},
 
             // 10 NAPOJÓW
             {id:201, type:'napoje', name:"Pepsi 0.33L", desc:"Puszka", cats:['napoje'], price:7},
@@ -417,7 +416,6 @@
         let promoSelections = [];
         let curPromoType = null;
 
-        // RENDEROWANIE MENU
         function renderMenu() {
             const list = document.getElementById('product-list');
             const search = document.getElementById('searchInput').value.toLowerCase();
@@ -433,7 +431,14 @@
                 const div = document.createElement('div');
                 div.className = 'menu-item reveal active';
                 div.onclick = () => openModal(p.id);
-                const icon = (p.cats.includes('wege') ? '🌱' : '') + (p.spicy ? '🌶️'.repeat(p.spicy) : '');
+                
+                // Oznaczenia wege / mięso / ostre
+                const isMeat = p.type === 'pizza' && !p.cats.includes('wege');
+                const wegeIcon = p.cats.includes('wege') ? '🌱 ' : '';
+                const meatIcon = isMeat ? '🥩 ' : '';
+                const spicyIcon = p.spicy ? '🌶️'.repeat(p.spicy) : '';
+                const icon = wegeIcon + meatIcon + spicyIcon;
+
                 div.innerHTML = `<h3>${p.name} <span style="font-size:0.9rem;">${icon}</span></h3><p>${p.desc}</p><span class="menu-price">od ${p.price.toFixed(2)} zł</span>`;
                 list.appendChild(div);
             });
@@ -446,7 +451,6 @@
             renderMenu();
         }
 
-        // LOGIKA MODALU PRODUKTU
         function openModal(id) {
             if(typeof id === 'string') { document.getElementById(id).style.display = 'flex'; return; }
             curProduct = db.find(p => p.id === id);
@@ -479,7 +483,6 @@
             curProduct.finalPrice = p;
         }
 
-        // KOSZYK I UPSELLING
         function addToCart() {
             let labelText = "";
             if(curProduct.type === 'pizza') labelText = ["24cm","32cm","42cm","50cm"][curSizeIdx] + (curCrustPrice ? " (Grube)" : " (Cienkie)");
@@ -529,7 +532,6 @@
         function rem(id) { cart = cart.filter(i => i.cartId !== id); updateUI(); openCart(); }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-        // LOGIKA KREATORÓW PROMOCJI (PON/WT)
         function openPromo(type) {
             curPromoType = type; promoSelections = [];
             const cont = document.getElementById('promoSelection');
@@ -576,11 +578,27 @@
             updateUI(); closeModal('promoModal');
         }
 
-        // INIT I ANIMACJE
         window.onbeforeunload = function () { window.scrollTo(0, 0); };
         window.onload = () => {
             window.scrollTo(0, 0);
             document.body.classList.add('loaded');
+            
+            const originalOpenModal = openModal;
+            openModal = function(id) {
+                if(typeof id === 'string') document.getElementById(id).style.display = 'flex';
+                else {
+                    curProduct = db.find(p => p.id === id);
+                    curSizeIdx = 1; curCrustPrice = 0;
+                    document.getElementById('mTitle').innerText = curProduct.name;
+                    document.getElementById('mDesc').innerText = curProduct.desc;
+                    document.getElementById('pizOpt').style.display = curProduct.type === 'pizza' ? 'block' : 'none';
+                    document.querySelectorAll('.size-selector .sel-btn').forEach((b, i) => { b.classList.toggle('active', i === 1); });
+                    document.querySelectorAll('.crust-selector .sel-btn').forEach((b, i) => { b.classList.toggle('active', i === 0); });
+                    updatePrice();
+                    document.getElementById('prodModal').style.display = 'flex';
+                }
+            };
+
             renderMenu();
             const observer = new IntersectionObserver((entries) => { entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('active'); }); }, {threshold: 0.1});
             document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
