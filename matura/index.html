@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matura Podstawowa | Baza Zadań</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+    
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #f8fafc;
+            --grid-color: #e2e8f0;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --card-bg: #ffffff;
+            --shadow: 0 10px 30px -10px rgba(0,0,0,0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        
+        body {
+            color: var(--text-main);
+            /* Delikatna kratka jak w zeszycie z matematyki */
+            background-color: var(--bg-color);
+            background-image: linear-gradient(var(--grid-color) 1px, transparent 1px), linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            background-size: 30px 30px;
+            background-position: center top;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        nav {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+            border-bottom: 2px solid var(--accent);
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo { font-size: 1.5rem; font-weight: 900; color: var(--text-main); text-decoration: none; letter-spacing: -1px; }
+        .logo span { color: var(--accent); }
+
+        .container { max-width: 1200px; margin: 120px auto 60px; padding: 0 20px; }
+
+        header { text-align: center; margin-bottom: 60px; }
+        header h1 { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 900; letter-spacing: -2px; margin-bottom: 15px; color: var(--text-main); }
+        header p { font-size: 1.2rem; color: var(--text-muted); max-width: 600px; margin: 0 auto; }
+
+        /* WIDOK GŁÓWNY - SIATKA DZIAŁÓW */
+        #view-home { display: block; animation: fadeIn 0.5s ease; }
+        
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+        
+        .category-card {
+            background: var(--card-bg); padding: 35px 25px; border-radius: 16px;
+            box-shadow: var(--shadow); border: 2px solid transparent;
+            cursor: pointer; transition: 0.3s; position: relative; overflow: hidden;
+        }
+        
+        .category-card:hover { transform: translateY(-5px); border-color: var(--accent); box-shadow: 0 20px 40px -10px rgba(59, 130, 246, 0.2); }
+        .category-card h3 { font-size: 1.3rem; font-weight: 800; margin-bottom: 10px; }
+        .category-card p { font-size: 0.95rem; color: var(--text-muted); line-height: 1.5; }
+        .task-count { display: inline-block; margin-top: 20px; background: #eff6ff; color: var(--accent); padding: 5px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; }
+
+        /* WIDOK ZADAŃ (UKRYTY NA START) */
+        #view-tasks { display: none; animation: fadeIn 0.5s ease; }
+        
+        .back-btn {
+            background: var(--card-bg); border: 1px solid #cbd5e1; padding: 10px 20px;
+            border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 30px; transition: 0.2s;
+        }
+        .back-btn:hover { background: #f1f5f9; border-color: var(--text-muted); }
+
+        .section-header { margin-bottom: 40px; }
+        .section-header h2 { font-size: 2.5rem; font-weight: 900; letter-spacing: -1px; }
+
+        /* MIEJSCE NA ZADANIA */
+        .task-list { display: flex; flex-direction: column; gap: 20px; }
+        .task-card { background: var(--card-bg); padding: 30px; border-radius: 12px; box-shadow: var(--shadow); border-left: 4px solid var(--accent); }
+        .task-content { font-size: 1.1rem; line-height: 1.8; margin-bottom: 20px; }
+        
+        .show-answer-btn { background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .show-answer-btn:hover { background: var(--accent-hover); }
+        
+        .answer-box { margin-top: 20px; padding: 20px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; display: none; }
+        .answer-box.visible { display: block; animation: fadeIn 0.4s ease; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="nav-content">
+            <a href="#" class="logo" onclick="goHome()">Matura<span>.</span>PRO</a>
+            <div style="font-weight: 600; font-size: 0.9rem; color: var(--text-muted);">Baza Zadań CKE</div>
+        </div>
+    </nav>
+
+    <div class="container">
+        
+        <div id="view-home">
+            <header>
+                <h1>Matematyka Podstawowa</h1>
+                <p>Kompletna baza zadań przygotowujących do matury. Wybierz dział, trenuj na gotowych przykładach i sprawdzaj rozwiązania krok po kroku.</p>
+            </header>
+
+            <div class="grid" id="category-grid">
+                </div>
+        </div>
+
+        <div id="view-tasks">
+            <button class="back-btn" onclick="goHome()">&#8592; Wróć do spisu działów</button>
+            <div class="section-header">
+                <h2 id="current-category-title">Nazwa Działu</h2>
+                <p style="color: var(--text-muted); margin-top: 10px;">Wybierz poddział i zacznij rozwiązywać zadania.</p>
+            </div>
+            
+            <div class="task-list" id="tasks-container">
+                <div class="task-card" style="text-align: center; color: var(--text-muted);">
+                    Ładowanie modułu...
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Główna struktura działów do matury podstawowej
+        const categories = [
+            { id: 'liczby', title: 'Liczby rzeczywiste', desc: 'Potęgi, pierwiastki, logarytmy, procenty i błąd względny.', count: 30 },
+            { id: 'algebra', title: 'Wyrażenia algebraiczne', desc: 'Wzory skróconego mnożenia, przekształcanie wyrażeń.', count: 20 },
+            { id: 'rownania', title: 'Równania i nierówności', desc: 'Liniowe, kwadratowe, wymierne i ich zastosowania.', count: 30 },
+            { id: 'uklady', title: 'Układy równań', desc: 'Metoda podstawiania, przeciwnych współczynników i zadania tekstowe.', count: 20 },
+            { id: 'funkcje', title: 'Funkcje i ich własności', desc: 'Dziedzina, zbiór wartości, funkcja liniowa i kwadratowa.', count: 30 },
+            { id: 'ciagi', title: 'Ciągi liczbowe', desc: 'Ciąg arytmetyczny, geometryczny i wzory ogólne.', count: 20 },
+            { id: 'trygonometria', title: 'Trygonometria', desc: 'Sinus, cosinus, tangens kąta ostrego i jedynka trygonometryczna.', count: 20 },
+            { id: 'planimetria', title: 'Planimetria', desc: 'Trójkąty, czworokąty, okręgi, kąty i twierdzenie Pitagorasa.', count: 30 },
+            { id: 'analityczna', title: 'Geometria analityczna', desc: 'Równanie prostej, środek odcinka i odległość punktów.', count: 20 },
+            { id: 'stereometria', title: 'Stereometria', desc: 'Graniastosłupy, ostrosłupy, objętość i pole powierzchni.', count: 20 },
+            { id: 'kombinatoryka', title: 'Kombinatoryka i Prawdopodobieństwo', desc: 'Reguła mnożenia i prawdopodobieństwo klasyczne.', count: 20 },
+            { id: 'statystyka', title: 'Statystyka', desc: 'Średnia arytmetyczna, mediana, dominanta i odchylenie.', count: 20 }
+        ];
+
+        // Funkcja renderująca kafelki na stronie głównej
+        function renderCategories() {
+            const grid = document.getElementById('category-grid');
+            grid.innerHTML = '';
+
+            categories.forEach(cat => {
+                const card = document.createElement('div');
+                card.className = 'category-card';
+                card.onclick = () => openCategory(cat.id, cat.title);
+                
+                card.innerHTML = `
+                    <h3>${cat.title}</h3>
+                    <p>${cat.desc}</p>
+                    <span class="task-count">Wkrótce zadania</span>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Nawigacja
+        function openCategory(id, title) {
+            document.getElementById('view-home').style.display = 'none';
+            document.getElementById('view-tasks').style.display = 'block';
+            document.getElementById('current-category-title').innerText = title;
+            window.scrollTo(0, 0);
+            
+            // Tutaj będziemy w przyszłości wczytywać odpowiednie dane z pliku zadań
+            const container = document.getElementById('tasks-container');
+            container.innerHTML = `
+                <div class="task-card">
+                    <div class="task-content">
+                        <strong>Przykład działania MathJax:</strong><br><br>
+                        Rozwiąż równanie kwadratowe: \\( x^2 - 5x + 6 = 0 \\)
+                    </div>
+                    <button class="show-answer-btn" onclick="this.nextElementSibling.classList.toggle('visible')">Pokaż rozwiązanie</button>
+                    <div class="answer-box">
+                        Liczymy deltę:<br>
+                        \\( \\Delta = b^2 - 4ac = (-5)^2 - 4 \\cdot 1 \\cdot 6 = 25 - 24 = 1 \\)<br><br>
+                        Pierwiastki:<br>
+                        \\( x_1 = \\frac{-b - \\sqrt{\\Delta}}{2a} = \\frac{5 - 1}{2} = 2 \\)<br>
+                        \\( x_2 = \\frac{-b + \\sqrt{\\Delta}}{2a} = \\frac{5 + 1}{2} = 3 \\)
+                    </div>
+                </div>
+                <div class="task-card" style="text-align: center; color: var(--text-muted); border: none; box-shadow: none; background: transparent;">
+                    Tutaj wgramy zadania z podziałem na poddziały w kolejnych krokach.
+                </div>
+            `;
+
+            // Odświeżenie silnika matematycznego po wstrzyknięciu nowych zadań
+            if (window.MathJax) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        function goHome() {
+            document.getElementById('view-tasks').style.display = 'none';
+            document.getElementById('view-home').style.display = 'block';
+            window.scrollTo(0, 0);
+        }
+
+        // Uruchomienie przy starcie
+        window.onload = () => {
+            renderCategories();
+        };
+    </script>
+</body>
+</html>
