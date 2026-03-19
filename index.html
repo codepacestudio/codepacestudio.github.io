@@ -90,17 +90,17 @@
         .card h3 { font-size: 1.5rem; font-weight: 800; margin-bottom: 15px; }
         .card p { color: var(--text-muted); font-size: 1.05rem; }
 
-        /* SEKCJA LICZBY (NOWOŚĆ) */
+        /* SEKCJA LICZBY */
         .stats-section { background: #0f172a; padding: 80px 20px; color: white; margin: 60px 0; border-radius: 30px; display: flex; justify-content: space-around; flex-wrap: wrap; gap: 30px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
         .stat-item h4 { font-size: 4rem; font-weight: 900; color: var(--accent-green); margin-bottom: 5px; line-height: 1; }
         .stat-item p { font-size: 1.1rem; color: #94a3b8; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* PROCES WSPÓŁPRACY (NOWOŚĆ) */
+        /* PROCES WSPÓŁPRACY */
         .process-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; position: relative; }
         .process-step { background: transparent; padding: 20px; text-align: center; }
         .step-number { width: 60px; height: 60px; background: var(--accent); color: white; font-size: 1.5rem; font-weight: 900; display: flex; align-items: center; justify-content: center; border-radius: 50%; margin: 0 auto 20px; box-shadow: 0 10px 20px rgba(37,99,235,0.3); }
 
-        /* PORTFOLIO */
+        /* PORTFOLIO Z DWOMA PROJEKTAMI */
         #portfolio .card-portfolio {
             min-height: 400px; display: flex; flex-direction: column; justify-content: flex-end;
             padding: 40px; cursor: pointer; border-radius: 24px; transition: 0.4s ease; text-decoration: none;
@@ -132,6 +132,7 @@
             position: relative; transform: translateY(30px); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             max-height: 85vh; overflow-y: auto; box-shadow: 0 25px 50px rgba(0,0,0,0.3);
         }
+        .modal-content.center-text { text-align: center; }
         .modal-overlay.active .modal-content { transform: translateY(0); }
         .close-btn { position: absolute; top: 20px; right: 30px; font-size: 2.5rem; cursor: pointer; color: var(--text-muted); line-height: 1; transition: 0.2s; }
         .close-btn:hover { color: var(--text-main); transform: scale(1.1); }
@@ -233,6 +234,7 @@
         <section id="portfolio" style="padding-top: 100px;">
             <h2 class="section-title reveal">Wybrane Realizacje</h2>
             <div class="grid">
+                
                 <a href="pizzeria/index.html" target="_blank" class="card-portfolio reveal" style="background: url('https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800&q=80') center/cover;">
                     <div class="portfolio-content">
                         <span class="portfolio-tag">Live Demo</span>
@@ -242,13 +244,15 @@
                     </div>
                 </a>
                 
-                <div class="card-portfolio reveal delay-1" style="background: #1e293b;">
+                <a href="hydraulik/index.html" target="_blank" class="card-portfolio reveal delay-1" style="background: url('https://images.unsplash.com/photo-1585704032915-c3400ca199e7?w=800&q=80') center/cover;">
                     <div class="portfolio-content">
-                        <span class="portfolio-tag" style="background: #475569; color: #fff;">W budowie</span>
-                        <h4 style="color: #fff; font-size: 2rem; margin-bottom: 10px; font-weight: 900;">Usługi Hydrauliczne</h4>
-                        <p style="color: #cbd5e1; font-weight: 400; font-size: 1.1rem; margin-bottom: 25px;">Lokalny landing page z optymalizacją pod konwersję telefoniczną i wezwania awaryjne.</p>
+                        <span class="portfolio-tag">Live Demo</span>
+                        <h4 style="color: #fff; font-size: 2rem; margin-bottom: 10px; font-weight: 900;">HydroPro Hydraulik</h4>
+                        <p style="color: #cbd5e1; font-weight: 400; font-size: 1.1rem; margin-bottom: 25px;">Lokalny landing page z optymalizacją pod konwersję telefoniczną, wezwania awaryjne 24/7 i interaktywnym systemem rezerwacji wizyt.</p>
+                        <span style="color: var(--accent-green); font-weight: 800; font-size: 1rem;">ZOBACZ PROJEKT ↗</span>
                     </div>
-                </div>
+                </a>
+
             </div>
         </section>
 
