@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carbon Detailing | Premium Auto Spa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #050505;
+            --bg-panel: #111111;
+            --bg-lighter: #1a1a1a;
+            --accent: #ff2a2a; /* Agresywna czerwień */
+            --accent-glow: rgba(255, 42, 42, 0.4);
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border: 1px solid #333;
+            --carbon-pattern: repeating-linear-gradient(45deg, #0a0a0a 25%, transparent 25%, transparent 75%, #0a0a0a 75%, #0a0a0a), repeating-linear-gradient(45deg, #0a0a0a 25%, #111 25%, #111 75%, #0a0a0a 75%, #0a0a0a);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
+        html { scroll-behavior: smooth; }
+        body { background-color: var(--bg-deep); color: var(--text-main); overflow-x: hidden; }
+
+        h1, h2, h3, .tech-font { font-family: 'Rajdhani', sans-serif; text-transform: uppercase; }
+
+        .reveal { opacity: 0; transform: translateY(40px); transition: 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* NAWIGACJA */
+        nav { background: rgba(5, 5, 5, 0.9); border-bottom: var(--border); padding: 20px 0; position: fixed; width: 100%; top: 0; z-index: 1000; backdrop-filter: blur(10px); }
+        .nav-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
+        .logo { font-size: 2rem; font-weight: 900; color: var(--text-main); text-decoration: none; font-family: 'Rajdhani', sans-serif; letter-spacing: 2px; }
+        .logo span { color: var(--accent); }
+        .nav-links { display: flex; gap: 40px; }
+        .nav-links a { color: var(--text-main); text-decoration: none; font-size: 0.9rem; font-weight: 700; letter-spacing: 1px; transition: 0.3s; text-transform: uppercase; }
+        .nav-links a:hover { color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
+
+        /* HEADER */
+        header {
+            height: 100vh; display: flex; align-items: center; justify-content: flex-start;
+            background: linear-gradient(90deg, rgba(5,5,5,1) 0%, rgba(5,5,5,0.4) 100%), url('https://images.unsplash.com/photo-1601362840469-51e4d8d58785?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover; background-position: center; padding: 0 5%; position: relative; margin-top: 0;
+        }
+        .header-content { max-width: 800px; z-index: 2; margin-top: 80px; }
+        .badge { background: transparent; border: 1px solid var(--accent); color: var(--accent); padding: 8px 20px; font-weight: 900; letter-spacing: 2px; margin-bottom: 25px; display: inline-block; box-shadow: 0 0 15px var(--accent-glow); }
+        .header-content h1 { font-size: clamp(3.5rem, 8vw, 7rem); font-weight: 900; line-height: 0.9; margin-bottom: 20px; letter-spacing: -2px; }
+        .header-content p { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 40px; max-width: 500px; line-height: 1.8; }
+        
+        .btn { background: var(--accent); color: #fff; border: none; padding: 20px 40px; font-size: 1.1rem; font-weight: 900; text-transform: uppercase; cursor: pointer; transition: 0.3s; letter-spacing: 2px; position: relative; overflow: hidden; }
+        .btn::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); transition: 0.5s; }
+        .btn:hover::before { left: 100%; }
+        .btn:hover { box-shadow: 0 0 30px var(--accent-glow); transform: scale(1.02); }
+
+        /* SUWAK PRZED I PO */
+        .ba-section { padding: 100px 20px; background: var(--bg-panel); text-align: center; }
+        .section-title { font-size: 3rem; margin-bottom: 50px; color: var(--text-main); }
+        .section-title span { color: var(--accent); }
+        
+        .ba-container { position: relative; max-width: 1000px; height: 500px; margin: 0 auto; border: var(--border); border-radius: 8px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .ba-image { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; }
+        .ba-after { background-image: url('https://images.unsplash.com/photo-1600049449839-44583b4b574f?q=80&w=2070&auto=format&fit=crop'); z-index: 1; }
+        .ba-before { background-image: url('https://images.unsplash.com/photo-1600049449839-44583b4b574f?q=80&w=2070&auto=format&fit=crop'); z-index: 2; filter: grayscale(40%) blur(1.5px) contrast(70%); width: 50%; border-right: 3px solid var(--accent); }
+        .ba-slider { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 3; opacity: 0; cursor: ew-resize; }
+        .ba-drag { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; background: var(--accent); border-radius: 50%; z-index: 4; pointer-events: none; display: flex; align-items: center; justify-content: center; font-weight: bold; box-shadow: 0 0 20px var(--accent-glow); }
+        .ba-drag::after { content: '↔'; color: white; letter-spacing: -2px; }
+
+        /* KALKULATOR USŁUG (POTWÓR) */
+        .calc-section { padding: 100px 20px; background-position: 0 0, 15px 15px; background-size: 30px 30px; background-image: var(--carbon-pattern); }
+        .calc-wrapper { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr; gap: 40px; }
+        
+        .calc-panel { background: var(--bg-panel); padding: 40px; border: var(--border); border-radius: 8px; }
+        .calc-step { margin-bottom: 50px; }
+        .step-header { font-size: 1.8rem; border-bottom: 2px solid var(--bg-lighter); padding-bottom: 15px; margin-bottom: 25px; color: var(--text-main); }
+        
+        .radio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .radio-card { border: 2px solid var(--bg-lighter); background: var(--bg-deep); padding: 25px; border-radius: 8px; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; }
+        .radio-card:hover { border-color: #555; }
+        .radio-card.active { border-color: var(--accent); background: rgba(255, 42, 42, 0.05); }
+        .radio-card.active::before { content: '✓'; position: absolute; top: 10px; right: 10px; color: var(--accent); font-weight: 900; }
+        .rc-title { font-size: 1.2rem; font-weight: 900; margin-bottom: 5px; font-family: 'Rajdhani', sans-serif; }
+        .rc-desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; }
+        .rc-price { display: block; margin-top: 15px; color: var(--accent); font-weight: 900; font-size: 1.1rem; }
+
+        /* WYNIK KALKULATORA (STICKY) */
+        .result-panel { background: var(--bg-deep); padding: 40px; border: 2px solid var(--accent); border-radius: 8px; position: sticky; top: 100px; height: fit-content; box-shadow: 0 0 40px rgba(255,42,42,0.1); }
+        .res-title { font-size: 2rem; margin-bottom: 30px; text-align: center; border-bottom: 1px solid #333; padding-bottom: 20px; }
+        .res-row { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 1rem; color: var(--text-muted); }
+        .res-row span:last-child { color: var(--text-main); font-weight: 700; text-align: right; }
+        .res-total { font-size: 3rem; color: var(--accent); font-weight: 900; text-align: center; margin: 30px 0; font-family: 'Rajdhani', sans-serif; text-shadow: 0 0 20px var(--accent-glow); }
+        .res-time { text-align: center; font-weight: 700; color: var(--text-main); margin-bottom: 30px; font-size: 1.2rem; }
+
+        /* MODAL REZERWACJI */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(10px); }
+        .modal-content { background: var(--bg-panel); max-width: 600px; width: 100%; border: 1px solid var(--accent); border-radius: 8px; position: relative; max-height: 90vh; overflow-y: auto; }
+        .modal-header { padding: 30px; border-bottom: var(--border); position: relative; }
+        .close-btn { position: absolute; top: 20px; right: 25px; font-size: 2.5rem; color: var(--text-muted); cursor: pointer; transition: 0.3s; line-height: 1; }
+        .close-btn:hover { color: var(--accent); }
+        .modal-body { padding: 30px; }
+        
+        .form-control { width: 100%; padding: 18px; background: var(--bg-deep); border: 1px solid #333; color: white; margin-bottom: 20px; font-size: 1rem; border-radius: 4px; outline: none; transition: 0.3s; }
+        .form-control:focus { border-color: var(--accent); box-shadow: 0 0 10px var(--accent-glow); }
+        
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; margin-bottom: 20px; }
+        .cal-day { padding: 15px 5px; background: var(--bg-deep); border: 1px solid #333; cursor: pointer; transition: 0.2s; font-weight: 700; border-radius: 4px; }
+        .cal-day:hover:not(.disabled) { border-color: var(--accent); }
+        .cal-day.active { background: var(--accent); border-color: var(--accent); }
+        .cal-day.disabled { opacity: 0.2; cursor: not-allowed; }
+        .cal-day-name { font-size: 0.8rem; color: var(--text-muted); font-weight: 700; margin-bottom: 10px; text-transform: uppercase; }
+
+        footer { background: #000; padding: 60px 20px; text-align: center; border-top: var(--border); }
+        
+        @media (max-width: 1024px) {
+            .calc-wrapper { grid-template-columns: 1fr; }
+            .result-panel { position: relative; top: 0; }
+        }
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .header-content h1 { font-size: 3rem; }
+            .ba-container { height: 300px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="nav-content">
+            <a href="#" class="logo">Carbon<span>.</span>Spa</a>
+            <div class="nav-links">
+                <a href="#efekty">Efekty</a>
+                <a href="#kalkulator">Kalkulator & Rezerwacja</a>
+                <a href="tel:+48000000000">Zadzwoń</a>
+            </div>
+        </div>
+    </nav>
+
+    <header>
+        <div class="header-content reveal active">
+            <span class="badge">Autoryzowane Studio PPF & Ceramic</span>
+            <h1 class="tech-font">Perfekcja w każdym detalu.</h1>
+            <p>Nie myjemy samochodów. My je odnawiamy, zabezpieczamy zbroją z ceramiki lub folii PPF i sprawiamy, że wyglądają lepiej niż w dniu wyjazdu z salonu.</p>
+            <button class="btn" onclick="document.getElementById('kalkulator').scrollIntoView();">Wyceń swój samochód</button>
+        </div>
+    </header>
+
+    <section id="efekty" class="ba-section">
+        <h2 class="section-title tech-font reveal">Zobacz <span>różnicę</span></h2>
+        <p style="color: var(--text-muted); margin-bottom: 40px; font-size: 1.1rem;" class="reveal">Złap suwak i przeciągnij. Z lewej strony zniszczony, porysowany lakier. Z prawej – efekt po naszej wieloetapowej korekcie.</p>
+        
+        <div class="ba-container reveal">
+            <div class="ba-image ba-after"></div>
+            <div class="ba-image ba-before" id="baBefore"></div>
+            <div class="ba-drag" id="baDrag"></div>
+            <input type="range" min="0" max="100" value="50" class="ba-slider" id="baSlider" oninput="updateSlider(this.value)">
+        </div>
+    </section>
+
+    <section id="kalkulator" class="calc-section">
+        <h2 class="section-title tech-font reveal" style="margin-bottom: 20px;">Zbuduj swój <span>Pakiet</span></h2>
+        <p style="text-align: center; color: var(--text-muted); margin-bottom: 60px;" class="reveal">Wybierz parametry, a system automatycznie przeliczy koszty i czas realizacji.</p>
+
+        <div class="calc-wrapper">
+            <div class="calc-panel reveal">
+                
+                <div class="calc-step">
+                    <h3 class="step-header tech-font">1. Gabaryt Pojazdu</h3>
+                    <div class="radio-grid" id="gridSize">
+                        <div class="radio-card active" onclick="setOpt('size', 1.0, this, 'Hatchback / Coupe')">
+                            <div class="rc-title">Rozmiar S/M</div>
+                            <div class="rc-desc">Auta miejskie, Hatchback, Coupe (np. Golf, Yaris, 911)</div>
+                            <span class="rc-price">Mnożnik: x1.0</span>
+                        </div>
+                        <div class="radio-card" onclick="setOpt('size', 1.2, this, 'Sedan / Kombi')">
+                            <div class="rc-title">Rozmiar L</div>
+                            <div class="rc-desc">Sedan, Kombi, małe Crossovery (np. Passat, Seria 3)</div>
+                            <span class="rc-price">Mnożnik: x1.2</span>
+                        </div>
+                        <div class="radio-card" onclick="setOpt('size', 1.5, this, 'SUV / Terenowe')">
+                            <div class="rc-title">Rozmiar XL</div>
+                            <div class="rc-desc">Duże SUVy, auta terenowe (np. X5, Q7, G-Class)</div>
+                            <span class="rc-price">Mnożnik: x1.5</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="calc-step">
+                    <h3 class="step-header tech-font">2. Stan Lakieru (Korekta)</h3>
+                    <div class="radio-grid" id="gridPolish">
+                        <div class="radio-card active" onclick="setOpt('polish', 200, this, 'Tylko Deironizacja', 4)">
+                            <div class="rc-title">Brak Korekty</div>
+                            <div class="rc-desc">Dokładne mycie detailingowe, deironizacja i glinkowanie lakieru.</div>
+                            <span class="rc-price">Baza: 200 zł</span>
+                        </div>
+                        <div class="radio-card" onclick="setOpt('polish', 800, this, 'One-Step Polish', 12)">
+                            <div class="rc-title">One-Step (Odświeżenie)</div>
+                            <div class="rc-desc">Jednoetapowe polerowanie. Usuwa ok. 50-60% drobnych zarysowań. Odzyskuje blask.</div>
+                            <span class="rc-price">Baza: 800 zł</span>
+                        </div>
+                        <div class="radio-card" onclick="setOpt('polish', 1600, this, 'Multi-Step Polish', 24)">
+                            <div class="rc-title">Wieloetapowa Korekta</div>
+                            <div class="rc-desc">Usuwa 90-95% rys. Pełne cięcie lakieru i wykańczanie na lustro.</div>
+                            <span class="rc-price">Baza: 1600 zł</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="calc-step">
+                    <h3 class="step-header tech-font">3. Ochrona (Ceramika / PPF)</h3>
+                    <div class="radio-grid" id="gridProtect">
+                        <div class="radio-card active" onclick="setOpt('protect', 100, this, 'Wosk Premium', 1)">
+                            <div class="rc-title">Wosk Syntetyczny</div>
+                            <div class="rc-desc">Trwałość do 3 miesięcy. Podbija szklistość lakieru.</div>
+                            <span class="rc-price">Baza: 100 zł</span>
+                        </div>
+                        <div class="radio-card" onclick="setOpt('protect', 1200, this, 'Powłoka 3-letnia', 8)">
+                            <div class="rc-title">Ceramika (3 Lata)</div>
+                            <div class="rc-desc">Twardość 9H. Ekstremalna hydrofobowość i ochrona przed chemią.</div>
+                            <span class="rc-price">Baza: 1200 zł</span>
+                        </div>
+                        <div class="radio-card" onclick="setOpt('protect', 2200, this, 'Powłoka Elastomerowa', 10)">
+                            <div class="rc-title">Elastomer (5 Lat)</div>
+                            <div class="rc-desc">Nowość! Samoregenerująca się powłoka, absolutny top na rynku.</div>
+                            <span class="rc-price">Baza: 2200 zł</span>
+                        </div>
+                        <div class="radio-card" onclick="setOpt('protect', 4500, this, 'PPF Full Front', 24)">
+                            <div class="rc-title">Folia PPF (Przód)</div>
+                            <div class="rc-desc">Ochrona zderzaka, maski, błotników i lamp przed odpryskami od kamieni.</div>
+                            <span class="rc-price">Baza: 4500 zł</span>
+                        </div>
+                        <div class="radio-card" onclick="setOpt('protect', 12000, this, 'PPF Całe Auto', 72)">
+                            <div class="rc-title">Folia PPF (Full)</div>
+                            <div class="rc-desc">Zbroja na całe auto. Samoregeneracja pod wpływem ciepła.</div>
+                            <span class="rc-price">Baza: 12000 zł</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="calc-step">
+                    <h3 class="step-header tech-font">4. Opcje Dodatkowe</h3>
+                    <div class="radio-grid">
+                        <div class="radio-card addon-card" onclick="toggleAddon(400, this, 'Detailing Wnętrza', 4)">
+                            <div class="rc-title">Wnętrze VIP</div>
+                            <div class="rc-desc">Pranie ekstrakcyjne, czyszczenie i impregnacja plastików.</div>
+                            <span class="rc-price">+ 400 zł</span>
+                        </div>
+                        <div class="radio-card addon-card" onclick="toggleAddon(350, this, 'Ceramika Skór', 2)">
+                            <div class="rc-title">Ceramika Skórzana</div>
+                            <div class="rc-desc">Czyszczenie i dedykowana powłoka ochronna na tapicerkę z jasnej/ciemnej skóry.</div>
+                            <span class="rc-price">+ 350 zł</span>
+                        </div>
+                        <div class="radio-card addon-card" onclick="toggleAddon(150, this, 'Niewidzialna Wycieraczka', 1)">
+                            <div class="rc-title">Powłoka na szyby</div>
+                            <div class="rc-desc">Zrzut wody podczas deszczu od 60 km/h. Bezpieczeństwo zimą.</div>
+                            <span class="rc-price">+ 150 zł</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="result-panel reveal delay-2">
+                <h3 class="res-title tech-font">Podsumowanie</h3>
+                
+                <div class="res-row"><span>Gabaryt:</span> <span id="rSize">Hatchback / Coupe</span></div>
+                <div class="res-row"><span>Lakier:</span> <span id="rPolish">Tylko Deironizacja</span></div>
+                <div class="res-row"><span>Ochrona:</span> <span id="rProtect">Wosk Syntetyczny</span></div>
+                <div id="rAddonsList"></div>
+                
+                <div class="res-total" id="rTotal">300 zł</div>
+                <div class="res-time">Szacowany czas w studio: <span id="rTime" style="color:var(--accent);">5 godz.</span></div>
+                
+                <button class="btn" style="width: 100%;" onclick="openBooking()">Zarezerwuj ten pakiet</button>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <span class="logo">Carbon<span>.</span>Spa</span>
+        <p style="margin-top: 15px; font-size: 0.85rem; color: #555;">Zbudowane przez CodePace Studio. Wersja demonstracyjna.</p>
+    </footer>
+
+    <div class="modal" id="bookingModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="tech-font" style="font-size:2rem;">Rezerwacja Studia</h2>
+                <p style="color:var(--text-muted); margin-top:5px;">System znajdzie dla Ciebie najbliższy wolny slot na wymaganą liczbę godzin.</p>
+                <span class="close-btn" onclick="closeModal('bookingModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                
+                <h4 style="margin-bottom:15px;">Wybierz datę oddania auta:</h4>
+                <div style="display:flex; justify-content:space-between; margin-bottom:15px; border-bottom:1px solid #333; padding-bottom:10px;">
+                    <button style="background:none; color:white; border:none; cursor:pointer;" onclick="changeMonth(-1)">&#10094;</button>
+                    <span id="monthDisplay" style="font-weight:900; letter-spacing:1px; color:var(--accent);">MAJ 2026</span>
+                    <button style="background:none; color:white; border:none; cursor:pointer;" onclick="changeMonth(1)">&#10095;</button>
+                </div>
+                
+                <div class="cal-grid" id="calendarGrid"></div>
+
+                <div id="bookingForm" style="display:none; margin-top:30px;">
+                    <input type="text" id="bName" class="form-control" placeholder="Imię i Nazwisko / Firma" oninput="valForm()">
+                    <input type="tel" id="bPhone" class="form-control" placeholder="Telefon kontaktowy" oninput="valForm()">
+                    <input type="text" id="bCar" class="form-control" placeholder="Marka i Model auta (np. BMW M3)" oninput="valForm()">
+                    <button class="btn" id="confirmBtn" style="width: 100%;" disabled onclick="finishBooking()">Potwierdź Zlecenie</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // SUWAK PRZED/PO
+        function updateSlider(val) {
+            document.getElementById('baBefore').style.width = val + '%';
+            document.getElementById('baDrag').style.left = val + '%';
+        }
+
+        // LOGIKA KALKULATORA
+        let state = {
+            sizeMult: 1.0, sizeName: 'Hatchback / Coupe',
+            polPrice: 200, polName: 'Tylko Deironizacja', polTime: 4,
+            protPrice: 100, protName: 'Wosk Premium', protTime: 1,
+            addons: [] // obiekty {price, name, time}
+        };
+
+        function setOpt(type, val, el, name, time = 0) {
+            // Reset styli w sekcji
+            el.parentElement.querySelectorAll('.radio-card').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+
+            if(type === 'size') { state.sizeMult = val; state.sizeName = name; }
+            if(type === 'polish') { state.polPrice = val; state.polName = name; state.polTime = time; }
+            if(type === 'protect') { state.protPrice = val; state.protName = name; state.protTime = time; }
+            
+            calcTotal();
+        }
+
+        function toggleAddon(price, el, name, time) {
+            const isActive = el.classList.contains('active');
+            if(isActive) {
+                el.classList.remove('active');
+                state.addons = state.addons.filter(a => a.name !== name);
+            } else {
+                el.classList.add('active');
+                state.addons.push({price, name, time});
+            }
+            calcTotal();
+        }
+
+        function calcTotal() {
+            // Obliczenia (Ceny bazowe mnożymy przez gabaryt)
+            let basePrice = (state.polPrice + state.protPrice) * state.sizeMult;
+            let addonsPrice = state.addons.reduce((sum, a) => sum + a.price, 0);
+            let finalPrice = Math.round(basePrice + addonsPrice);
+
+            let totalTime = state.polTime + state.protTime + state.addons.reduce((sum, a) => sum + a.time, 0);
+            
+            // Formatowanie czasu
+            let timeStr = totalTime + " godz.";
+            if(totalTime > 12 && totalTime <= 24) timeStr = "1-2 dni robocze";
+            if(totalTime > 24 && totalTime <= 48) timeStr = "2-3 dni robocze";
+            if(totalTime > 48 && totalTime <= 72) timeStr = "3-4 dni robocze";
+            if(totalTime > 72) timeStr = "Min. 5 dni roboczych (projekt specjalny)";
+
+            // Update UI
+            document.getElementById('rSize').innerText = state.sizeName;
+            document.getElementById('rPolish').innerText = state.polName;
+            document.getElementById('rProtect').innerText = state.protName;
+            
+            const addList = document.getElementById('rAddonsList');
+            addList.innerHTML = '';
+            state.addons.forEach(a => {
+                addList.innerHTML += `<div class="res-row"><span>Dodatek:</span> <span>${a.name}</span></div>`;
+            });
+
+            // Animacja ceny (licznik)
+            animateValue("rTotal", parseInt(document.getElementById('rTotal').innerText), finalPrice, 500);
+            document.getElementById('rTime').innerText = timeStr;
+        }
+
+        // Prosta animacja licznika ceny
+        function animateValue(id, start, end, duration) {
+            if (start === end) return;
+            var range = end - start;
+            var current = start;
+            var increment = end > start ? 10 : -10;
+            if(Math.abs(range) > 1000) increment = end > start ? 50 : -50;
+            var stepTime = Math.abs(Math.floor(duration / (range / increment)));
+            var obj = document.getElementById(id);
+            var timer = setInterval(function() {
+                current += increment;
+                if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
+                    current = end; clearInterval(timer);
+                }
+                obj.innerText = current + " zł";
+            }, stepTime);
+        }
+
+        // MODALE I KALENDARZ
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; document.body.style.overflow = 'hidden'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; document.body.style.overflow = 'auto'; }
+
+        let currDate = new Date();
+        let selDateStr = null;
+        const monthNames = ["Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec", "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień"];
+        const dayNames = ["Pn", "Wt", "Śr", "Cz", "Pt", "Sb", "Nd"];
+
+        function openBooking() {
+            currDate = new Date(); selDateStr = null;
+            document.getElementById('bookingForm').style.display = 'none';
+            renderCalendar();
+            openModal('bookingModal');
+        }
+
+        function changeMonth(dir) {
+            currDate.setMonth(currDate.getMonth() + dir);
+            renderCalendar();
+            document.getElementById('bookingForm').style.display = 'none';
+        }
+
+        function renderCalendar() {
+            const year = currDate.getFullYear();
+            const month = currDate.getMonth();
+            document.getElementById('monthDisplay').innerText = `${monthNames[month]} ${year}`;
+            
+            const grid = document.getElementById('calendarGrid');
+            grid.innerHTML = '';
+            dayNames.forEach(d => { grid.innerHTML += `<div class="cal-day-name">${d}</div>`; });
+
+            let firstDay = new Date(year, month, 1).getDay();
+            if (firstDay === 0) firstDay = 7; 
+            
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const today = new Date(); today.setHours(0,0,0,0);
+
+            for(let i = 1; i < firstDay; i++) grid.innerHTML += `<div></div>`;
+
+            for(let i = 1; i <= daysInMonth; i++) {
+                const dayDate = new Date(year, month, i);
+                const isPast = dayDate < today;
+                const isSunday = dayDate.getDay() === 0;
+                
+                let classes = 'cal-day';
+                if(isPast || isSunday || Math.random() > 0.8) classes += ' disabled'; // Symulacja zajętych dni
+                if(selDateStr === dayDate.toDateString()) classes += ' active';
+
+                const div = document.createElement('div');
+                div.className = classes; div.innerText = i;
+                
+                if(!div.classList.contains('disabled')) {
+                    div.onclick = () => {
+                        document.querySelectorAll('.cal-day').forEach(d => d.classList.remove('active'));
+                        div.classList.add('active');
+                        selDateStr = dayDate.toDateString();
+                        document.getElementById('bookingForm').style.display = 'block';
+                        valForm();
+                    };
+                }
+                grid.appendChild(div);
+            }
+        }
+
+        function valForm() {
+            const n = document.getElementById('bName').value.trim();
+            const p = document.getElementById('bPhone').value.trim();
+            const c = document.getElementById('bCar').value.trim();
+            document.getElementById('confirmBtn').disabled = !(n.length > 2 && p.length > 8 && c.length > 2 && selDateStr);
+        }
+
+        function finishBooking() {
+            alert(`🔥 ZLECENIE PRZYJĘTE!\n\nAuto: ${document.getElementById('bCar').value}\nZarezerwowany start: ${selDateStr}\nWybrany Pakiet: ${document.getElementById('rTotal').innerText}\nSzacowany czas: ${document.getElementById('rTime').innerText}\n\nNasz menedżer zadzwoni w ciągu 15 minut w celu dogadania detali.`);
+            closeModal('bookingModal');
+        }
+
+        // INIT ANIMACJI I KALKULATORA
+        window.onload = () => {
+            calcTotal(); // Wymuszenie pierwszego obliczenia
+            const obs = new IntersectionObserver((e) => { e.forEach(x => { if(x.isIntersecting) x.target.classList.add('active'); }); }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+        };
+    </script>
+</body>
+</html>
