@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le Bandit - Clone</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="machine">
+        <div class="title">Szop Bandyta</div>
+        <div class="subtitle">Klastry | Kaskady | Złote Kwadraty</div>
+        
+        <div class="slot-area" id="slotArea"></div>
+
+        <div class="info-panel">
+            <span class="kasa">Saldo: <span id="balance">100.00</span> €</span>
+            <span class="wygrana">Wygrana: <span id="win">0.00</span> €</span>
+        </div>
+
+        <div class="action-row">
+            <div class="bet-controls">
+                <button class="bet-btn" id="btnMinus" onclick="changeBet(-1.00)">-</button>
+                <div class="bet-amount">Zakład: <span id="bet">1.00</span></div>
+                <button class="bet-btn" id="btnPlus" onclick="changeBet(1.00)">+</button>
+            </div>
+            <button class="spin-btn" id="spinBtn" onclick="startSpin()">OBRÓĆ</button>
+        </div>
+
+        <div class="msg-bar" id="msg">ZAKRĘĆ BĘBNAMI!</div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
