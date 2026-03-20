@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Empire Clicker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+        body { 
+            background: radial-gradient(circle at center, #1a1c29 0%, #0d0e15 100%);
+            color: #fff; font-family: 'Montserrat', sans-serif; 
+            height: 100vh; overflow: hidden; display: flex; flex-direction: column;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 20px 40px; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 10;
+        }
+
+        .balance-box { display: flex; flex-direction: column; }
+        .balance-usd { font-size: 2.5rem; font-weight: 900; color: #10b981; text-shadow: 0 0 20px rgba(16, 185, 129, 0.4); }
+        .balance-crypto { font-size: 1rem; color: #94a3b8; font-weight: 700; margin-top: 5px; }
+
+        .progress-container { text-align: right; }
+        .progress-text { font-size: 1.2rem; font-weight: 700; color: #f59e0b; margin-bottom: 5px; }
+        .progress-bar-bg { width: 300px; height: 10px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #f59e0b, #fbbf24); width: 0%; transition: width 0.3s; }
+
+        .main-area {
+            display: flex; flex: 1; position: relative;
+        }
+
+        .click-area {
+            flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            position: relative;
+        }
+
+        .coin-title { font-size: 2rem; font-weight: 900; margin-bottom: 20px; color: #fff; text-transform: uppercase; letter-spacing: 2px;}
+
+        .coin {
+            width: 250px; height: 250px; border-radius: 50%;
+            background: radial-gradient(circle, #fbbf24 0%, #d97706 100%);
+            box-shadow: 0 0 50px rgba(245, 158, 11, 0.3), inset 0 0 20px rgba(255,255,255,0.5);
+            display: flex; justify-content: center; align-items: center;
+            font-size: 5rem; font-weight: 900; color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            cursor: pointer; transition: transform 0.05s; position: relative;
+            border: 8px solid #fff;
+        }
+        .coin:active { transform: scale(0.95); box-shadow: 0 0 20px rgba(245, 158, 11, 0.5); }
+
+        .floating-text {
+            position: absolute; font-size: 1.5rem; font-weight: 900; color: #10b981;
+            pointer-events: none; animation: floatUp 1s ease-out forwards; text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        }
+
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-100px) scale(1.5); }
+        }
+
+        .shop-area {
+            width: 400px; background: rgba(0, 0, 0, 0.3); border-left: 1px solid rgba(255,255,255,0.05);
+            padding: 30px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px;
+        }
+
+        .shop-title { font-size: 1.5rem; font-weight: 900; text-align: center; margin-bottom: 10px; color: #94a3b8; }
+
+        .upgrade-card {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 15px; padding: 20px; cursor: pointer; transition: 0.3s;
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .upgrade-card:hover { background: rgba(255,255,255,0.08); border-color: #3b82f6; }
+        .upgrade-card.disabled { opacity: 0.5; pointer-events: none; border-color: rgba(255,255,255,0.02); }
+
+        .up-header { display: flex; justify-content: space-between; align-items: center; }
+        .up-title { font-weight: 900; font-size: 1.2rem; }
+        .up-lvl { background: #3b82f6; padding: 3px 8px; border-radius: 5px; font-size: 0.8rem; font-weight: 700; }
+        
+        .up-desc { font-size: 0.9rem; color: #94a3b8; }
+        .up-cost { font-weight: 900; color: #ef4444; font-size: 1.1rem; text-align: right; }
+        .up-cost.affordable { color: #10b981; }
+
+        .airdrop {
+            position: absolute; width: 60px; height: 60px; background: #fbbf24; border-radius: 10px;
+            display: flex; justify-content: center; align-items: center; font-size: 2rem;
+            cursor: pointer; box-shadow: 0 0 30px #f59e0b; animation: pulse 1s infinite;
+            z-index: 100; border: 2px solid #fff;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="balance-box">
+            <div class="balance-usd" id="moneyDisplay">$0.00</div>
+            <div class="balance-crypto" id="cryptoDisplay">0.000000 PEPE</div>
+        </div>
+        <div class="progress-container">
+            <div class="progress-text" id="progressText">Cel: $100 do SHIBA</div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progressBar"></div>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-area">
+        <div class="click-area" id="clickArea">
+            <div class="coin-title" id="coinTitle">Poziom 1: Pepe</div>
+            <div class="coin" id="mainCoin">🐸</div>
+        </div>
+
+        <div class="shop-area">
+            <div class="shop-title">TERMINAL ZAKUPOWY</div>
+
+            <div class="upgrade-card" id="btnClick" onclick="buyClickUpgrade()">
+                <div class="up-header">
+                    <span class="up-title">Karta Graficzna</span>
+                    <span class="up-lvl" id="clickLvl">Lvl 0/20</span>
+                </div>
+                <div class="up-desc">Zwiększa ilość dolarów za jedno kliknięcie.</div>
+                <div class="up-cost" id="clickCost">$50</div>
+            </div>
+
+            <div class="upgrade-card" id="btnAuto" onclick="buyAutoUpgrade()">
+                <div class="up-header">
+                    <span class="up-title">Skrypt Wydobywczy</span>
+                    <span class="up-lvl" id="autoLvl">Lvl 0/20</span>
+                </div>
+                <div class="up-desc">Automatycznie klika w monetę. Wyższy poziom to większa szybkość.</div>
+                <div class="up-cost" id="autoCost">$100</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let money = 0;
+        let clickLevel = 0;
+        let autoLevel = 0;
+        let currentCoinIndex = 0;
+        let autoClickInterval = null;
+
+        const maxLevel = 20;
+
+        const coins = [
+            { name: "Pepe", symbol: "🐸", target: 100, price: 0.001, multiplier: 1, color1: "#22c55e", color2: "#166534" },
+            { name: "Shiba", symbol: "🐕", target: 500, price: 0.01, multiplier: 2, color1: "#f97316", color2: "#c2410c" },
+            { name: "Doge", symbol: "🐶", target: 2000, price: 0.1, multiplier: 4, color1: "#eab308", color2: "#a16207" },
+            { name: "Tron", symbol: "💎", target: 10000, price: 0.5, multiplier: 8, color1: "#ef4444", color2: "#991b1b" },
+            { name: "Cardano", symbol: "🔵", target: 50000, price: 1.2, multiplier: 15, color1: "#3b82f6", color2: "#1d4ed8" },
+            { name: "Ripple", symbol: "✖️", target: 200000, price: 2.5, multiplier: 30, color1: "#0ea5e9", color2: "#0369a1" },
+            { name: "Solana", symbol: "🟣", target: 1000000, price: 150, multiplier: 60, color1: "#a855f7", color2: "#6b21a8" },
+            { name: "BNB", symbol: "🔶", target: 5000000, price: 600, multiplier: 120, color1: "#f59e0b", color2: "#b45309" },
+            { name: "Ethereum", symbol: "💠", target: 25000000, price: 3500, multiplier: 300, color1: "#64748b", color2: "#334155" },
+            { name: "Bitcoin", symbol: "₿", target: 999999999999, price: 65000, multiplier: 1000, color1: "#fbbf24", color2: "#d97706" }
+        ];
+
+        function getClickValue() {
+            let base = 1 + (clickLevel * 2);
+            if (clickLevel === maxLevel) base += 50; 
+            return base * coins[currentCoinIndex].multiplier;
+        }
+
+        function getClickUpgradeCost() {
+            return Math.floor(50 * Math.pow(1.6, clickLevel));
+        }
+
+        function getAutoUpgradeCost() {
+            return Math.floor(100 * Math.pow(1.7, autoLevel));
+        }
+
+        function getAutoClickSpeed() {
+            if (autoLevel === 0) return 0;
+            return 5000 - (autoLevel * 225);
+        }
+
+        function updateUI() {
+            document.getElementById('moneyDisplay').innerText = "$" + money.toFixed(2);
+            
+            let currentCoin = coins[currentCoinIndex];
+            let cryptoAmount = money / currentCoin.price;
+            document.getElementById('cryptoDisplay').innerText = cryptoAmount.toFixed(6) + " " + currentCoin.name;
+
+            if (currentCoinIndex < coins.length - 1) {
+                let nextTarget = currentCoin.target;
+                document.getElementById('progressText').innerText = `Cel: $${nextTarget} do ${coins[currentCoinIndex+1].name}`;
+                let pct = Math.min((money / nextTarget) * 100, 100);
+                document.getElementById('progressBar').style.width = pct + "%";
+            } else {
+                document.getElementById('progressText').innerText = "MAX POZIOM OSIĄGNIĘTY";
+                document.getElementById('progressBar').style.width = "100%";
+            }
+
+            let clickCost = getClickUpgradeCost();
+            let elClick = document.getElementById('btnClick');
+            document.getElementById('clickLvl').innerText = `Lvl ${clickLevel}/${maxLevel}`;
+            if (clickLevel < maxLevel) {
+                document.getElementById('clickCost').innerText = "$" + clickCost;
+                if (money >= clickCost) {
+                    elClick.classList.remove('disabled');
+                    document.getElementById('clickCost').classList.add('affordable');
+                } else {
+                    elClick.classList.add('disabled');
+                    document.getElementById('clickCost').classList.remove('affordable');
+                }
+            } else {
+                document.getElementById('clickCost').innerText = "MAX";
+                elClick.classList.add('disabled');
+            }
+
+            let autoCost = getAutoUpgradeCost();
+            let elAuto = document.getElementById('btnAuto');
+            document.getElementById('autoLvl').innerText = `Lvl ${autoLevel}/${maxLevel}`;
+            if (autoLevel < maxLevel) {
+                document.getElementById('autoCost').innerText = "$" + autoCost;
+                if (money >= autoCost) {
+                    elAuto.classList.remove('disabled');
+                    document.getElementById('autoCost').classList.add('affordable');
+                } else {
+                    elAuto.classList.add('disabled');
+                    document.getElementById('autoCost').classList.remove('affordable');
+                }
+            } else {
+                document.getElementById('autoCost').innerText = "MAX";
+                elAuto.classList.add('disabled');
+            }
+        }
+
+        function checkCoinLevel() {
+            if (currentCoinIndex < coins.length - 1) {
+                if (money >= coins[currentCoinIndex].target) {
+                    currentCoinIndex++;
+                    let newCoin = coins[currentCoinIndex];
+                    document.getElementById('coinTitle').innerText = `Poziom ${currentCoinIndex + 1}: ${newCoin.name}`;
+                    let coinEl = document.getElementById('mainCoin');
+                    coinEl.innerText = newCoin.symbol;
+                    coinEl.style.background = `radial-gradient(circle, ${newCoin.color1} 0%, ${newCoin.color2} 100%)`;
+                }
+            }
+        }
+
+        function createFloatingText(x, y, amount) {
+            let el = document.createElement('div');
+            el.className = 'floating-text';
+            el.innerText = "+$" + amount.toFixed(2);
+            el.style.left = x + 'px';
+            el.style.top = y + 'px';
+            document.getElementById('clickArea').appendChild(el);
+            setTimeout(() => { el.remove(); }, 1000);
+        }
+
+        document.getElementById('mainCoin').addEventListener('mousedown', function(e) {
+            let val = getClickValue();
+            money += val;
+            
+            let rect = this.getBoundingClientRect();
+            let x = e.clientX - rect.left + (Math.random() * 40 - 20) + rect.width/2;
+            let y = e.clientY - rect.top + (Math.random() * 40 - 20) + rect.height/2;
+            
+            createFloatingText(e.clientX, e.clientY, val);
+            checkCoinLevel();
+            updateUI();
+        });
+
+        function autoClick() {
+            let val = getClickValue();
+            money += val;
+            checkCoinLevel();
+            updateUI();
+        }
+
+        function startAutoClicker() {
+            if (autoClickInterval) clearInterval(autoClickInterval);
+            let speed = getAutoClickSpeed();
+            if (speed > 0) {
+                autoClickInterval = setInterval(autoClick, speed);
+            }
+        }
+
+        function buyClickUpgrade() {
+            if (clickLevel >= maxLevel) return;
+            let cost = getClickUpgradeCost();
+            if (money >= cost) {
+                money -= cost;
+                clickLevel++;
+                updateUI();
+            }
+        }
+
+        function buyAutoUpgrade() {
+            if (autoLevel >= maxLevel) return;
+            let cost = getAutoUpgradeCost();
+            if (money >= cost) {
+                money -= cost;
+                autoLevel++;
+                startAutoClicker();
+                updateUI();
+            }
+        }
+
+        function spawnAirdrop() {
+            let airdrop = document.createElement('div');
+            airdrop.className = 'airdrop';
+            airdrop.innerText = '🎁';
+            
+            let area = document.getElementById('clickArea');
+            let maxX = area.clientWidth - 80;
+            let maxY = area.clientHeight - 80;
+            
+            airdrop.style.left = Math.random() * maxX + 20 + 'px';
+            airdrop.style.top = Math.random() * maxY + 20 + 'px';
+            
+            area.appendChild(airdrop);
+
+            let clicked = false;
+            airdrop.onclick = function() {
+                clicked = true;
+                let bonus = getClickValue() * 100; 
+                money += bonus;
+                createFloatingText(parseInt(airdrop.style.left), parseInt(airdrop.style.top), bonus);
+                airdrop.remove();
+                checkCoinLevel();
+                updateUI();
+            };
+
+            setTimeout(() => {
+                if (!clicked && airdrop.parentNode) {
+                    airdrop.remove();
+                }
+            }, 3000);
+        }
+
+        setInterval(() => {
+            if (Math.random() < 0.3) { 
+                spawnAirdrop();
+            }
+        }, 15000);
+
+        updateUI();
+    </script>
+</body>
+</html>
