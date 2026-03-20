@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shark Blitz Clone 5625 Ways</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+        body { 
+            background: radial-gradient(circle at center, #001f3f 0%, #000000 100%);
+            color: #fff; font-family: 'Montserrat', sans-serif; 
+            min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            padding: 20px;
+        }
+
+        .machine {
+            background: #001122;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.9), inset 0 0 20px rgba(0, 116, 217, 0.2);
+            border: 2px solid #004080;
+            border-top: 4px solid #ffdc00;
+            text-align: center;
+            width: 100%;
+            max-width: 900px;
+            position: relative;
+        }
+
+        .title {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: #ffdc00;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 10px rgba(255, 220, 0, 0.5);
+        }
+
+        .ways-badge {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #7fdbff;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .fs-badge {
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: #ff4136;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            height: 25px;
+            text-shadow: 0 0 10px rgba(255, 65, 54, 0.6);
+            display: none;
+            animation: pulseFs 1s infinite alternate;
+        }
+
+        @keyframes pulseFs {
+            from { transform: scale(1); }
+            to { transform: scale(1.05); }
+        }
+
+        .slot-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            background: #000814;
+            padding: 15px;
+            border-radius: 10px;
+            border: inset 3px #001f3f;
+            margin-bottom: 20px;
+        }
+
+        .reel {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .cell {
+            background: linear-gradient(180deg, #001f3f 0%, #001122 100%);
+            width: 80px;
+            height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3rem;
+            border-radius: 8px;
+            border: 1px solid #004080;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+            transition: 0.2s;
+        }
+
+        .cell.spinning {
+            filter: blur(3px);
+            transform: scale(0.95);
+        }
+
+        .cell.win {
+            background: rgba(255, 220, 0, 0.2);
+            border-color: #ffdc00;
+            box-shadow: 0 0 15px rgba(255, 220, 0, 0.5);
+            animation: winPop 0.8s infinite alternate;
+            z-index: 10;
+        }
+
+        @keyframes winPop {
+            0% { transform: scale(1); filter: brightness(1); }
+            100% { transform: scale(1.08); filter: brightness(1.2); }
+        }
+
+        .info-panel {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.4rem;
+            font-weight: 900;
+            background: #000;
+            padding: 15px 25px;
+            border-radius: 8px;
+            border: 1px solid #004080;
+            margin-bottom: 15px;
+        }
+
+        .kasa { color: #2ecc40; }
+        .wygrana { color: #ffdc00; }
+        .wygrana.bump { transform: scale(1.1); }
+
+        .action-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .bet-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #000814;
+            padding: 10px 15px;
+            border-radius: 10px;
+            border: 1px solid #004080;
+        }
+
+        .bet-btn {
+            background: #0074d9;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            font-size: 1.5rem;
+            font-weight: 900;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .bet-btn:active { transform: scale(0.95); }
+        .bet-btn:disabled { background: #333; cursor: not-allowed; }
+
+        .bet-amount {
+            font-size: 1.3rem;
+            font-weight: 900;
+            width: 130px;
+        }
+
+        .spin-btn {
+            flex: 1;
+            background: linear-gradient(to bottom, #ffdc00, #ff851b);
+            color: #000;
+            border: none;
+            padding: 15px;
+            font-size: 2rem;
+            font-weight: 900;
+            border-radius: 10px;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .spin-btn:active { transform: translateY(4px); }
+        .spin-btn:disabled { background: #555; color: #aaa; }
+
+        .msg-bar {
+            margin-top: 15px;
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: #ffdc00;
+            height: 30px;
+        }
+
+        /* OVERLAY RECHARGE / BIG WIN */
+        .overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .overlay.active { display: flex; animation: fadeIn 0.3s forwards; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .overlay-text {
+            font-size: 3rem;
+            color: #ffdc00;
+            font-weight: 900;
+            text-shadow: 0 0 30px rgba(255, 220, 0, 0.6);
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        @media (max-width: 768px) {
+            .cell { width: 50px; height: 50px; font-size: 2rem; }
+            .slot-area { gap: 4px; padding: 10px; }
+            .reel { gap: 4px; }
+            .action-row { flex-direction: column; gap: 10px; }
+            .bet-controls { width: 100%; justify-content: center; }
+            .spin-btn { width: 100%; }
+            .overlay-text { font-size: 2rem; }
+            .title { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="machine">
+        <div class="overlay" id="overlay">
+            <div class="overlay-text" id="overlayText">BIG WIN!</div>
+        </div>
+
+        <div class="title">Ocean Blitz</div>
+        <div class="ways-badge">5625 WARIACJI WYGRANEJ</div>
+        <div class="fs-badge" id="fsBadge">DARMOWE SPINY: 0 (MNOŻNIK WILD X1)</div>
+        
+        <div class="slot-area" id="slotArea">
+            </div>
+
+        <div class="info-panel">
+            <span class="kasa">Kasa: <span id="balance">100.00</span> PLN</span>
+            <span class="wygrana">Wygrana: <span id="win">0.00</span> PLN</span>
+        </div>
+
+        <div class="action-row">
+            <div class="bet-controls">
+                <button class="bet-btn" id="btnMinus" onclick="changeBet(-0.5)">-</button>
+                <div class="bet-amount">Stawka: <span id="bet">1.00</span></div>
+                <button class="bet-btn" id="btnPlus" onclick="changeBet(0.5)">+</button>
+            </div>
+            <button class="spin-btn" id="spinBtn" onclick="startSpin()">SPIN</button>
+        </div>
+
+        <div class="msg-bar" id="msg">ZAKRĘĆ BĘBNAMI!</div>
+    </div>
+
+    <script>
+        // Konfiguracja układu bębnów: 3 - 5 - 5 - 5 - 5 - 3
+        const reelHeights = [3, 5, 5, 5, 5, 3];
+        const colsCount = reelHeights.length;
+        
+        const symbols = ['🦈', '🐢', '🐟', '🅰️', '👑', '🔟'];
+        const WILD = '💎';
+        const SCATTER = '🎁';
+
+        // Tabela wypłat (mnożniki stawki) za 3, 4, 5, 6 symboli
+        const paytable = {
+            '🦈': [0, 0, 1.0, 2.5, 5.0, 10.0],
+            '🐢': [0, 0, 0.8, 1.5, 3.0, 6.0],
+            '🐟': [0, 0, 0.5, 1.0, 2.0, 4.0],
+            '🅰️': [0, 0, 0.3, 0.8, 1.5, 3.0],
+            '👑': [0, 0, 0.2, 0.5, 1.0, 2.0],
+            '🔟': [0, 0, 0.1, 0.3, 0.8, 1.5]
+        };
+
+        let balance = 100.00;
+        let bet = 1.00;
+        let isSpinning = false;
+        
+        // Logika Free Games i Recharge
+        let freeSpinsCount = 0;
+        let initialFreeSpins = 0;
+        let wildMultiplier = 1;
+
+        let gridCells = []; // Tablica przechowująca kolumny z komórkami DOM
+
+        const slotArea = document.getElementById('slotArea');
+        const balanceEl = document.getElementById('balance');
+        const betEl = document.getElementById('bet');
+        const winEl = document.getElementById('win');
+        const msgEl = document.getElementById('msg');
+        const spinBtn = document.getElementById('spinBtn');
+        const overlay = document.getElementById('overlay');
+        const overlayText = document.getElementById('overlayText');
+        const fsBadge = document.getElementById('fsBadge');
+
+        // Inicjalizacja siatki HTML
+        for (let col = 0; col < colsCount; col++) {
+            let reelDiv = document.createElement('div');
+            reelDiv.className = 'reel';
+            let colCells = [];
+            for (let row = 0; row < reelHeights[col]; row++) {
+                let cell = document.createElement('div');
+                cell.className = 'cell';
+                cell.innerText = getRandomSymbol(col);
+                reelDiv.appendChild(cell);
+                colCells.push(cell);
+            }
+            slotArea.appendChild(reelDiv);
+            gridCells.push(colCells);
+        }
+
+        function getRandomSymbol(colIndex) {
+            let pool = ['🦈','🐢','🐢','🐟','🐟','🐟','🅰️','🅰️','🅰️','👑','👑','🔟','🔟','🔟'];
+            pool.push(SCATTER);
+            // Wild pojawia się na bębnach 2, 3, 4, 5, 6 (indeksy 1-5)
+            if (colIndex > 0) pool.push(WILD, WILD);
+            return pool[Math.floor(Math.random() * pool.length)];
+        }
+
+        function changeBet(amount) {
+            if (isSpinning || freeSpinsCount > 0) return;
+            let newBet = bet + amount;
+            if (newBet >= 0.50 && newBet <= 500) {
+                bet = newBet;
+                betEl.innerText = bet.toFixed(2);
+            }
+        }
+
+        function showOverlay(text, duration) {
+            overlayText.innerText = text;
+            overlay.classList.add('active');
+            setTimeout(() => { overlay.classList.remove('active'); checkNextSpin(); }, duration);
+        }
+
+        function startSpin() {
+            if (isSpinning) return;
+            if (freeSpinsCount === 0 && balance < bet) {
+                msgEl.innerText = "BRAK KASY!";
+                return;
+            }
+
+            isSpinning = true;
+            spinBtn.disabled = true;
+            document.getElementById('btnMinus').disabled = true;
+            document.getElementById('btnPlus').disabled = true;
+
+            if (freeSpinsCount === 0) {
+                balance -= bet;
+                wildMultiplier = 1; // Reset mnożnika w podstawowej grze
+            } else {
+                freeSpinsCount--;
+                updateFsBadge();
+            }
+
+            balanceEl.innerText = balance.toFixed(2);
+            winEl.innerText = "0.00";
+            msgEl.innerText = freeSpinsCount > 0 ? "FREE GAMES..." : "KRĘCĘ...";
+            
+            // Wyczyść podświetlenia
+            for (let col = 0; col < colsCount; col++) {
+                gridCells[col].forEach(c => {
+                    c.classList.remove('win');
+                    c.classList.add('spinning');
+                });
+            }
+
+            let spins = 0;
+            const interval = setInterval(() => {
+                spins++;
+                
+                for(let col = 0; col < colsCount; col++) {
+                    if (spins < 10 + (col * 3)) {
+                        gridCells[col].forEach(c => c.innerText = getRandomSymbol(col));
+                    } else {
+                        gridCells[col].forEach(c => c.classList.remove('spinning'));
+                    }
+                }
+
+                if (spins >= 25) {
+                    clearInterval(interval);
+                    checkWin();
+                }
+            }, 60);
+        }
+
+        function updateFsBadge() {
+            if (freeSpinsCount > 0) {
+                fsBadge.style.display = 'block';
+                fsBadge.innerText = `DARMOWE SPINY: ${freeSpinsCount} (WILD X${wildMultiplier})`;
+            } else {
+                fsBadge.style.display = 'none';
+            }
+        }
+
+        function checkWin() {
+            let totalWin = 0;
+            let winningNodes = new Set();
+            let scatterCount = 0;
+            let scatterNodes = [];
+
+            // Zliczanie Scatterów na całej planszy
+            for (let col = 0; col < colsCount; col++) {
+                gridCells[col].forEach(c => {
+                    if (c.innerText === SCATTER) {
+                        scatterCount++;
+                        scatterNodes.push(c);
+                    }
+                });
+            }
+
+            // Logika All Ways 5625 (od lewej do prawej)
+            let firstReelSymbols = [...new Set(gridCells[0].map(c => c.innerText))].filter(s => s !== SCATTER);
+
+            firstReelSymbols.forEach(symbol => {
+                let waysMultiplier = 1;
+                let matchedCols = 0;
+                let currentWinPath = [];
+
+                for (let col = 0; col < colsCount; col++) {
+                    let matchInCol = gridCells[col].filter(c => c.innerText === symbol || c.innerText === WILD);
+                    
+                    if (matchInCol.length > 0) {
+                        waysMultiplier *= matchInCol.length;
+                        matchedCols++;
+                        matchInCol.forEach(c => currentWinPath.push(c));
+                    } else {
+                        break; // Łańcuch przerwany
+                    }
+                }
+
+                if (matchedCols >= 3) {
+                    let basePayout = paytable[symbol][matchedCols - 1] * bet;
+                    
+                    // Sprawdzamy, czy w ścieżce wygranej użyto Wilda. Jeśli tak, mnożymy przez wildMultiplier (działa w FS)
+                    let usedWild = currentWinPath.some(c => c.innerText === WILD);
+                    let finalMult = usedWild ? wildMultiplier : 1;
+
+                    let winAmount = basePayout * waysMultiplier * finalMult;
+                    totalWin += winAmount;
+                    
+                    currentWinPath.forEach(c => winningNodes.add(c));
+                }
+            });
+
+            // Logika Darmowych Gier i RECHARGE
+            let triggeredAction = false;
+
+            if (freeSpinsCount === 0 && scatterCount >= 3) {
+                // Aktywacja z gry bazowej
+                initialFreeSpins = (scatterCount === 3) ? 8 : (scatterCount === 4) ? 10 : (scatterCount === 5) ? 12 : 15;
+                freeSpinsCount += initialFreeSpins;
+                wildMultiplier = 1;
+                scatterNodes.forEach(c => winningNodes.add(c));
+                updateFsBadge();
+                showOverlay("FREE GAMES\nWYGRANE!", 2500);
+                triggeredAction = true;
+            } 
+            else if (freeSpinsCount > 0 && scatterCount >= 2) {
+                // Mechanika RECHARGE w trakcie FS
+                freeSpinsCount = initialFreeSpins; // Reset do wartości początkowej
+                wildMultiplier++; // Podbicie mnożnika Wild
+                scatterNodes.forEach(c => winningNodes.add(c));
+                updateFsBadge();
+                showOverlay(`RECHARGE!\nWILD X${wildMultiplier}`, 2000);
+                triggeredAction = true;
+            }
+
+            // Obsługa wygranej
+            if (totalWin > 0) {
+                balance += totalWin;
+                winEl.innerText = totalWin.toFixed(2);
+                balanceEl.innerText = balance.toFixed(2);
+                msgEl.innerText = `WYGRYWASZ ${totalWin.toFixed(2)} PLN!`;
+                
+                winningNodes.forEach(c => c.classList.add('win'));
+
+                if (!triggeredAction) {
+                    if (totalWin >= bet * 10) {
+                        showOverlay(`BIG WIN!\n${totalWin.toFixed(2)} PLN`, 2500);
+                    } else {
+                        checkNextSpin();
+                    }
+                }
+            } else {
+                if (!triggeredAction) {
+                    msgEl.innerText = freeSpinsCount > 0 ? "KOLEJNY OBRÓT..." : "GOTOWY";
+                    checkNextSpin();
+                }
+            }
+        }
+
+        function checkNextSpin() {
+            if (freeSpinsCount > 0) {
+                setTimeout(() => startSpin(), 1200);
+            } else {
+                isSpinning = false;
+                spinBtn.disabled = false;
+                document.getElementById('btnMinus').disabled = false;
+                document.getElementById('btnPlus').disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
