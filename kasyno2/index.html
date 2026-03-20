@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shark Blitz Clone 5625 Ways</title>
+    <title>Shark Blitz 5625 Clone</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
@@ -88,11 +88,25 @@
             justify-content: center;
             align-items: center;
             font-size: 3rem;
+            font-weight: 900;
+            color: #fff;
             border-radius: 8px;
             border: 1px solid #004080;
             box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
             transition: 0.2s;
         }
+
+        .cell.text-sym {
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px #000;
+        }
+
+        .sym-A { color: #ff4136; }
+        .sym-K { color: #ff851b; }
+        .sym-Q { color: #b10dc9; }
+        .sym-J { color: #0074d9; }
+        .sym-10 { color: #ffdc00; }
+        .sym-9 { color: #2ecc40; }
 
         .cell.spinning {
             filter: blur(3px);
@@ -180,7 +194,7 @@
         }
 
         .spin-btn:active { transform: translateY(4px); }
-        .spin-btn:disabled { background: #555; color: #aaa; }
+        .spin-btn:disabled { background: #555; color: #aaa; cursor: not-allowed; }
 
         .msg-bar {
             margin-top: 15px;
@@ -190,7 +204,6 @@
             height: 30px;
         }
 
-        /* OVERLAY RECHARGE / BIG WIN */
         .overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -215,7 +228,8 @@
         }
 
         @media (max-width: 768px) {
-            .cell { width: 50px; height: 50px; font-size: 2rem; }
+            .cell { width: 50px; height: 50px; font-size: 1.8rem; }
+            .cell.text-sym { font-size: 1.5rem; }
             .slot-area { gap: 4px; padding: 10px; }
             .reel { gap: 4px; }
             .action-row { flex-direction: column; gap: 10px; }
@@ -233,12 +247,11 @@
             <div class="overlay-text" id="overlayText">BIG WIN!</div>
         </div>
 
-        <div class="title">Ocean Blitz</div>
+        <div class="title">Shark Blitz 5625 Clone</div>
         <div class="ways-badge">5625 WARIACJI WYGRANEJ</div>
         <div class="fs-badge" id="fsBadge">DARMOWE SPINY: 0 (MNOŻNIK WILD X1)</div>
         
-        <div class="slot-area" id="slotArea">
-            </div>
+        <div class="slot-area" id="slotArea"></div>
 
         <div class="info-panel">
             <span class="kasa">Kasa: <span id="balance">100.00</span> PLN</span>
@@ -247,9 +260,9 @@
 
         <div class="action-row">
             <div class="bet-controls">
-                <button class="bet-btn" id="btnMinus" onclick="changeBet(-0.5)">-</button>
-                <div class="bet-amount">Stawka: <span id="bet">1.00</span></div>
-                <button class="bet-btn" id="btnPlus" onclick="changeBet(0.5)">+</button>
+                <button class="bet-btn" id="btnMinus" onclick="changeBet(-1.00)">-</button>
+                <div class="bet-amount">Stawka: <span id="bet">2.50</span></div>
+                <button class="bet-btn" id="btnPlus" onclick="changeBet(1.00)">+</button>
             </div>
             <button class="spin-btn" id="spinBtn" onclick="startSpin()">SPIN</button>
         </div>
@@ -258,34 +271,35 @@
     </div>
 
     <script>
-        // Konfiguracja układu bębnów: 3 - 5 - 5 - 5 - 5 - 3
         const reelHeights = [3, 5, 5, 5, 5, 3];
         const colsCount = reelHeights.length;
         
-        const symbols = ['🦈', '🐢', '🐟', '🅰️', '👑', '🔟'];
         const WILD = '💎';
         const SCATTER = '🎁';
 
-        // Tabela wypłat (mnożniki stawki) za 3, 4, 5, 6 symboli
         const paytable = {
-            '🦈': [0, 0, 1.0, 2.5, 5.0, 10.0],
-            '🐢': [0, 0, 0.8, 1.5, 3.0, 6.0],
-            '🐟': [0, 0, 0.5, 1.0, 2.0, 4.0],
-            '🅰️': [0, 0, 0.3, 0.8, 1.5, 3.0],
-            '👑': [0, 0, 0.2, 0.5, 1.0, 2.0],
-            '🔟': [0, 0, 0.1, 0.3, 0.8, 1.5]
+            '🦈': [0, 25, 75, 100, 125, 150],
+            '🪼': [0, 10, 25, 75, 100, 125],
+            '🐢': [0, 10, 25, 75, 100, 125],
+            '🐬': [0, 5, 20, 40, 75, 100],
+            '🐟': [0, 5, 20, 40, 75, 100],
+            'A':  [0, 0, 10, 20, 50, 75],
+            'K':  [0, 0, 10, 20, 50, 75],
+            'Q':  [0, 0, 5, 15, 40, 60],
+            'J':  [0, 0, 5, 15, 40, 60],
+            '10': [0, 0, 5, 10, 40, 50],
+            '9':  [0, 0, 5, 10, 40, 50]
         };
 
         let balance = 100.00;
-        let bet = 1.00;
+        let bet = 2.50;
         let isSpinning = false;
         
-        // Logika Free Games i Recharge
         let freeSpinsCount = 0;
         let initialFreeSpins = 0;
         let wildMultiplier = 1;
 
-        let gridCells = []; // Tablica przechowująca kolumny z komórkami DOM
+        let gridCells = []; 
 
         const slotArea = document.getElementById('slotArea');
         const balanceEl = document.getElementById('balance');
@@ -293,11 +307,12 @@
         const winEl = document.getElementById('win');
         const msgEl = document.getElementById('msg');
         const spinBtn = document.getElementById('spinBtn');
+        const btnMinus = document.getElementById('btnMinus');
+        const btnPlus = document.getElementById('btnPlus');
         const overlay = document.getElementById('overlay');
         const overlayText = document.getElementById('overlayText');
         const fsBadge = document.getElementById('fsBadge');
 
-        // Inicjalizacja siatki HTML
         for (let col = 0; col < colsCount; col++) {
             let reelDiv = document.createElement('div');
             reelDiv.className = 'reel';
@@ -305,7 +320,7 @@
             for (let row = 0; row < reelHeights[col]; row++) {
                 let cell = document.createElement('div');
                 cell.className = 'cell';
-                cell.innerText = getRandomSymbol(col);
+                setCellData(cell, getRandomSymbol(col));
                 reelDiv.appendChild(cell);
                 colCells.push(cell);
             }
@@ -313,11 +328,21 @@
             gridCells.push(colCells);
         }
 
+        function setCellData(cell, symbol) {
+            cell.innerText = symbol;
+            cell.className = 'cell'; 
+            if (['A','K','Q','J','10','9'].includes(symbol)) {
+                cell.classList.add('text-sym', `sym-${symbol}`);
+            }
+        }
+
         function getRandomSymbol(colIndex) {
-            let pool = ['🦈','🐢','🐢','🐟','🐟','🐟','🅰️','🅰️','🅰️','👑','👑','🔟','🔟','🔟'];
+            let pool = [
+                '🦈','🪼','🐢','🐬','🐟',
+                'A','A','K','K','Q','Q','J','J','10','10','9','9'
+            ];
             pool.push(SCATTER);
-            // Wild pojawia się na bębnach 2, 3, 4, 5, 6 (indeksy 1-5)
-            if (colIndex > 0) pool.push(WILD, WILD);
+            if (colIndex > 0) pool.push(WILD);
             return pool[Math.floor(Math.random() * pool.length)];
         }
 
@@ -333,7 +358,10 @@
         function showOverlay(text, duration) {
             overlayText.innerText = text;
             overlay.classList.add('active');
-            setTimeout(() => { overlay.classList.remove('active'); checkNextSpin(); }, duration);
+            setTimeout(() => { 
+                overlay.classList.remove('active'); 
+                checkNextSpin(); 
+            }, duration);
         }
 
         function startSpin() {
@@ -345,12 +373,12 @@
 
             isSpinning = true;
             spinBtn.disabled = true;
-            document.getElementById('btnMinus').disabled = true;
-            document.getElementById('btnPlus').disabled = true;
+            btnMinus.disabled = true;
+            btnPlus.disabled = true;
 
             if (freeSpinsCount === 0) {
                 balance -= bet;
-                wildMultiplier = 1; // Reset mnożnika w podstawowej grze
+                wildMultiplier = 1; 
             } else {
                 freeSpinsCount--;
                 updateFsBadge();
@@ -358,9 +386,8 @@
 
             balanceEl.innerText = balance.toFixed(2);
             winEl.innerText = "0.00";
-            msgEl.innerText = freeSpinsCount > 0 ? "FREE GAMES..." : "KRĘCĘ...";
+            msgEl.innerText = freeSpinsCount > 0 ? "DARMOWA GRA..." : "KRĘCĘ...";
             
-            // Wyczyść podświetlenia
             for (let col = 0; col < colsCount; col++) {
                 gridCells[col].forEach(c => {
                     c.classList.remove('win');
@@ -374,7 +401,8 @@
                 
                 for(let col = 0; col < colsCount; col++) {
                     if (spins < 10 + (col * 3)) {
-                        gridCells[col].forEach(c => c.innerText = getRandomSymbol(col));
+                        gridCells[col].forEach(c => setCellData(c, getRandomSymbol(col)));
+                        gridCells[col].forEach(c => c.classList.add('spinning'));
                     } else {
                         gridCells[col].forEach(c => c.classList.remove('spinning'));
                     }
@@ -402,7 +430,6 @@
             let scatterCount = 0;
             let scatterNodes = [];
 
-            // Zliczanie Scatterów na całej planszy
             for (let col = 0; col < colsCount; col++) {
                 gridCells[col].forEach(c => {
                     if (c.innerText === SCATTER) {
@@ -412,8 +439,8 @@
                 });
             }
 
-            // Logika All Ways 5625 (od lewej do prawej)
             let firstReelSymbols = [...new Set(gridCells[0].map(c => c.innerText))].filter(s => s !== SCATTER);
+            let coinValue = bet / 25;
 
             firstReelSymbols.forEach(symbol => {
                 let waysMultiplier = 1;
@@ -428,29 +455,28 @@
                         matchedCols++;
                         matchInCol.forEach(c => currentWinPath.push(c));
                     } else {
-                        break; // Łańcuch przerwany
+                        break; 
                     }
                 }
 
-                if (matchedCols >= 3) {
-                    let basePayout = paytable[symbol][matchedCols - 1] * bet;
-                    
-                    // Sprawdzamy, czy w ścieżce wygranej użyto Wilda. Jeśli tak, mnożymy przez wildMultiplier (działa w FS)
-                    let usedWild = currentWinPath.some(c => c.innerText === WILD);
-                    let finalMult = usedWild ? wildMultiplier : 1;
+                if (matchedCols >= 2) {
+                    let tableVal = paytable[symbol][matchedCols - 1];
+                    if (tableVal > 0) {
+                        let basePayout = tableVal * coinValue;
+                        let usedWild = currentWinPath.some(c => c.innerText === WILD);
+                        let finalMult = usedWild ? wildMultiplier : 1;
 
-                    let winAmount = basePayout * waysMultiplier * finalMult;
-                    totalWin += winAmount;
-                    
-                    currentWinPath.forEach(c => winningNodes.add(c));
+                        let winAmount = basePayout * waysMultiplier * finalMult;
+                        totalWin += winAmount;
+                        
+                        currentWinPath.forEach(c => winningNodes.add(c));
+                    }
                 }
             });
 
-            // Logika Darmowych Gier i RECHARGE
             let triggeredAction = false;
 
             if (freeSpinsCount === 0 && scatterCount >= 3) {
-                // Aktywacja z gry bazowej
                 initialFreeSpins = (scatterCount === 3) ? 8 : (scatterCount === 4) ? 10 : (scatterCount === 5) ? 12 : 15;
                 freeSpinsCount += initialFreeSpins;
                 wildMultiplier = 1;
@@ -460,16 +486,14 @@
                 triggeredAction = true;
             } 
             else if (freeSpinsCount > 0 && scatterCount >= 2) {
-                // Mechanika RECHARGE w trakcie FS
-                freeSpinsCount = initialFreeSpins; // Reset do wartości początkowej
-                wildMultiplier++; // Podbicie mnożnika Wild
+                freeSpinsCount = initialFreeSpins; 
+                wildMultiplier++; 
                 scatterNodes.forEach(c => winningNodes.add(c));
                 updateFsBadge();
                 showOverlay(`RECHARGE!\nWILD X${wildMultiplier}`, 2000);
                 triggeredAction = true;
             }
 
-            // Obsługa wygranej
             if (totalWin > 0) {
                 balance += totalWin;
                 winEl.innerText = totalWin.toFixed(2);
@@ -487,20 +511,19 @@
                 }
             } else {
                 if (!triggeredAction) {
-                    msgEl.innerText = freeSpinsCount > 0 ? "KOLEJNY OBRÓT..." : "GOTOWY";
+                    msgEl.innerText = freeSpinsCount > 0 ? "KLIKNIJ SPIN (DARMOWY)" : "GOTOWY";
                     checkNextSpin();
                 }
             }
         }
 
         function checkNextSpin() {
+            isSpinning = false;
+            spinBtn.disabled = false;
+            btnMinus.disabled = false;
+            btnPlus.disabled = false;
             if (freeSpinsCount > 0) {
-                setTimeout(() => startSpin(), 1200);
-            } else {
-                isSpinning = false;
-                spinBtn.disabled = false;
-                document.getElementById('btnMinus').disabled = false;
-                document.getElementById('btnPlus').disabled = false;
+                msgEl.innerText = "KLIKNIJ SPIN (DARMOWY)";
             }
         }
     </script>
