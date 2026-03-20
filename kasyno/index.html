@@ -8,102 +8,102 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
         body { 
-            background: radial-gradient(circle at center, #0f172a 0%, #000000 100%);
+            background: radial-gradient(circle at center, #1e1b4b 0%, #000000 100%);
             color: #fff; font-family: 'Montserrat', sans-serif; 
             min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center;
-            padding: 20px; overflow: hidden;
+            padding: 20px;
         }
 
         .machine {
-            background: linear-gradient(145deg, #1e293b, #0f172a);
+            background: #0f172a;
             padding: 40px;
             border-radius: 20px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.9), inset 0 0 20px rgba(251, 191, 36, 0.15);
+            box-shadow: 0 0 60px rgba(0,0,0,0.9), inset 0 0 20px rgba(251, 191, 36, 0.1);
             border: 2px solid #334155;
-            border-top: 6px solid #fbbf24;
+            border-top: 4px solid #fbbf24;
             text-align: center;
             width: 100%;
-            max-width: 900px;
-            position: relative;
+            max-width: 800px;
         }
 
         .title {
-            font-size: 3rem;
+            font-size: 2.5rem;
             font-weight: 900;
-            background: linear-gradient(to bottom, #fde68a, #d97706);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #fbbf24;
             margin-bottom: 30px;
             text-transform: uppercase;
-            letter-spacing: 5px;
-            filter: drop-shadow(0 4px 8px rgba(217, 119, 6, 0.5));
+            letter-spacing: 4px;
+            text-shadow: 0 2px 10px rgba(251, 191, 36, 0.4);
         }
 
         .slot-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 15px;
+            gap: 10px;
             background: #020617;
-            padding: 25px;
+            padding: 20px;
             border-radius: 15px;
-            border: inset 6px #1e293b;
+            border: inset 4px #1e293b;
             margin-bottom: 30px;
-            position: relative;
         }
 
         .cell {
-            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
-            height: 130px;
+            background: #1e293b;
+            height: 120px;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 4rem;
+            font-size: 3.5rem;
             border-radius: 10px;
             border: 1px solid #334155;
-            box-shadow: inset 0 10px 20px rgba(0,0,0,0.8);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+            transition: 0.3s;
         }
 
         .cell.spinning {
             filter: blur(4px);
-            transform: scale(0.95);
+            animation: vibrate 0.1s infinite;
+        }
+
+        @keyframes vibrate {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(1px, 1px); }
+            100% { transform: translate(0, 0); }
         }
 
         .cell.win {
-            background: radial-gradient(circle, rgba(251, 191, 36, 0.4) 0%, rgba(217, 119, 6, 0.1) 100%);
+            background: rgba(251, 191, 36, 0.2);
             border-color: #fbbf24;
-            box-shadow: 0 0 25px rgba(251, 191, 36, 0.6), inset 0 0 20px rgba(251, 191, 36, 0.4);
-            animation: winPop 0.6s infinite alternate;
-            z-index: 10;
+            box-shadow: 0 0 15px rgba(251, 191, 36, 0.5), inset 0 0 20px rgba(251, 191, 36, 0.3);
+            animation: pulseWin 1s infinite;
         }
 
-        @keyframes winPop {
-            0% { transform: scale(1); filter: brightness(1); }
-            100% { transform: scale(1.1); filter: brightness(1.3); }
+        @keyframes pulseWin {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
 
         .controls {
             display: flex;
             flex-direction: column;
-            gap: 25px;
+            gap: 20px;
         }
 
         .info-panel {
             display: flex;
             justify-content: space-between;
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: 900;
             background: #000;
-            padding: 20px 30px;
-            border-radius: 15px;
-            border: 2px solid #334155;
-            box-shadow: inset 0 5px 15px rgba(0,0,0,0.8);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #334155;
         }
 
         .kasa { color: #10b981; }
         .wygrana { color: #fbbf24; transition: transform 0.2s; }
-        .wygrana.bump { transform: scale(1.2); color: #fde68a; }
+        .wygrana.bump { transform: scale(1.2); }
 
         .action-row {
             display: flex;
@@ -117,62 +117,106 @@
             align-items: center;
             gap: 15px;
             background: #020617;
-            padding: 15px 25px;
-            border-radius: 15px;
-            border: 2px solid #334155;
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: 1px solid #334155;
         }
 
         .bet-btn {
             background: #3b82f6;
             color: white;
             border: none;
-            width: 50px;
-            height: 50px;
-            font-size: 2rem;
-            font-weight: 900;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: 0.2s;
-            box-shadow: 0 4px 0 #1d4ed8;
-        }
-
-        .bet-btn:hover { filter: brightness(1.1); transform: translateY(2px); box-shadow: 0 2px 0 #1d4ed8; }
-        .bet-btn:active { transform: translateY(4px); box-shadow: none; }
-
-        .bet-amount {
+            width: 45px;
+            height: 45px;
             font-size: 1.8rem;
             font-weight: 900;
-            width: 160px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .bet-btn:hover { background: #2563eb; }
+        .bet-btn:active { transform: scale(0.95); }
+
+        .bet-amount {
+            font-size: 1.5rem;
+            font-weight: 900;
+            width: 140px;
             color: #fff;
         }
 
         .spin-btn {
             flex: 1;
-            background: linear-gradient(to bottom, #fbbf24, #d97706);
+            background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
             color: #000;
             border: none;
             padding: 20px;
-            font-size: 2.8rem;
+            font-size: 2.5rem;
             font-weight: 900;
-            border-radius: 15px;
+            border-radius: 10px;
             cursor: pointer;
             text-transform: uppercase;
-            box-shadow: 0 8px 0 #b45309, 0 15px 20px rgba(0,0,0,0.5);
-            transition: 0.1s;
+            box-shadow: 0 5px 20px rgba(245, 158, 11, 0.4);
+            transition: 0.2s;
         }
 
-        .spin-btn:hover { filter: brightness(1.1); }
-        .spin-btn:active { transform: translateY(8px); box-shadow: 0 0 0 #b45309, 0 5px 10px rgba(0,0,0,0.5); }
-        .spin-btn:disabled { background: #475569; color: #94a3b8; box-shadow: 0 8px 0 #334155; cursor: not-allowed; }
+        .spin-btn:hover { filter: brightness(1.1); transform: translateY(-2px); }
+        .spin-btn:active { transform: translateY(2px); box-shadow: 0 2px 10px rgba(245, 158, 11, 0.4); }
+        .spin-btn:disabled { background: #475569; color: #94a3b8; cursor: not-allowed; transform: none; box-shadow: none; }
 
         .message {
             margin-top: 25px;
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: 900;
-            height: 40px;
+            height: 35px;
             color: #fbbf24;
             text-transform: uppercase;
-            letter-spacing: 2px;
+        }
+
+        /* Responsywność dla urządzeń mobilnych */
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .machine { padding: 20px; }
+            .title { font-size: 1.8rem; margin-bottom: 20px; }
+            
+            .slot-grid {
+                grid-template-columns: repeat(5, minmax(0, 1fr)); /* Pozwala komórkom na większe ściskanie */
+                gap: 5px;
+                padding: 10px;
+            }
+            .cell {
+                height: 80px; /* Znaczne zmniejszenie wysokości komórek */
+                font-size: 2.2rem; /* Zmniejszenie emoji */
+            }
+
+            .info-panel {
+                font-size: 1rem;
+                padding: 10px;
+                flex-direction: column;
+                gap: 5px;
+                text-align: center;
+            }
+
+            .action-row {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .bet-controls {
+                width: 100%;
+                justify-content: center;
+                padding: 10px;
+            }
+            .bet-amount { font-size: 1.1rem; width: auto; }
+            .bet-btn { width: 35px; height: 35px; font-size: 1.3rem; }
+
+            .spin-btn {
+                width: 100%;
+                padding: 15px;
+                font-size: 1.8rem;
+            }
+
+            .message { font-size: 1.1rem; height: auto; padding: 10px 0; }
         }
     </style>
 </head>
@@ -200,21 +244,19 @@
             </div>
         </div>
 
-        <div class="message" id="msg">GOTOWY DO GRY</div>
+        <div class="message" id="msg">ZAKRĘĆ BĘBNAMI!</div>
     </div>
 
     <script>
-        const fruits = ['🍒', '🍋', '🍉', '🍇'];
-        const specials = ['🔔', '⭐', '7️⃣'];
-        const allSymbols = [...fruits, ...specials];
+        const symbols = ['🍒', '🍋', '🍉', '🍇', '🔔', '⭐', '7️⃣'];
+        const multipliers = { '🍒': 2, '🍋': 3, '🍉': 5, '🍇': 8, '🔔': 15, '⭐': 25, '7️⃣': 50 };
         
-        // Tablica 5 linii wygrywających
         const paylines = [
-            [0, 1, 2, 3, 4],    // Góra
-            [5, 6, 7, 8, 9],    // Środek
-            [10, 11, 12, 13, 14], // Dół
-            [0, 6, 12, 8, 4],   // V w dół
-            [10, 6, 2, 8, 14]   // V w górę
+            [0, 1, 2, 3, 4],    // Pozioma góra
+            [5, 6, 7, 8, 9],    // Pozioma środek
+            [10, 11, 12, 13, 14], // Pozioma dół
+            [0, 6, 12, 8, 4],   // Linia V w dół
+            [10, 6, 2, 8, 14]   // Linia V w górę
         ];
 
         let balance = 100;
@@ -238,9 +280,9 @@
         const spinBtn = document.getElementById('spinBtn');
 
         function getRandomSymbol() {
-            // Generujemy więcej owoców niż siódemek, żeby gra miała sens matematyczny
-            const pool = ['🍒','🍒','🍋','🍋','🍉','🍉','🍇','🍇','🔔','⭐','7️⃣'];
-            return pool[Math.floor(Math.random() * pool.length)];
+            // Pool z przewagą tańszych symboli dla lepszej grywalności
+            const weightedSymbols = ['🍒','🍒','🍒','🍒','🍋','🍋','🍋','🍉','🍉','🍉','🍇','🍇','🔔','⭐','7️⃣'];
+            return weightedSymbols[Math.floor(Math.random() * weightedSymbols.length)];
         }
 
         function changeBet(amount) {
@@ -252,36 +294,10 @@
             }
         }
 
-        // Zwraca bazową stawkę za 3 symbole
-        function getBaseWin(symbol, currentBet) {
-            if (fruits.includes(symbol)) return currentBet * 0.5;
-            if (symbol === '🔔') return currentBet * 0.8;
-            if (symbol === '⭐') return currentBet * 1.0;
-            if (symbol === '7️⃣') return currentBet * 2.0;
-            return 0;
-        }
-
-        // Zwraca mnożnik za 4 i 5 symboli
-        function getMultiplier(symbol, count) {
-            if (count === 4) {
-                if (fruits.includes(symbol)) return 1.5;
-                if (symbol === '🔔') return 1.8;
-                if (symbol === '⭐') return 2.0;
-                if (symbol === '7️⃣') return 3.0;
-            }
-            if (count === 5) {
-                if (fruits.includes(symbol)) return 2.0;
-                if (symbol === '🔔') return 2.5;
-                if (symbol === '⭐') return 3.0;
-                if (symbol === '7️⃣') return 5.0;
-            }
-            return 1; // Dla 3 symboli mnożnik bazowy to 1
-        }
-
         function spin() {
             if (isSpinning) return;
             if (balance < bet) {
-                msgEl.innerText = "BRAK ŚRODKÓW!";
+                msgEl.innerText = "BRAK ŚRODKÓW! ODŚWIEŻ STRONĘ.";
                 msgEl.style.color = "#ef4444";
                 return;
             }
@@ -291,9 +307,9 @@
             balance -= bet;
             winEl.innerText = "0";
             winEl.parentElement.classList.remove('bump');
-            msgEl.innerText = "LOSOWANIE...";
+            msgEl.innerText = "KRĘCĘ...";
             msgEl.style.color = "#fff";
-            balanceEl.innerText = Math.floor(balance);
+            balanceEl.innerText = balance;
 
             cells.forEach(c => {
                 c.classList.remove('win');
@@ -301,17 +317,19 @@
             });
 
             let spins = 0;
+            const maxSpins = 20;
             
             const interval = setInterval(() => {
                 spins++;
                 
                 for(let col = 0; col < 5; col++) {
-                    // Stopujemy bębny od lewej do prawej
+                    // Stopowanie bębnów po kolei od lewej
                     if (spins < 10 + (col * 3)) {
                         cells[col].innerText = getRandomSymbol();
                         cells[col + 5].innerText = getRandomSymbol();
                         cells[col + 10].innerText = getRandomSymbol();
                     } else {
+                        // Zatrzymane bębny nie wibrują i nie są rozmyte
                         cells[col].classList.remove('spinning');
                         cells[col + 5].classList.remove('spinning');
                         cells[col + 10].classList.remove('spinning');
@@ -322,7 +340,7 @@
                     clearInterval(interval);
                     checkWin();
                 }
-            }, 50);
+            }, 60);
         }
 
         function checkWin() {
@@ -334,21 +352,22 @@
                 let count = 1;
                 let lineWinCells = [line[0]];
 
+                // Sprawdzanie nieprzerwanego ciągu od lewej
                 for (let i = 1; i < 5; i++) {
                     if (cells[line[i]].innerText === symbol) {
                         count++;
                         lineWinCells.push(line[i]);
                     } else {
-                        break; // Szukamy nieprzerwanego ciągu od lewej
+                        break; 
                     }
                 }
 
+                // Minimum 3 symbole od lewej dają wygraną
                 if (count >= 3) {
-                    let baseWin = getBaseWin(symbol, bet);
-                    let multiplier = getMultiplier(symbol, count);
-                    
-                    let linePayout = baseWin * multiplier;
-                    totalWin += linePayout;
+                    let baseWin = multipliers[symbol] * (bet / 10); // Przelicznik wygranej
+                    // Bonus za więcej symboli w linii
+                    let multiplier = (count === 3) ? 1 : (count === 4) ? 5 : 20;
+                    totalWin += baseWin * multiplier;
                     
                     lineWinCells.forEach(idx => winningCells.add(idx));
                 }
@@ -358,15 +377,15 @@
             spinBtn.disabled = false;
 
             if (totalWin > 0) {
-                totalWin = Math.floor(totalWin); // Bez groszy, twarda kasa
+                totalWin = Math.floor(totalWin);
                 balance += totalWin;
                 winEl.innerText = totalWin;
-                winEl.parentElement.classList.add('bump');
+                winEl.parentElement.classList.add('bump'); // Efekt bumpu na wygranej
                 balanceEl.innerText = balance;
                 msgEl.innerText = `WYGRYWASZ ${totalWin} PLN!`;
                 msgEl.style.color = "#10b981";
                 
-                winningCells.forEach(idx => cells[idx].classList.add('win'));
+                winningCells.forEach(idx => cells[idx].classList.add('win')); // Pulsowanie wygranych komórek
             } else {
                 msgEl.innerText = "SPRÓBUJ PONOWNIE!";
                 msgEl.style.color = "#94a3b8";
