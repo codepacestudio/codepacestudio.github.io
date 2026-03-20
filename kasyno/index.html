@@ -24,6 +24,8 @@
             text-align: center;
             width: 100%;
             max-width: 800px;
+            position: relative;
+            overflow: hidden;
         }
 
         .title {
@@ -173,72 +175,103 @@
             text-transform: uppercase;
         }
 
-        /* Responsywność dla urządzeń mobilnych */
+        /* OVERLAY WYGRANEJ */
+        .win-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .win-overlay.active {
+            display: flex;
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .win-text {
+            font-size: 3rem;
+            color: #10b981;
+            font-weight: 900;
+            text-shadow: 0 0 30px rgba(16, 185, 129, 0.6);
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .big-win-text {
+            font-size: 5rem;
+            color: #fbbf24;
+            font-weight: 900;
+            text-shadow: 0 0 40px rgba(251, 191, 36, 0.8);
+            display: none;
+            text-transform: uppercase;
+            animation: bigWinPulse 0.5s infinite alternate;
+        }
+
+        @keyframes bigWinPulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.1); }
+        }
+
         @media (max-width: 768px) {
             body { padding: 10px; }
             .machine { padding: 20px; }
             .title { font-size: 1.8rem; margin-bottom: 20px; }
             
             .slot-grid {
-                grid-template-columns: repeat(5, minmax(0, 1fr)); /* Pozwala komórkom na większe ściskanie */
+                grid-template-columns: repeat(5, minmax(0, 1fr)); 
                 gap: 5px;
                 padding: 10px;
             }
-            .cell {
-                height: 80px; /* Znaczne zmniejszenie wysokości komórek */
-                font-size: 2.2rem; /* Zmniejszenie emoji */
-            }
+            .cell { height: 80px; font-size: 2.2rem; }
 
-            .info-panel {
-                font-size: 1rem;
-                padding: 10px;
-                flex-direction: column;
-                gap: 5px;
-                text-align: center;
-            }
+            .info-panel { font-size: 1rem; padding: 10px; flex-direction: column; gap: 5px; text-align: center; }
+            .action-row { flex-direction: column; gap: 15px; }
 
-            .action-row {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .bet-controls {
-                width: 100%;
-                justify-content: center;
-                padding: 10px;
-            }
+            .bet-controls { width: 100%; justify-content: center; padding: 10px; }
             .bet-amount { font-size: 1.1rem; width: auto; }
             .bet-btn { width: 35px; height: 35px; font-size: 1.3rem; }
 
-            .spin-btn {
-                width: 100%;
-                padding: 15px;
-                font-size: 1.8rem;
-            }
-
+            .spin-btn { width: 100%; padding: 15px; font-size: 1.8rem; }
             .message { font-size: 1.1rem; height: auto; padding: 10px 0; }
+
+            .win-text { font-size: 2rem; }
+            .big-win-text { font-size: 3.5rem; }
         }
     </style>
 </head>
 <body>
 
     <div class="machine">
+        <div class="win-overlay" id="winOverlay">
+            <div class="win-text" id="winText">WYGRYWASZ 0.00 PLN!</div>
+            <div class="big-win-text" id="bigWinText">BIG WIN!</div>
+        </div>
+
         <div class="title">Grand Casino 5X</div>
         
-        <div class="slot-grid" id="grid">
-            </div>
+        <div class="slot-grid" id="grid"></div>
 
         <div class="controls">
             <div class="info-panel">
-                <span class="kasa">Kasa: <span id="balance">100</span> PLN</span>
-                <span class="wygrana">Wygrana: <span id="win">0</span> PLN</span>
+                <span class="kasa">Kasa: <span id="balance">100.00</span> PLN</span>
+                <span class="wygrana">Wygrana: <span id="win">0.00</span> PLN</span>
             </div>
 
             <div class="action-row">
                 <div class="bet-controls">
-                    <button class="bet-btn" onclick="changeBet(-10)">-</button>
-                    <div class="bet-amount">Stawka: <span id="bet">10</span></div>
-                    <button class="bet-btn" onclick="changeBet(10)">+</button>
+                    <button class="bet-btn" onclick="changeBet(-0.5)">-</button>
+                    <div class="bet-amount">Stawka: <span id="bet">1.00</span></div>
+                    <button class="bet-btn" onclick="changeBet(0.5)">+</button>
                 </div>
                 <button class="spin-btn" id="spinBtn" onclick="spin()">SPIN</button>
             </div>
@@ -252,15 +285,15 @@
         const multipliers = { '🍒': 2, '🍋': 3, '🍉': 5, '🍇': 8, '🔔': 15, '⭐': 25, '7️⃣': 50 };
         
         const paylines = [
-            [0, 1, 2, 3, 4],    // Pozioma góra
-            [5, 6, 7, 8, 9],    // Pozioma środek
-            [10, 11, 12, 13, 14], // Pozioma dół
-            [0, 6, 12, 8, 4],   // Linia V w dół
-            [10, 6, 2, 8, 14]   // Linia V w górę
+            [0, 1, 2, 3, 4],    
+            [5, 6, 7, 8, 9],    
+            [10, 11, 12, 13, 14], 
+            [0, 6, 12, 8, 4],   
+            [10, 6, 2, 8, 14]   
         ];
 
-        let balance = 100;
-        let bet = 10;
+        let balance = 100.00;
+        let bet = 1.00;
         let isSpinning = false;
         let cells = [];
 
@@ -278,9 +311,11 @@
         const winEl = document.getElementById('win');
         const msgEl = document.getElementById('msg');
         const spinBtn = document.getElementById('spinBtn');
+        const winOverlay = document.getElementById('winOverlay');
+        const winText = document.getElementById('winText');
+        const bigWinText = document.getElementById('bigWinText');
 
         function getRandomSymbol() {
-            // Pool z przewagą tańszych symboli dla lepszej grywalności
             const weightedSymbols = ['🍒','🍒','🍒','🍒','🍋','🍋','🍋','🍉','🍉','🍉','🍇','🍇','🔔','⭐','7️⃣'];
             return weightedSymbols[Math.floor(Math.random() * weightedSymbols.length)];
         }
@@ -288,9 +323,9 @@
         function changeBet(amount) {
             if (isSpinning) return;
             let newBet = bet + amount;
-            if (newBet >= 10 && newBet <= 500) {
+            if (newBet >= 0.50 && newBet <= 500) {
                 bet = newBet;
-                betEl.innerText = bet;
+                betEl.innerText = bet.toFixed(2);
             }
         }
 
@@ -305,11 +340,12 @@
             isSpinning = true;
             spinBtn.disabled = true;
             balance -= bet;
-            winEl.innerText = "0";
+            winEl.innerText = "0.00";
             winEl.parentElement.classList.remove('bump');
             msgEl.innerText = "KRĘCĘ...";
             msgEl.style.color = "#fff";
-            balanceEl.innerText = balance;
+            balanceEl.innerText = balance.toFixed(2);
+            winOverlay.classList.remove('active');
 
             cells.forEach(c => {
                 c.classList.remove('win');
@@ -323,13 +359,11 @@
                 spins++;
                 
                 for(let col = 0; col < 5; col++) {
-                    // Stopowanie bębnów po kolei od lewej
                     if (spins < 10 + (col * 3)) {
                         cells[col].innerText = getRandomSymbol();
                         cells[col + 5].innerText = getRandomSymbol();
                         cells[col + 10].innerText = getRandomSymbol();
                     } else {
-                        // Zatrzymane bębny nie wibrują i nie są rozmyte
                         cells[col].classList.remove('spinning');
                         cells[col + 5].classList.remove('spinning');
                         cells[col + 10].classList.remove('spinning');
@@ -352,7 +386,6 @@
                 let count = 1;
                 let lineWinCells = [line[0]];
 
-                // Sprawdzanie nieprzerwanego ciągu od lewej
                 for (let i = 1; i < 5; i++) {
                     if (cells[line[i]].innerText === symbol) {
                         count++;
@@ -362,10 +395,8 @@
                     }
                 }
 
-                // Minimum 3 symbole od lewej dają wygraną
                 if (count >= 3) {
-                    let baseWin = multipliers[symbol] * (bet / 10); // Przelicznik wygranej
-                    // Bonus za więcej symboli w linii
+                    let baseWin = multipliers[symbol] * (bet / 10);
                     let multiplier = (count === 3) ? 1 : (count === 4) ? 5 : 20;
                     totalWin += baseWin * multiplier;
                     
@@ -377,15 +408,29 @@
             spinBtn.disabled = false;
 
             if (totalWin > 0) {
-                totalWin = Math.floor(totalWin);
                 balance += totalWin;
-                winEl.innerText = totalWin;
-                winEl.parentElement.classList.add('bump'); // Efekt bumpu na wygranej
-                balanceEl.innerText = balance;
-                msgEl.innerText = `WYGRYWASZ ${totalWin} PLN!`;
+                winEl.innerText = totalWin.toFixed(2);
+                winEl.parentElement.classList.add('bump');
+                balanceEl.innerText = balance.toFixed(2);
+                msgEl.innerText = `WYGRYWASZ ${totalWin.toFixed(2)} PLN!`;
                 msgEl.style.color = "#10b981";
                 
-                winningCells.forEach(idx => cells[idx].classList.add('win')); // Pulsowanie wygranych komórek
+                winningCells.forEach(idx => cells[idx].classList.add('win'));
+
+                // Odpalanie overlayu
+                winText.innerText = `WYGRYWASZ ${totalWin.toFixed(2)} PLN!`;
+                if (totalWin >= bet * 10) {
+                    bigWinText.style.display = 'block';
+                } else {
+                    bigWinText.style.display = 'none';
+                }
+                winOverlay.classList.add('active');
+
+                // Ukrycie overlayu po chwili
+                setTimeout(() => {
+                    winOverlay.classList.remove('active');
+                }, 2500);
+
             } else {
                 msgEl.innerText = "SPRÓBUJ PONOWNIE!";
                 msgEl.style.color = "#94a3b8";
