@@ -3,194 +3,285 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fruit Slot Machine</title>
+    <title>Grand Casino 5X Premium</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
         body { 
-            background: radial-gradient(circle at center, #2c3e50 0%, #000000 100%);
+            background: radial-gradient(circle at center, #0f172a 0%, #000000 100%);
             color: #fff; font-family: 'Montserrat', sans-serif; 
-            height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            padding: 20px; overflow: hidden;
         }
 
         .machine {
-            background: #1e293b;
+            background: linear-gradient(145deg, #1e293b, #0f172a);
             padding: 40px;
             border-radius: 20px;
-            box-shadow: 0 0 50px rgba(0,0,0,0.8), inset 0 0 10px rgba(255,255,255,0.1);
-            border: 4px solid #334155;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.9), inset 0 0 20px rgba(251, 191, 36, 0.15);
+            border: 2px solid #334155;
+            border-top: 6px solid #fbbf24;
             text-align: center;
             width: 100%;
-            max-width: 500px;
+            max-width: 900px;
+            position: relative;
         }
 
         .title {
-            font-size: 2rem;
+            font-size: 3rem;
             font-weight: 900;
-            color: #f59e0b;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-        }
-
-        .display {
-            display: flex;
-            justify-content: space-between;
-            background: #0f172a;
-            padding: 20px;
-            border-radius: 15px;
-            border: inset 5px #000;
+            background: linear-gradient(to bottom, #fde68a, #d97706);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            filter: drop-shadow(0 4px 8px rgba(217, 119, 6, 0.5));
         }
 
-        .reel {
-            font-size: 4rem;
-            width: 100px;
-            height: 120px;
-            background: #fff;
-            color: #000;
+        .slot-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            background: #020617;
+            padding: 25px;
+            border-radius: 15px;
+            border: inset 6px #1e293b;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .cell {
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            height: 130px;
             display: flex;
             justify-content: center;
             align-items: center;
+            font-size: 4rem;
             border-radius: 10px;
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
+            border: 1px solid #334155;
+            box-shadow: inset 0 10px 20px rgba(0,0,0,0.8);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        .cell.spinning {
+            filter: blur(4px);
+            transform: scale(0.95);
+        }
+
+        .cell.win {
+            background: radial-gradient(circle, rgba(251, 191, 36, 0.4) 0%, rgba(217, 119, 6, 0.1) 100%);
+            border-color: #fbbf24;
+            box-shadow: 0 0 25px rgba(251, 191, 36, 0.6), inset 0 0 20px rgba(251, 191, 36, 0.4);
+            animation: winPop 0.6s infinite alternate;
+            z-index: 10;
+        }
+
+        @keyframes winPop {
+            0% { transform: scale(1); filter: brightness(1); }
+            100% { transform: scale(1.1); filter: brightness(1.3); }
         }
 
         .controls {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 25px;
         }
 
         .info-panel {
             display: flex;
             justify-content: space-between;
-            font-size: 1.2rem;
-            font-weight: 700;
+            font-size: 1.8rem;
+            font-weight: 900;
             background: #000;
-            padding: 15px;
-            border-radius: 10px;
-            color: #10b981;
+            padding: 20px 30px;
+            border-radius: 15px;
+            border: 2px solid #334155;
+            box-shadow: inset 0 5px 15px rgba(0,0,0,0.8);
+        }
+
+        .kasa { color: #10b981; }
+        .wygrana { color: #fbbf24; transition: transform 0.2s; }
+        .wygrana.bump { transform: scale(1.2); color: #fde68a; }
+
+        .action-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
         }
 
         .bet-controls {
             display: flex;
-            justify-content: center;
             align-items: center;
             gap: 15px;
+            background: #020617;
+            padding: 15px 25px;
+            border-radius: 15px;
+            border: 2px solid #334155;
         }
 
         .bet-btn {
             background: #3b82f6;
             color: white;
             border: none;
-            width: 40px;
-            height: 40px;
-            font-size: 1.5rem;
-            font-weight: 900;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .bet-btn:hover { background: #2563eb; }
-        .bet-btn:active { transform: scale(0.95); }
-
-        .bet-amount {
-            font-size: 1.5rem;
-            font-weight: 900;
-            width: 100px;
-        }
-
-        .spin-btn {
-            background: linear-gradient(to bottom, #ef4444, #b91c1c);
-            color: white;
-            border: none;
-            padding: 20px;
+            width: 50px;
+            height: 50px;
             font-size: 2rem;
             font-weight: 900;
             border-radius: 10px;
             cursor: pointer;
-            text-transform: uppercase;
-            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4);
             transition: 0.2s;
+            box-shadow: 0 4px 0 #1d4ed8;
         }
 
-        .spin-btn:hover { filter: brightness(1.2); }
-        .spin-btn:active { transform: translateY(4px); box-shadow: 0 1px 5px rgba(239, 68, 68, 0.4); }
-        .spin-btn:disabled { background: #475569; cursor: not-allowed; transform: none; box-shadow: none; }
+        .bet-btn:hover { filter: brightness(1.1); transform: translateY(2px); box-shadow: 0 2px 0 #1d4ed8; }
+        .bet-btn:active { transform: translateY(4px); box-shadow: none; }
+
+        .bet-amount {
+            font-size: 1.8rem;
+            font-weight: 900;
+            width: 160px;
+            color: #fff;
+        }
+
+        .spin-btn {
+            flex: 1;
+            background: linear-gradient(to bottom, #fbbf24, #d97706);
+            color: #000;
+            border: none;
+            padding: 20px;
+            font-size: 2.8rem;
+            font-weight: 900;
+            border-radius: 15px;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 0 8px 0 #b45309, 0 15px 20px rgba(0,0,0,0.5);
+            transition: 0.1s;
+        }
+
+        .spin-btn:hover { filter: brightness(1.1); }
+        .spin-btn:active { transform: translateY(8px); box-shadow: 0 0 0 #b45309, 0 5px 10px rgba(0,0,0,0.5); }
+        .spin-btn:disabled { background: #475569; color: #94a3b8; box-shadow: 0 8px 0 #334155; cursor: not-allowed; }
 
         .message {
-            margin-top: 20px;
-            font-size: 1.5rem;
+            margin-top: 25px;
+            font-size: 1.8rem;
             font-weight: 900;
-            height: 30px;
+            height: 40px;
             color: #fbbf24;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
     </style>
 </head>
 <body>
 
     <div class="machine">
-        <div class="title">Casino 777</div>
+        <div class="title">Grand Casino 5X</div>
         
-        <div class="display">
-            <div class="reel" id="r1">🍒</div>
-            <div class="reel" id="r2">🍋</div>
-            <div class="reel" id="r3">🔔</div>
-        </div>
+        <div class="slot-grid" id="grid">
+            </div>
 
         <div class="controls">
             <div class="info-panel">
-                <span>Kasa: <span id="balance">100</span> PLN</span>
-                <span>Wygrana: <span id="win">0</span> PLN</span>
+                <span class="kasa">Kasa: <span id="balance">100</span> PLN</span>
+                <span class="wygrana">Wygrana: <span id="win">0</span> PLN</span>
             </div>
 
-            <div class="bet-controls">
-                <button class="bet-btn" onclick="changeBet(-10)">-</button>
-                <div class="bet-amount">Stawka: <span id="bet">10</span></div>
-                <button class="bet-btn" onclick="changeBet(10)">+</button>
+            <div class="action-row">
+                <div class="bet-controls">
+                    <button class="bet-btn" onclick="changeBet(-10)">-</button>
+                    <div class="bet-amount">Stawka: <span id="bet">10</span></div>
+                    <button class="bet-btn" onclick="changeBet(10)">+</button>
+                </div>
+                <button class="spin-btn" id="spinBtn" onclick="spin()">SPIN</button>
             </div>
-
-            <button class="spin-btn" id="spinBtn" onclick="spin()">SPIN</button>
         </div>
 
-        <div class="message" id="msg"></div>
+        <div class="message" id="msg">GOTOWY DO GRY</div>
     </div>
 
     <script>
-        const symbols = ['🍒', '🍋', '🍉', '🍇', '🔔', '⭐', '7️⃣'];
+        const fruits = ['🍒', '🍋', '🍉', '🍇'];
+        const specials = ['🔔', '⭐', '7️⃣'];
+        const allSymbols = [...fruits, ...specials];
+        
+        // Tablica 5 linii wygrywających
+        const paylines = [
+            [0, 1, 2, 3, 4],    // Góra
+            [5, 6, 7, 8, 9],    // Środek
+            [10, 11, 12, 13, 14], // Dół
+            [0, 6, 12, 8, 4],   // V w dół
+            [10, 6, 2, 8, 14]   // V w górę
+        ];
+
         let balance = 100;
         let bet = 10;
         let isSpinning = false;
+        let cells = [];
 
-        const r1 = document.getElementById('r1');
-        const r2 = document.getElementById('r2');
-        const r3 = document.getElementById('r3');
+        const grid = document.getElementById('grid');
+        for (let i = 0; i < 15; i++) {
+            let cell = document.createElement('div');
+            cell.className = 'cell';
+            cell.innerText = getRandomSymbol();
+            grid.appendChild(cell);
+            cells.push(cell);
+        }
+
         const balanceEl = document.getElementById('balance');
         const betEl = document.getElementById('bet');
         const winEl = document.getElementById('win');
         const msgEl = document.getElementById('msg');
         const spinBtn = document.getElementById('spinBtn');
 
+        function getRandomSymbol() {
+            // Generujemy więcej owoców niż siódemek, żeby gra miała sens matematyczny
+            const pool = ['🍒','🍒','🍋','🍋','🍉','🍉','🍇','🍇','🔔','⭐','7️⃣'];
+            return pool[Math.floor(Math.random() * pool.length)];
+        }
+
         function changeBet(amount) {
             if (isSpinning) return;
             let newBet = bet + amount;
-            if (newBet >= 10 && newBet <= 100) {
+            if (newBet >= 10 && newBet <= 500) {
                 bet = newBet;
                 betEl.innerText = bet;
             }
         }
 
-        function updateUI() {
-            balanceEl.innerText = balance;
+        // Zwraca bazową stawkę za 3 symbole
+        function getBaseWin(symbol, currentBet) {
+            if (fruits.includes(symbol)) return currentBet * 0.5;
+            if (symbol === '🔔') return currentBet * 0.8;
+            if (symbol === '⭐') return currentBet * 1.0;
+            if (symbol === '7️⃣') return currentBet * 2.0;
+            return 0;
+        }
+
+        // Zwraca mnożnik za 4 i 5 symboli
+        function getMultiplier(symbol, count) {
+            if (count === 4) {
+                if (fruits.includes(symbol)) return 1.5;
+                if (symbol === '🔔') return 1.8;
+                if (symbol === '⭐') return 2.0;
+                if (symbol === '7️⃣') return 3.0;
+            }
+            if (count === 5) {
+                if (fruits.includes(symbol)) return 2.0;
+                if (symbol === '🔔') return 2.5;
+                if (symbol === '⭐') return 3.0;
+                if (symbol === '7️⃣') return 5.0;
+            }
+            return 1; // Dla 3 symboli mnożnik bazowy to 1
         }
 
         function spin() {
             if (isSpinning) return;
             if (balance < bet) {
-                msgEl.innerText = "Brak środków! Odśwież stronę.";
+                msgEl.innerText = "BRAK ŚRODKÓW!";
                 msgEl.style.color = "#ef4444";
                 return;
             }
@@ -199,19 +290,35 @@
             spinBtn.disabled = true;
             balance -= bet;
             winEl.innerText = "0";
-            msgEl.innerText = "";
-            updateUI();
+            winEl.parentElement.classList.remove('bump');
+            msgEl.innerText = "LOSOWANIE...";
+            msgEl.style.color = "#fff";
+            balanceEl.innerText = Math.floor(balance);
+
+            cells.forEach(c => {
+                c.classList.remove('win');
+                c.classList.add('spinning');
+            });
 
             let spins = 0;
-            const maxSpins = 20;
             
             const interval = setInterval(() => {
-                r1.innerText = symbols[Math.floor(Math.random() * symbols.length)];
-                r2.innerText = symbols[Math.floor(Math.random() * symbols.length)];
-                r3.innerText = symbols[Math.floor(Math.random() * symbols.length)];
                 spins++;
+                
+                for(let col = 0; col < 5; col++) {
+                    // Stopujemy bębny od lewej do prawej
+                    if (spins < 10 + (col * 3)) {
+                        cells[col].innerText = getRandomSymbol();
+                        cells[col + 5].innerText = getRandomSymbol();
+                        cells[col + 10].innerText = getRandomSymbol();
+                    } else {
+                        cells[col].classList.remove('spinning');
+                        cells[col + 5].classList.remove('spinning');
+                        cells[col + 10].classList.remove('spinning');
+                    }
+                }
 
-                if (spins >= maxSpins) {
+                if (spins >= 22) {
                     clearInterval(interval);
                     checkWin();
                 }
@@ -219,23 +326,49 @@
         }
 
         function checkWin() {
-            const v1 = r1.innerText;
-            const v2 = r2.innerText;
-            const v3 = r3.innerText;
+            let totalWin = 0;
+            let winningCells = new Set();
+
+            paylines.forEach(line => {
+                let symbol = cells[line[0]].innerText;
+                let count = 1;
+                let lineWinCells = [line[0]];
+
+                for (let i = 1; i < 5; i++) {
+                    if (cells[line[i]].innerText === symbol) {
+                        count++;
+                        lineWinCells.push(line[i]);
+                    } else {
+                        break; // Szukamy nieprzerwanego ciągu od lewej
+                    }
+                }
+
+                if (count >= 3) {
+                    let baseWin = getBaseWin(symbol, bet);
+                    let multiplier = getMultiplier(symbol, count);
+                    
+                    let linePayout = baseWin * multiplier;
+                    totalWin += linePayout;
+                    
+                    lineWinCells.forEach(idx => winningCells.add(idx));
+                }
+            });
 
             isSpinning = false;
             spinBtn.disabled = false;
 
-            if (v1 === v2 && v2 === v3) {
-                let multiplier = (v1 === '7️⃣') ? 50 : 10;
-                let winAmount = bet * multiplier;
-                balance += winAmount;
-                winEl.innerText = winAmount;
-                msgEl.innerText = `WYGRYWASZ ${winAmount} PLN!`;
+            if (totalWin > 0) {
+                totalWin = Math.floor(totalWin); // Bez groszy, twarda kasa
+                balance += totalWin;
+                winEl.innerText = totalWin;
+                winEl.parentElement.classList.add('bump');
+                balanceEl.innerText = balance;
+                msgEl.innerText = `WYGRYWASZ ${totalWin} PLN!`;
                 msgEl.style.color = "#10b981";
-                updateUI();
+                
+                winningCells.forEach(idx => cells[idx].classList.add('win'));
             } else {
-                msgEl.innerText = "Spróbuj ponownie!";
+                msgEl.innerText = "SPRÓBUJ PONOWNIE!";
                 msgEl.style.color = "#94a3b8";
             }
         }
