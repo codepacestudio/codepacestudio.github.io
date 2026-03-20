@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mega Scatter 6x4</title>
+    <title>Mega Scatter 6x4 Premium</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
@@ -32,10 +32,27 @@
             font-size: 2.2rem;
             font-weight: 900;
             color: #fbbf24;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             text-transform: uppercase;
             letter-spacing: 3px;
             text-shadow: 0 2px 10px rgba(251, 191, 36, 0.4);
+        }
+
+        .fs-badge {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: #ec4899;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            height: 30px;
+            text-shadow: 0 0 10px rgba(236, 72, 153, 0.5);
+            display: none;
+            animation: pulseFs 1s infinite alternate;
+        }
+
+        @keyframes pulseFs {
+            from { transform: scale(1); }
+            to { transform: scale(1.05); }
         }
 
         .message {
@@ -86,6 +103,13 @@
             background: rgba(251, 191, 36, 0.2);
             border-color: #fbbf24;
             box-shadow: 0 0 15px rgba(251, 191, 36, 0.5), inset 0 0 20px rgba(251, 191, 36, 0.3);
+            animation: pulseWin 1s infinite;
+        }
+        
+        .cell.mult-win {
+            background: rgba(236, 72, 153, 0.2);
+            border-color: #ec4899;
+            box-shadow: 0 0 15px rgba(236, 72, 153, 0.5);
             animation: pulseWin 1s infinite;
         }
 
@@ -148,6 +172,7 @@
 
         .bet-btn:hover { background: #2563eb; }
         .bet-btn:active { transform: scale(0.95); }
+        .bet-btn:disabled { background: #475569; cursor: not-allowed; }
 
         .bet-amount {
             font-size: 1.5rem;
@@ -175,7 +200,6 @@
         .spin-btn:active { transform: translateY(2px); box-shadow: 0 2px 10px rgba(245, 158, 11, 0.4); }
         .spin-btn:disabled { background: #475569; color: #94a3b8; cursor: not-allowed; transform: none; box-shadow: none; }
 
-        /* OVERLAY WYGRANEJ */
         .win-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -217,6 +241,15 @@
             animation: bigWinPulse 0.5s infinite alternate;
         }
 
+        .fs-win-text {
+            font-size: 4rem;
+            color: #ec4899;
+            font-weight: 900;
+            text-shadow: 0 0 40px rgba(236, 72, 153, 0.8);
+            display: none;
+            text-transform: uppercase;
+        }
+
         @keyframes bigWinPulse {
             from { transform: scale(1); }
             to { transform: scale(1.1); }
@@ -225,14 +258,11 @@
         @media (max-width: 768px) {
             body { padding: 5px; }
             .machine { padding: 15px; }
-            .title { font-size: 1.5rem; margin-bottom: 10px; }
+            .title { font-size: 1.5rem; margin-bottom: 5px; }
+            .fs-badge { font-size: 1.2rem; height: 25px; margin-bottom: 5px; }
             .message { font-size: 1.1rem; height: 25px; margin-bottom: 10px;}
             
-            .slot-grid {
-                grid-template-columns: repeat(6, minmax(0, 1fr)); 
-                gap: 4px;
-                padding: 8px;
-            }
+            .slot-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 4px; padding: 8px; }
             .cell { height: 65px; font-size: 2rem; }
 
             .info-panel { font-size: 1rem; padding: 10px; flex-direction: column; gap: 5px; text-align: center; }
@@ -246,6 +276,7 @@
 
             .win-text { font-size: 2rem; }
             .big-win-text { font-size: 3.5rem; }
+            .fs-win-text { font-size: 2.5rem; }
         }
     </style>
 </head>
@@ -255,9 +286,11 @@
         <div class="win-overlay" id="winOverlay">
             <div class="win-text" id="winText">WYGRYWASZ 0.00 PLN!</div>
             <div class="big-win-text" id="bigWinText">BIG WIN!</div>
+            <div class="fs-win-text" id="fsWinText">DARMOWE SPINY!</div>
         </div>
 
         <div class="title">Mega Scatter 6x4</div>
+        <div class="fs-badge" id="fsBadge">DARMOWE SPINY: 0</div>
         <div class="message" id="msg">GOTOWY DO GRY</div>
         
         <div class="slot-grid" id="grid"></div>
@@ -270,11 +303,11 @@
 
             <div class="action-row">
                 <div class="bet-controls">
-                    <button class="bet-btn" onclick="changeBet(-0.5)">-</button>
+                    <button class="bet-btn" id="btnMinus" onclick="changeBet(-0.5)">-</button>
                     <div class="bet-amount">Stawka: <span id="bet">1.00</span></div>
-                    <button class="bet-btn" onclick="changeBet(0.5)">+</button>
+                    <button class="bet-btn" id="btnPlus" onclick="changeBet(0.5)">+</button>
                 </div>
-                <button class="spin-btn" id="spinBtn" onclick="spin()">SPIN</button>
+                <button class="spin-btn" id="spinBtn" onclick="startSpin()">SPIN</button>
             </div>
         </div>
     </div>
@@ -288,13 +321,14 @@
         let balance = 100.00;
         let bet = 1.00;
         let isSpinning = false;
+        let freeSpinsCount = 0;
         let cells = [];
 
         const grid = document.getElementById('grid');
         for (let i = 0; i < totalCells; i++) {
             let cell = document.createElement('div');
             cell.className = 'cell';
-            cell.innerText = getRandomSymbol();
+            cell.innerText = getRandomSymbol(i % colsCount, false);
             grid.appendChild(cell);
             cells.push(cell);
         }
@@ -304,17 +338,29 @@
         const winEl = document.getElementById('win');
         const msgEl = document.getElementById('msg');
         const spinBtn = document.getElementById('spinBtn');
+        const btnMinus = document.getElementById('btnMinus');
+        const btnPlus = document.getElementById('btnPlus');
         const winOverlay = document.getElementById('winOverlay');
         const winText = document.getElementById('winText');
         const bigWinText = document.getElementById('bigWinText');
+        const fsWinText = document.getElementById('fsWinText');
+        const fsBadge = document.getElementById('fsBadge');
 
-        function getRandomSymbol() {
-            const pool = ['🍒','🍒','🍒','🍋','🍋','🍉','🍉','🍇','🍇','🔔','⭐','7️⃣'];
+        function getRandomSymbol(colIndex, inFS) {
+            let pool = ['🍒','🍒','🍒','🍋','🍋','🍋','🍉','🍉','🍉','🍇','🍇','🔔','⭐','7️⃣'];
+            pool.push('🎁'); // Scatter (Bonus)
+            
+            if (colIndex > 0) {
+                pool.push('🃏', '🃏'); // Wild tylko od 2 kolumny
+            }
+            if (inFS) {
+                pool.push('✖️2', '✖️5', '✖️10'); // Mnożniki tylko w darmowych spinach
+            }
             return pool[Math.floor(Math.random() * pool.length)];
         }
 
         function changeBet(amount) {
-            if (isSpinning) return;
+            if (isSpinning || freeSpinsCount > 0) return;
             let newBet = bet + amount;
             if (newBet >= 0.50 && newBet <= 500) {
                 bet = newBet;
@@ -322,7 +368,6 @@
             }
         }
 
-        // Pobiera komórki z konkretnej kolumny
         function getColCells(colIndex) {
             let colCells = [];
             for (let row = 0; row < rowsCount; row++) {
@@ -331,9 +376,9 @@
             return colCells;
         }
 
-        function spin() {
+        function startSpin() {
             if (isSpinning) return;
-            if (balance < bet) {
+            if (freeSpinsCount === 0 && balance < bet) {
                 msgEl.innerText = "BRAK ŚRODKÓW!";
                 msgEl.style.color = "#ef4444";
                 return;
@@ -341,28 +386,38 @@
 
             isSpinning = true;
             spinBtn.disabled = true;
-            balance -= bet;
+            btnMinus.disabled = true;
+            btnPlus.disabled = true;
+            
+            if (freeSpinsCount === 0) {
+                balance -= bet;
+            } else {
+                freeSpinsCount--;
+                fsBadge.innerText = `DARMOWE SPINY: ${freeSpinsCount}`;
+            }
+
             winEl.innerText = "0.00";
             winEl.parentElement.classList.remove('bump');
-            msgEl.innerText = "KRĘCĘ...";
+            msgEl.innerText = freeSpinsCount > 0 ? "DARMOWY OBRÓT..." : "KRĘCĘ...";
             msgEl.style.color = "#fff";
             balanceEl.innerText = balance.toFixed(2);
             winOverlay.classList.remove('active');
 
             cells.forEach(c => {
-                c.classList.remove('win');
+                c.classList.remove('win', 'mult-win');
                 c.classList.add('spinning');
             });
 
             let spins = 0;
-            
+            const inFS = freeSpinsCount > 0 || fsBadge.style.display === 'block';
+
             const interval = setInterval(() => {
                 spins++;
                 
                 for(let col = 0; col < colsCount; col++) {
                     if (spins < 10 + (col * 3)) {
                         for(let row = 0; row < rowsCount; row++) {
-                            cells[col + row * colsCount].innerText = getRandomSymbol();
+                            cells[col + row * colsCount].innerText = getRandomSymbol(col, inFS);
                         }
                     } else {
                         for(let row = 0; row < rowsCount; row++) {
@@ -373,91 +428,148 @@
 
                 if (spins >= 30) {
                     clearInterval(interval);
-                    checkWin();
+                    checkWin(inFS);
                 }
             }, 50);
         }
 
-        function checkWin() {
+        function checkWin(inFS) {
             let totalWin = 0;
             let winningCellsDom = new Set();
+            let scatterCells = cells.filter(c => c.innerText === '🎁');
+            let multCells = cells.filter(c => ['✖️2', '✖️5', '✖️10'].includes(c.innerText));
 
-            // Skanujemy wszystkie unikalne symbole w pierwszej kolumnie
-            let reel0Symbols = [...new Set(getColCells(0).map(c => c.innerText))];
+            let reel0Symbols = [...new Set(getColCells(0).map(c => c.innerText))].filter(s => s !== '🎁' && s !== '🃏' && !s.includes('✖️'));
 
             reel0Symbols.forEach(symbol => {
                 let symbolCount = 0;
                 let currentWinCells = [];
 
-                // Sprawdzamy kolejne kolumny od lewej
                 for (let col = 0; col < colsCount; col++) {
-                    let foundCells = getColCells(col).filter(c => c.innerText === symbol);
+                    let foundCells = getColCells(col).filter(c => c.innerText === symbol || (col > 0 && c.innerText === '🃏'));
                     if (foundCells.length > 0) {
-                        symbolCount += foundCells.length;
+                        symbolCount += foundCells.length; // Liczymy wszystkie trafienia i Wildy w kolumnie
                         foundCells.forEach(c => currentWinCells.push(c));
                     } else {
-                        break; // Łańcuch przerwany, sprawdzamy ile zebraliśmy do tej pory
+                        break; 
                     }
                 }
 
                 if (symbolCount >= 3) {
-                    // Wygrana bazowa za 3 symbole
                     let baseWin = 0;
                     if (fruits.includes(symbol)) baseWin = bet * 0.5;
                     if (symbol === '🔔') baseWin = bet * 0.8;
                     if (symbol === '⭐') baseWin = bet * 1.0;
                     if (symbol === '7️⃣') baseWin = bet * 2.0;
 
-                    // Mnożniki za większą ilość symboli w łańcuchu
                     let multiplier = 1;
-                    if (symbolCount === 4) {
-                        if (fruits.includes(symbol)) multiplier = 1.5;
-                        if (symbol === '🔔') multiplier = 1.8;
-                        if (symbol === '⭐') multiplier = 2.0;
-                        if (symbol === '7️⃣') multiplier = 3.0;
-                    } else if (symbolCount >= 5) {
-                        if (fruits.includes(symbol)) multiplier = 2.0;
-                        if (symbol === '🔔') multiplier = 2.5;
-                        if (symbol === '⭐') multiplier = 3.0;
-                        if (symbol === '7️⃣') multiplier = 5.0;
-                    }
+                    if (symbolCount === 4) multiplier = 1.5;
+                    if (symbolCount >= 5) multiplier = 3.0;
+                    if (symbolCount >= 8) multiplier = 5.0; // Mega połączenie z Wildami
 
                     totalWin += baseWin * multiplier;
                     currentWinCells.forEach(c => winningCellsDom.add(c));
                 }
             });
 
-            isSpinning = false;
-            spinBtn.disabled = false;
+            // Logika Mnożników (tylko w FS i jeśli jest wygrana z linii)
+            let totalMultiplier = 0;
+            if (inFS && totalWin > 0 && multCells.length > 0) {
+                multCells.forEach(c => {
+                    winningCellsDom.add(c);
+                    c.classList.add('mult-win');
+                    if (c.innerText === '✖️2') totalMultiplier += 2;
+                    if (c.innerText === '✖️5') totalMultiplier += 5;
+                    if (c.innerText === '✖️10') totalMultiplier += 10;
+                });
+                totalWin = totalWin * totalMultiplier;
+            }
+
+            // Logika Darmowych Spinów
+            let triggeredFS = false;
+            let addedSpins = 0;
+            
+            if (!inFS && scatterCells.length >= 3) {
+                freeSpinsCount += 10;
+                triggeredFS = true;
+                scatterCells.forEach(c => winningCellsDom.add(c));
+            } else if (inFS && scatterCells.length >= 2) {
+                addedSpins = (scatterCells.length === 2) ? 2 : (scatterCells.length * 2 - 2);
+                freeSpinsCount += addedSpins;
+                scatterCells.forEach(c => winningCellsDom.add(c));
+                msgEl.innerText = `+${addedSpins} DARMOWYCH SPINÓW!`;
+            }
+
+            if (freeSpinsCount > 0) {
+                fsBadge.style.display = 'block';
+                fsBadge.innerText = `DARMOWE SPINY: ${freeSpinsCount}`;
+            } else {
+                fsBadge.style.display = 'none';
+            }
 
             if (totalWin > 0) {
                 balance += totalWin;
                 winEl.innerText = totalWin.toFixed(2);
                 winEl.parentElement.classList.add('bump');
                 balanceEl.innerText = balance.toFixed(2);
-                msgEl.innerText = `WYGRYWASZ ${totalWin.toFixed(2)} PLN!`;
-                msgEl.style.color = "#10b981";
                 
+                if (!triggeredFS && addedSpins === 0) {
+                    msgEl.innerText = `WYGRYWASZ ${totalWin.toFixed(2)} PLN!`;
+                }
+                msgEl.style.color = "#10b981";
                 winningCellsDom.forEach(c => c.classList.add('win'));
 
-                // Logika czarnego ekranu i BIG WIN
-                if (totalWin >= bet * 5) {
-                    winText.innerText = `WYGRYWASZ ${totalWin.toFixed(2)} PLN!`;
-                    if (totalWin >= bet * 10) {
+                if (totalWin >= bet * 5 || triggeredFS) {
+                    bigWinText.style.display = 'none';
+                    fsWinText.style.display = 'none';
+                    winText.style.display = 'block';
+
+                    if (triggeredFS) {
+                        winText.style.display = 'none';
+                        fsWinText.style.display = 'block';
+                    } else if (totalWin >= bet * 10) {
+                        winText.innerText = `WYGRYWASZ ${totalWin.toFixed(2)} PLN!`;
                         bigWinText.style.display = 'block';
                     } else {
-                        bigWinText.style.display = 'none';
+                        winText.innerText = `WYGRYWASZ ${totalWin.toFixed(2)} PLN!`;
                     }
+                    
                     winOverlay.classList.add('active');
-
                     setTimeout(() => {
                         winOverlay.classList.remove('active');
+                        checkNextSpin();
                     }, 2500);
+                } else {
+                    checkNextSpin();
                 }
-
             } else {
-                msgEl.innerText = "SPRÓBUJ PONOWNIE!";
-                msgEl.style.color = "#94a3b8";
+                if (triggeredFS) {
+                    winText.style.display = 'none';
+                    bigWinText.style.display = 'none';
+                    fsWinText.style.display = 'block';
+                    winOverlay.classList.add('active');
+                    setTimeout(() => {
+                        winOverlay.classList.remove('active');
+                        checkNextSpin();
+                    }, 2500);
+                } else {
+                    if (addedSpins === 0) {
+                        msgEl.innerText = freeSpinsCount > 0 ? "KOLEJNY OBRÓT..." : "SPRÓBUJ PONOWNIE!";
+                        msgEl.style.color = "#94a3b8";
+                    }
+                    checkNextSpin();
+                }
+            }
+        }
+
+        function checkNextSpin() {
+            if (freeSpinsCount > 0) {
+                setTimeout(() => startSpin(), 1000);
+            } else {
+                isSpinning = false;
+                spinBtn.disabled = false;
+                btnMinus.disabled = false;
+                btnPlus.disabled = false;
             }
         }
     </script>
