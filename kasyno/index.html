@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grand Casino 5X Premium</title>
+    <title>Mega Scatter 6x4</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
@@ -16,49 +16,58 @@
 
         .machine {
             background: #0f172a;
-            padding: 40px;
+            padding: 30px;
             border-radius: 20px;
             box-shadow: 0 0 60px rgba(0,0,0,0.9), inset 0 0 20px rgba(251, 191, 36, 0.1);
             border: 2px solid #334155;
             border-top: 4px solid #fbbf24;
             text-align: center;
             width: 100%;
-            max-width: 800px;
+            max-width: 900px;
             position: relative;
             overflow: hidden;
         }
 
         .title {
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             font-weight: 900;
             color: #fbbf24;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             text-transform: uppercase;
-            letter-spacing: 4px;
+            letter-spacing: 3px;
             text-shadow: 0 2px 10px rgba(251, 191, 36, 0.4);
+        }
+
+        .message {
+            font-size: 1.5rem;
+            font-weight: 900;
+            height: 35px;
+            color: #fbbf24;
+            text-transform: uppercase;
+            margin-bottom: 15px;
         }
 
         .slot-grid {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 10px;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
             background: #020617;
-            padding: 20px;
+            padding: 15px;
             border-radius: 15px;
             border: inset 4px #1e293b;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .cell {
             background: #1e293b;
-            height: 120px;
+            height: 90px;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 3.5rem;
+            font-size: 3rem;
             border-radius: 10px;
             border: 1px solid #334155;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
             transition: 0.3s;
         }
 
@@ -166,21 +175,12 @@
         .spin-btn:active { transform: translateY(2px); box-shadow: 0 2px 10px rgba(245, 158, 11, 0.4); }
         .spin-btn:disabled { background: #475569; color: #94a3b8; cursor: not-allowed; transform: none; box-shadow: none; }
 
-        .message {
-            margin-top: 25px;
-            font-size: 1.5rem;
-            font-weight: 900;
-            height: 35px;
-            color: #fbbf24;
-            text-transform: uppercase;
-        }
-
         /* OVERLAY WYGRANEJ */
         .win-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(5px);
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(8px);
             display: none;
             flex-direction: column;
             justify-content: center;
@@ -223,26 +223,26 @@
         }
 
         @media (max-width: 768px) {
-            body { padding: 10px; }
-            .machine { padding: 20px; }
-            .title { font-size: 1.8rem; margin-bottom: 20px; }
+            body { padding: 5px; }
+            .machine { padding: 15px; }
+            .title { font-size: 1.5rem; margin-bottom: 10px; }
+            .message { font-size: 1.1rem; height: 25px; margin-bottom: 10px;}
             
             .slot-grid {
-                grid-template-columns: repeat(5, minmax(0, 1fr)); 
-                gap: 5px;
-                padding: 10px;
+                grid-template-columns: repeat(6, minmax(0, 1fr)); 
+                gap: 4px;
+                padding: 8px;
             }
-            .cell { height: 80px; font-size: 2.2rem; }
+            .cell { height: 65px; font-size: 2rem; }
 
             .info-panel { font-size: 1rem; padding: 10px; flex-direction: column; gap: 5px; text-align: center; }
-            .action-row { flex-direction: column; gap: 15px; }
+            .action-row { flex-direction: column; gap: 10px; }
 
-            .bet-controls { width: 100%; justify-content: center; padding: 10px; }
+            .bet-controls { width: 100%; justify-content: center; padding: 8px; }
             .bet-amount { font-size: 1.1rem; width: auto; }
             .bet-btn { width: 35px; height: 35px; font-size: 1.3rem; }
 
-            .spin-btn { width: 100%; padding: 15px; font-size: 1.8rem; }
-            .message { font-size: 1.1rem; height: auto; padding: 10px 0; }
+            .spin-btn { width: 100%; padding: 12px; font-size: 1.6rem; }
 
             .win-text { font-size: 2rem; }
             .big-win-text { font-size: 3.5rem; }
@@ -257,7 +257,8 @@
             <div class="big-win-text" id="bigWinText">BIG WIN!</div>
         </div>
 
-        <div class="title">Grand Casino 5X</div>
+        <div class="title">Mega Scatter 6x4</div>
+        <div class="message" id="msg">GOTOWY DO GRY</div>
         
         <div class="slot-grid" id="grid"></div>
 
@@ -276,21 +277,13 @@
                 <button class="spin-btn" id="spinBtn" onclick="spin()">SPIN</button>
             </div>
         </div>
-
-        <div class="message" id="msg">ZAKRĘĆ BĘBNAMI!</div>
     </div>
 
     <script>
-        const symbols = ['🍒', '🍋', '🍉', '🍇', '🔔', '⭐', '7️⃣'];
-        const multipliers = { '🍒': 2, '🍋': 3, '🍉': 5, '🍇': 8, '🔔': 15, '⭐': 25, '7️⃣': 50 };
-        
-        const paylines = [
-            [0, 1, 2, 3, 4],    
-            [5, 6, 7, 8, 9],    
-            [10, 11, 12, 13, 14], 
-            [0, 6, 12, 8, 4],   
-            [10, 6, 2, 8, 14]   
-        ];
+        const fruits = ['🍒', '🍋', '🍉', '🍇'];
+        const colsCount = 6;
+        const rowsCount = 4;
+        const totalCells = colsCount * rowsCount;
 
         let balance = 100.00;
         let bet = 1.00;
@@ -298,7 +291,7 @@
         let cells = [];
 
         const grid = document.getElementById('grid');
-        for (let i = 0; i < 15; i++) {
+        for (let i = 0; i < totalCells; i++) {
             let cell = document.createElement('div');
             cell.className = 'cell';
             cell.innerText = getRandomSymbol();
@@ -316,8 +309,8 @@
         const bigWinText = document.getElementById('bigWinText');
 
         function getRandomSymbol() {
-            const weightedSymbols = ['🍒','🍒','🍒','🍒','🍋','🍋','🍋','🍉','🍉','🍉','🍇','🍇','🔔','⭐','7️⃣'];
-            return weightedSymbols[Math.floor(Math.random() * weightedSymbols.length)];
+            const pool = ['🍒','🍒','🍒','🍋','🍋','🍉','🍉','🍇','🍇','🔔','⭐','7️⃣'];
+            return pool[Math.floor(Math.random() * pool.length)];
         }
 
         function changeBet(amount) {
@@ -329,10 +322,19 @@
             }
         }
 
+        // Pobiera komórki z konkretnej kolumny
+        function getColCells(colIndex) {
+            let colCells = [];
+            for (let row = 0; row < rowsCount; row++) {
+                colCells.push(cells[colIndex + row * colsCount]);
+            }
+            return colCells;
+        }
+
         function spin() {
             if (isSpinning) return;
             if (balance < bet) {
-                msgEl.innerText = "BRAK ŚRODKÓW! ODŚWIEŻ STRONĘ.";
+                msgEl.innerText = "BRAK ŚRODKÓW!";
                 msgEl.style.color = "#ef4444";
                 return;
             }
@@ -353,54 +355,75 @@
             });
 
             let spins = 0;
-            const maxSpins = 20;
             
             const interval = setInterval(() => {
                 spins++;
                 
-                for(let col = 0; col < 5; col++) {
+                for(let col = 0; col < colsCount; col++) {
                     if (spins < 10 + (col * 3)) {
-                        cells[col].innerText = getRandomSymbol();
-                        cells[col + 5].innerText = getRandomSymbol();
-                        cells[col + 10].innerText = getRandomSymbol();
+                        for(let row = 0; row < rowsCount; row++) {
+                            cells[col + row * colsCount].innerText = getRandomSymbol();
+                        }
                     } else {
-                        cells[col].classList.remove('spinning');
-                        cells[col + 5].classList.remove('spinning');
-                        cells[col + 10].classList.remove('spinning');
+                        for(let row = 0; row < rowsCount; row++) {
+                            cells[col + row * colsCount].classList.remove('spinning');
+                        }
                     }
                 }
 
-                if (spins >= 22) {
+                if (spins >= 30) {
                     clearInterval(interval);
                     checkWin();
                 }
-            }, 60);
+            }, 50);
         }
 
         function checkWin() {
             let totalWin = 0;
-            let winningCells = new Set();
+            let winningCellsDom = new Set();
 
-            paylines.forEach(line => {
-                let symbol = cells[line[0]].innerText;
-                let count = 1;
-                let lineWinCells = [line[0]];
+            // Skanujemy wszystkie unikalne symbole w pierwszej kolumnie
+            let reel0Symbols = [...new Set(getColCells(0).map(c => c.innerText))];
 
-                for (let i = 1; i < 5; i++) {
-                    if (cells[line[i]].innerText === symbol) {
-                        count++;
-                        lineWinCells.push(line[i]);
+            reel0Symbols.forEach(symbol => {
+                let symbolCount = 0;
+                let currentWinCells = [];
+
+                // Sprawdzamy kolejne kolumny od lewej
+                for (let col = 0; col < colsCount; col++) {
+                    let foundCells = getColCells(col).filter(c => c.innerText === symbol);
+                    if (foundCells.length > 0) {
+                        symbolCount += foundCells.length;
+                        foundCells.forEach(c => currentWinCells.push(c));
                     } else {
-                        break; 
+                        break; // Łańcuch przerwany, sprawdzamy ile zebraliśmy do tej pory
                     }
                 }
 
-                if (count >= 3) {
-                    let baseWin = multipliers[symbol] * (bet / 10);
-                    let multiplier = (count === 3) ? 1 : (count === 4) ? 5 : 20;
+                if (symbolCount >= 3) {
+                    // Wygrana bazowa za 3 symbole
+                    let baseWin = 0;
+                    if (fruits.includes(symbol)) baseWin = bet * 0.5;
+                    if (symbol === '🔔') baseWin = bet * 0.8;
+                    if (symbol === '⭐') baseWin = bet * 1.0;
+                    if (symbol === '7️⃣') baseWin = bet * 2.0;
+
+                    // Mnożniki za większą ilość symboli w łańcuchu
+                    let multiplier = 1;
+                    if (symbolCount === 4) {
+                        if (fruits.includes(symbol)) multiplier = 1.5;
+                        if (symbol === '🔔') multiplier = 1.8;
+                        if (symbol === '⭐') multiplier = 2.0;
+                        if (symbol === '7️⃣') multiplier = 3.0;
+                    } else if (symbolCount >= 5) {
+                        if (fruits.includes(symbol)) multiplier = 2.0;
+                        if (symbol === '🔔') multiplier = 2.5;
+                        if (symbol === '⭐') multiplier = 3.0;
+                        if (symbol === '7️⃣') multiplier = 5.0;
+                    }
+
                     totalWin += baseWin * multiplier;
-                    
-                    lineWinCells.forEach(idx => winningCells.add(idx));
+                    currentWinCells.forEach(c => winningCellsDom.add(c));
                 }
             });
 
@@ -415,21 +438,22 @@
                 msgEl.innerText = `WYGRYWASZ ${totalWin.toFixed(2)} PLN!`;
                 msgEl.style.color = "#10b981";
                 
-                winningCells.forEach(idx => cells[idx].classList.add('win'));
+                winningCellsDom.forEach(c => c.classList.add('win'));
 
-                // Odpalanie overlayu
-                winText.innerText = `WYGRYWASZ ${totalWin.toFixed(2)} PLN!`;
-                if (totalWin >= bet * 10) {
-                    bigWinText.style.display = 'block';
-                } else {
-                    bigWinText.style.display = 'none';
+                // Logika czarnego ekranu i BIG WIN
+                if (totalWin >= bet * 5) {
+                    winText.innerText = `WYGRYWASZ ${totalWin.toFixed(2)} PLN!`;
+                    if (totalWin >= bet * 10) {
+                        bigWinText.style.display = 'block';
+                    } else {
+                        bigWinText.style.display = 'none';
+                    }
+                    winOverlay.classList.add('active');
+
+                    setTimeout(() => {
+                        winOverlay.classList.remove('active');
+                    }, 2500);
                 }
-                winOverlay.classList.add('active');
-
-                // Ukrycie overlayu po chwili
-                setTimeout(() => {
-                    winOverlay.classList.remove('active');
-                }, 2500);
 
             } else {
                 msgEl.innerText = "SPRÓBUJ PONOWNIE!";
