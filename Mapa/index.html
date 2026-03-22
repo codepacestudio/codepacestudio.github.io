@@ -2,81 +2,171 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Million Dollar Map - Prototyp</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Million Dollar Map Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { margin: 0; background: #111; color: white; font-family: sans-serif; text-align: center; }
-        #map-container { 
-            position: relative; width: 1000px; height: 1000px; 
-            background: #222; margin: 20px auto; 
-            border: 2px solid #444; cursor: crosshair;
-            display: grid; grid-template-columns: repeat(100, 10px); grid-template-rows: repeat(100, 10px);
-        }
-        .pixel { width: 10px; height: 10px; border: 0.1px solid #333; }
-        .pixel:hover { background: #ffcc00; }
-        .pixel.taken { background: #e74c3c; cursor: not-allowed; }
-        .pixel.selected { background: #00f2ff; outline: 2px solid #00f2ff; z-index: 10; }
+        body { margin: 0; background: #0f0f0f; color: #eee; font-family: 'Inter', sans-serif; overflow: hidden; touch-action: none; }
         
-        #ui-panel { position: fixed; bottom: 20px; right: 20px; background: #000; padding: 20px; border: 1px solid #ffcc00; border-radius: 10px; }
-        button { background: #ffcc00; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; }
+        #ui-top { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 10; background: rgba(0,0,0,0.8); padding: 10px 20px; border-radius: 50px; border: 1px solid #333; backdrop-filter: blur(5px); }
+        
+        canvas { display: block; cursor: grab; }
+        canvas:active { cursor: grabbing; }
+
+        #buy-panel { 
+            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); 
+            background: #1a1a1a; padding: 20px; border-radius: 15px; border: 2px solid #ffcc00;
+            width: 90%; max-width: 400px; display: none; z-index: 20; box-shadow: 0 10px 50px rgba(0,0,0,0.5);
+        }
+
+        .btn-pay { width: 100%; background: #ffcc00; color: #000; border: none; padding: 15px; font-weight: 900; border-radius: 8px; cursor: pointer; font-size: 1rem; margin-top: 10px; }
+        .info { font-size: 0.9rem; color: #aaa; margin-bottom: 5px; }
+        .price { font-size: 1.5rem; font-weight: 900; color: #fff; }
     </style>
 </head>
 <body>
 
-    <h1>MILLION DOLLAR GRID</h1>
-    <p>Wybierz kafelki, które chcesz wykupić (10 PLN / sztuka)</p>
+    <div id="ui-top">Piksele na sprzedaż: <b>984,200</b></div>
 
-    <div id="map-container">
-        </div>
-
-    <div id="ui-panel">
-        <div>Wybrano kafelków: <span id="count">0</span></div>
-        <div>Do zapłaty: <span id="price">0</span> PLN</div>
-        <br>
-        <button onclick="pay()">ZAPŁAĆ BLIK-IEM</button>
+    <div id="buy-panel">
+        <div class="info">Wybrany obszar: <span id="coords">0,0</span></div>
+        <div class="price" id="total-price">0.00 PLN</div>
+        <button class="btn-pay" onclick="startPayment()">KUP TEN KAWAŁEK</button>
+        <button style="background:none; border:none; color:#666; width:100%; margin-top:10px; cursor:pointer;" onclick="cancelSelection()">Anuluj</button>
     </div>
 
-    <script>
-        const container = document.getElementById('map-container');
-        const countDisplay = document.getElementById('count');
-        const priceDisplay = document.getElementById('price');
-        let selectedPixels = [];
+    <canvas id="mapCanvas"></canvas>
 
-        // Generujemy 10 000 małych kafelków (100x100)
-        for (let i = 0; i < 10000; i++) {
-            const pixel = document.createElement('div');
-            pixel.className = 'pixel';
-            pixel.dataset.id = i;
-            
-            pixel.addEventListener('click', () => {
-                if (pixel.classList.contains('taken')) return;
+<script>
+    const canvas = document.getElementById('mapCanvas');
+    const ctx = canvas.getContext('2d');
+    const buyPanel = document.getElementById('buy-panel');
+    
+    // Ustawienia siatki
+    const gridSize = 1000; // 1000x1000 pikseli
+    const cellSize = 20;   // Rozmiar jednego "bloku"
+    let scale = 1;
+    let offsetX = 0;
+    let offsetY = 0;
 
-                if (pixel.classList.contains('selected')) {
-                    pixel.classList.remove('selected');
-                    selectedPixels = selectedPixels.filter(id => id !== i);
-                } else {
-                    pixel.classList.add('selected');
-                    selectedPixels.push(i);
-                }
-                updateUI();
-            });
+    let isDragging = false;
+    let lastMouseX = 0;
+    let lastMouseY = 0;
 
-            container.appendChild(pixel);
-        }
+    let selectedCell = null;
 
-        function updateUI() {
-            countDisplay.innerText = selectedPixels.length;
-            priceDisplay.innerText = selectedPixels.length * 10;
-        }
+    function init() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        offsetX = canvas.width / 2 - (gridSize * cellSize) / 2;
+        offsetY = canvas.height / 2 - (gridSize * cellSize) / 2;
+        draw();
+    }
 
-        function pay() {
-            if (selectedPixels.length === 0) {
-                alert("Najpierw zaznacz coś na mapie!");
-                return;
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.save();
+        ctx.translate(offsetX, offsetY);
+        ctx.scale(scale, scale);
+
+        // Rysowanie tła mapy
+        ctx.fillStyle = '#222';
+        ctx.fillRect(0, 0, gridSize * cellSize, gridSize * cellSize);
+
+        // Rysowanie siatki (tylko gdy jest odpowiedni zoom)
+        if (scale > 0.5) {
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 0.5;
+            for (let i = 0; i <= gridSize; i++) {
+                ctx.beginPath();
+                ctx.moveTo(i * cellSize, 0);
+                ctx.lineTo(i * cellSize, gridSize * cellSize);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(0, i * cellSize);
+                ctx.lineTo(gridSize * cellSize, i * cellSize);
+                ctx.stroke();
             }
-            alert("Przekierowanie do HotPay... (Tu podpinamy API)");
-            // Tutaj w prawdziwej wersji wysyłamy POST do Twojego backendu
-            // który generuje link do płatności HotPay
         }
-    </script>
+
+        // Rysowanie zaznaczenia
+        if (selectedCell) {
+            ctx.fillStyle = 'rgba(255, 204, 0, 0.5)';
+            ctx.fillRect(selectedCell.x * cellSize, selectedCell.y * cellSize, cellSize, cellSize);
+            ctx.strokeStyle = '#ffcc00';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(selectedCell.x * cellSize, selectedCell.y * cellSize, cellSize, cellSize);
+        }
+
+        ctx.restore();
+    }
+
+    // Obsługa myszy i dotyku
+    canvas.addEventListener('mousedown', e => {
+        isDragging = true;
+        lastMouseX = e.clientX;
+        lastMouseY = e.clientY;
+    });
+
+    window.addEventListener('mouseup', () => isDragging = false);
+
+    window.addEventListener('mousemove', e => {
+        if (isDragging) {
+            offsetX += e.clientX - lastMouseX;
+            offsetY += e.clientY - lastMouseY;
+            lastMouseX = e.clientX;
+            lastMouseY = e.clientY;
+            draw();
+        }
+    });
+
+    canvas.addEventListener('wheel', e => {
+        const zoomSpeed = 0.001;
+        scale -= e.deltaY * zoomSpeed;
+        scale = Math.min(Math.max(0.1, scale), 5); // Limity zoomu
+        draw();
+    });
+
+    canvas.addEventListener('click', e => {
+        if (isDragging) return;
+
+        // Przeliczanie kliknięcia na współrzędne siatki
+        const rect = canvas.getBoundingClientRect();
+        const mouseX = (e.clientX - rect.left - offsetX) / scale;
+        const mouseY = (e.clientY - rect.top - offsetY) / scale;
+
+        const gridX = Math.floor(mouseX / cellSize);
+        const gridY = Math.floor(mouseY / cellSize);
+
+        if (gridX >= 0 && gridX < gridSize && gridY >= 0 && gridY < gridSize) {
+            selectedCell = { x: gridX, y: gridY };
+            showUI(gridX, gridY);
+        } else {
+            selectedCell = null;
+            buyPanel.style.display = 'none';
+        }
+        draw();
+    });
+
+    function showUI(x, y) {
+        document.getElementById('coords').innerText = `X: ${x}, Y: ${y}`;
+        document.getElementById('total-price').innerText = "10.00 PLN";
+        buyPanel.style.display = 'block';
+    }
+
+    function cancelSelection() {
+        selectedCell = null;
+        buyPanel.style.display = 'none';
+        draw();
+    }
+
+    function startPayment() {
+        alert("Tu następuje połączenie z Twoim backendem PHP i generowanie linku HotPay dla pola X:" + selectedCell.x + " Y:" + selectedCell.y);
+    }
+
+    window.addEventListener('resize', init);
+    init();
+</script>
+
 </body>
 </html>
