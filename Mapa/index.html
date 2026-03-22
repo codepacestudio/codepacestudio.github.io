@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Million Dollar Map - Prototyp</title>
+    <style>
+        body { margin: 0; background: #111; color: white; font-family: sans-serif; text-align: center; }
+        #map-container { 
+            position: relative; width: 1000px; height: 1000px; 
+            background: #222; margin: 20px auto; 
+            border: 2px solid #444; cursor: crosshair;
+            display: grid; grid-template-columns: repeat(100, 10px); grid-template-rows: repeat(100, 10px);
+        }
+        .pixel { width: 10px; height: 10px; border: 0.1px solid #333; }
+        .pixel:hover { background: #ffcc00; }
+        .pixel.taken { background: #e74c3c; cursor: not-allowed; }
+        .pixel.selected { background: #00f2ff; outline: 2px solid #00f2ff; z-index: 10; }
+        
+        #ui-panel { position: fixed; bottom: 20px; right: 20px; background: #000; padding: 20px; border: 1px solid #ffcc00; border-radius: 10px; }
+        button { background: #ffcc00; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <h1>MILLION DOLLAR GRID</h1>
+    <p>Wybierz kafelki, które chcesz wykupić (10 PLN / sztuka)</p>
+
+    <div id="map-container">
+        </div>
+
+    <div id="ui-panel">
+        <div>Wybrano kafelków: <span id="count">0</span></div>
+        <div>Do zapłaty: <span id="price">0</span> PLN</div>
+        <br>
+        <button onclick="pay()">ZAPŁAĆ BLIK-IEM</button>
+    </div>
+
+    <script>
+        const container = document.getElementById('map-container');
+        const countDisplay = document.getElementById('count');
+        const priceDisplay = document.getElementById('price');
+        let selectedPixels = [];
+
+        // Generujemy 10 000 małych kafelków (100x100)
+        for (let i = 0; i < 10000; i++) {
+            const pixel = document.createElement('div');
+            pixel.className = 'pixel';
+            pixel.dataset.id = i;
+            
+            pixel.addEventListener('click', () => {
+                if (pixel.classList.contains('taken')) return;
+
+                if (pixel.classList.contains('selected')) {
+                    pixel.classList.remove('selected');
+                    selectedPixels = selectedPixels.filter(id => id !== i);
+                } else {
+                    pixel.classList.add('selected');
+                    selectedPixels.push(i);
+                }
+                updateUI();
+            });
+
+            container.appendChild(pixel);
+        }
+
+        function updateUI() {
+            countDisplay.innerText = selectedPixels.length;
+            priceDisplay.innerText = selectedPixels.length * 10;
+        }
+
+        function pay() {
+            if (selectedPixels.length === 0) {
+                alert("Najpierw zaznacz coś na mapie!");
+                return;
+            }
+            alert("Przekierowanie do HotPay... (Tu podpinamy API)");
+            // Tutaj w prawdziwej wersji wysyłamy POST do Twojego backendu
+            // który generuje link do płatności HotPay
+        }
+    </script>
+</body>
+</html>
