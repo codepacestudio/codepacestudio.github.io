@@ -3,90 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Wojna o Piksele - Edycja Premium</title>
+    <title>Million Dollar Map</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap" rel="stylesheet">
     <style>
         body { margin: 0; background: #050505; color: #fff; font-family: 'Inter', sans-serif; overflow: hidden; touch-action: none; }
         
-        /* Górny pasek */
         #top-bar {
             position: absolute; top: 0; left: 0; width: 100%; background: rgba(10, 10, 15, 0.85);
             border-bottom: 1px solid #222; display: flex; justify-content: space-between; align-items: center;
             padding: 15px 30px; box-sizing: border-box; z-index: 50; backdrop-filter: blur(12px);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
         
         .stats-container { display: flex; gap: 30px; }
         .stat-box { display: flex; flex-direction: column; }
-        .stat-label { color: #666; font-size: 0.75rem; text-transform: uppercase; font-weight: 900; letter-spacing: 1px; }
-        .stat-value { font-weight: 900; font-size: 1.3rem; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.2); }
-        .stat-value.pool { color: #00f2ff; text-shadow: 0 0 15px rgba(0, 242, 255, 0.4); }
+        .stat-label { color: #666; font-size: 0.75rem; text-transform: uppercase; font-weight: 900; }
+        .stat-value { font-weight: 900; font-size: 1.3rem; color: #fff; }
+        .stat-value.pool { color: #00f2ff; }
         
         .top-nav button {
             background: #111; color: #fff; border: 1px solid #333; padding: 10px 20px; font-weight: 900;
             border-radius: 8px; cursor: pointer; transition: 0.2s; font-family: 'Inter';
         }
-        .top-nav button:hover { background: #00f2ff; color: #000; border-color: #00f2ff; box-shadow: 0 0 15px rgba(0,242,255,0.4); }
+        .top-nav button:hover { background: #00f2ff; color: #000; border-color: #00f2ff; }
 
         canvas { display: block; cursor: crosshair; }
 
-        /* Prawy panel akcji */
-        #action-panel {
-            position: absolute; right: 20px; top: 90px; width: 340px; background: rgba(15, 15, 20, 0.95);
-            border: 1px solid #333; border-radius: 16px; padding: 25px; display: none;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.9); z-index: 40; backdrop-filter: blur(15px);
+        /* Mały pasek na dole podczas wybierania */
+        #bottom-bar {
+            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: rgba(15, 15, 20, 0.95); border: 1px solid #333; border-radius: 50px;
+            padding: 10px 20px 10px 30px; display: none; align-items: center; gap: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8); z-index: 40; backdrop-filter: blur(10px);
         }
+        .bb-info { display: flex; gap: 20px; font-size: 0.95rem; }
+        .bb-info b { color: #00f2ff; font-size: 1.1rem; }
+        .btn-checkout-trigger {
+            background: #00f2ff; color: #000; border: none; padding: 10px 25px; font-weight: 900;
+            border-radius: 30px; cursor: pointer; font-size: 0.9rem; transition: 0.2s;
+        }
+        .btn-checkout-trigger:disabled { background: #333; color: #666; cursor: not-allowed; }
 
-        .panel-header { font-weight: 900; font-size: 1.4rem; margin-bottom: 20px; color: #fff; }
-        .selected-list { max-height: 120px; overflow-y: auto; margin-bottom: 20px; font-size: 0.85rem; color: #888; background: #0a0a0c; padding: 10px; border-radius: 8px; border: 1px solid #222; }
-        .selected-list div { margin-bottom: 4px; }
-        .selected-list b { color: #fff; }
-
+        /* Modal z formularzem (Krok 2) */
+        #checkout-modal-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); z-index: 100; display: none; backdrop-filter: blur(5px);
+        }
+        #checkout-modal {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 360px; background: #0a0a0c; border: 1px solid #333; border-radius: 16px; padding: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.9);
+        }
+        .modal-header { font-weight: 900; font-size: 1.4rem; margin-bottom: 20px; color: #fff; text-align: center; }
         .input-group { margin-bottom: 15px; }
         .input-group label { display: block; font-size: 0.8rem; color: #aaa; margin-bottom: 6px; font-weight: 600; }
-        .input-group input { width: 100%; background: #0a0a0c; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 8px; box-sizing: border-box; font-family: 'Inter'; outline: none; transition: 0.2s; }
-        .input-group input:focus { border-color: #00f2ff; box-shadow: 0 0 10px rgba(0,242,255,0.2); }
+        .input-group input { width: 100%; background: #111; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 8px; box-sizing: border-box; font-family: 'Inter'; outline: none; }
+        .input-group input:focus { border-color: #00f2ff; }
         
-        .summary { background: #0a0a0c; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #222; }
-        .summary-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.95rem; color: #ccc; }
-        .summary-total { display: flex; justify-content: space-between; font-weight: 900; font-size: 1.4rem; color: #00f2ff; margin-top: 15px; padding-top: 15px; border-top: 1px solid #333; }
+        .summary-total { display: flex; justify-content: space-between; font-weight: 900; font-size: 1.4rem; color: #00f2ff; margin-top: 15px; padding-top: 15px; border-top: 1px solid #333; margin-bottom: 20px; }
         
-        .btn-buy { width: 100%; background: #00f2ff; color: #000; border: none; padding: 16px; font-weight: 900; border-radius: 8px; cursor: pointer; font-size: 1.1rem; transition: 0.2s; text-transform: uppercase; letter-spacing: 1px; }
-        .btn-buy:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,242,255,0.3); }
-        .btn-buy:disabled { background: #222; color: #555; cursor: not-allowed; }
+        .btn-buy { width: 100%; background: #00f2ff; color: #000; border: none; padding: 16px; font-weight: 900; border-radius: 8px; cursor: pointer; font-size: 1.1rem; text-transform: uppercase; }
+        .btn-cancel { width: 100%; background: none; border: none; color: #666; margin-top: 15px; font-weight: bold; cursor: pointer; }
 
-        /* Ticker - Historia Akcji */
-        #ticker {
-            position: absolute; bottom: 20px; left: 20px; width: 350px; background: rgba(10, 10, 15, 0.85);
-            border: 1px solid #222; border-radius: 12px; padding: 15px; z-index: 40; backdrop-filter: blur(10px);
-        }
-        .ticker-title { font-size: 0.75rem; color: #666; font-weight: 900; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 1px; }
-        .ticker-item { font-size: 0.85rem; color: #bbb; margin-bottom: 8px; line-height: 1.4; animation: fadeIn 0.5s; }
-        .ticker-item b { color: #fff; }
-        .ticker-item .highlight { color: #ffcc00; font-weight: 900; }
-        
-        /* Modal TOP 10 */
-        #leaderboard {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px;
-            background: #0a0a0c; border: 1px solid #333; border-radius: 16px; padding: 30px;
-            display: none; z-index: 100; box-shadow: 0 20px 60px rgba(0,0,0,0.9);
-        }
-        .lb-header { font-size: 1.5rem; font-weight: 900; color: #ffcc00; margin-bottom: 20px; text-align: center; }
-        .lb-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #222; font-size: 1rem; }
-        .lb-row:nth-child(1) { color: #ffcc00; font-weight: 900; font-size: 1.2rem; }
-        .lb-row:nth-child(2) { color: #e0e0e0; font-weight: 600; }
-        .lb-row:nth-child(3) { color: #cd7f32; font-weight: 600; }
-        .close-btn { display: block; width: 100%; text-align: center; margin-top: 20px; padding: 12px; background: #222; color: #fff; border: none; border-radius: 8px; font-weight: 900; cursor: pointer; }
-
-        /* Tooltip */
         #hover-tooltip {
             position: absolute; background: rgba(10,10,15,0.95); border: 1px solid #444; padding: 15px;
             border-radius: 8px; pointer-events: none; display: none; z-index: 60; font-size: 0.9rem;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.6); backdrop-filter: blur(5px);
         }
         #hover-tooltip b { color: #00f2ff; }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 768px) {
+            .stats-container { gap: 15px; }
+            .stat-value { font-size: 1rem; }
+            #bottom-bar { width: 90%; flex-direction: column; padding: 15px; border-radius: 15px; bottom: 20px; }
+            .btn-checkout-trigger { width: 100%; }
+        }
     </style>
 </head>
 <body>
@@ -94,58 +83,44 @@
     <div id="top-bar">
         <div class="stats-container">
             <div class="stat-box"><span class="stat-label">Zajęte Pola</span><span class="stat-value" id="stat-taken">0</span></div>
-            <div class="stat-box"><span class="stat-label">Wolne Pola</span><span class="stat-value" id="stat-free">10,000</span></div>
+            <div class="stat-box"><span class="stat-label">Wolne Pola</span><span class="stat-value" id="stat-free">1,000,000</span></div>
             <div class="stat-box"><span class="stat-label">Pula Nagród</span><span class="stat-value pool" id="stat-pool">0.00 PLN</span></div>
         </div>
         <div class="top-nav">
-            <button onclick="toggleLeaderboard()">🏆 RANKING TOP 10</button>
+            <button>🏆 TOP 10</button>
         </div>
-    </div>
-
-    <div id="ticker">
-        <div class="ticker-title">Ostatnie transakcje na mapie</div>
-        <div id="ticker-content">
-            <div class="ticker-item"><b>CodePace</b> zakupił 4 pola za <span class="highlight">4.00 PLN</span></div>
-            <div class="ticker-item"><b>InwestorX</b> odbił 2 pola od GamerZ za <span class="highlight">2.20 PLN</span></div>
-            <div class="ticker-item"><b>Mati99</b> zakupił 16 pól za <span class="highlight">16.00 PLN</span></div>
-        </div>
-    </div>
-
-    <div id="leaderboard">
-        <div class="lb-header">🏆 NAJWIĘKSI INWESTORZY</div>
-        <div id="lb-content"></div>
-        <button class="close-btn" onclick="toggleLeaderboard()">ZAMKNIJ</button>
     </div>
 
     <div id="hover-tooltip"></div>
 
-    <div id="action-panel">
-        <div class="panel-header">Kupujesz Teren</div>
-        
-        <div class="selected-list" id="selected-list-ui">Wybierz pola na mapie...</div>
-        
-        <div id="purchase-form" style="display: none;">
+    <div id="bottom-bar">
+        <div class="bb-info">
+            <span>Wybrano: <b id="bb-count">0</b> pól</span>
+            <span>Suma: <b id="bb-total">0.00 PLN</b></span>
+        </div>
+        <button id="bb-btn" class="btn-checkout-trigger" onclick="openCheckout()">KUP TERAZ</button>
+    </div>
+
+    <div id="checkout-modal-bg">
+        <div id="checkout-modal">
+            <div class="modal-header">Podaj szczegóły</div>
             <div class="input-group">
                 <label>Twoja Nazwa / Nick</label>
-                <input type="text" id="buyer-name" placeholder="Np. Jan Kowalski" required>
+                <input type="text" id="buyer-name" placeholder="Np. CodePace">
             </div>
             <div class="input-group">
                 <label>Link do obrazka (URL)</label>
                 <input type="url" id="img-url" placeholder="https://imgur.com/...jpg">
             </div>
             <div class="input-group">
-                <label>Link docelowy po kliknięciu</label>
+                <label>Link po kliknięciu w obrazek</label>
                 <input type="url" id="target-url" placeholder="https://twojastrona.pl">
             </div>
             
-            <div class="summary">
-                <div class="summary-row"><span>Wolne pola:</span><span id="sum-free">0x 1.00 PLN</span></div>
-                <div class="summary-row"><span>Odbijane pola:</span><span id="sum-steal">0</span></div>
-                <div class="summary-total"><span>Suma:</span><span id="sum-total">0.00 PLN</span></div>
-            </div>
+            <div class="summary-total"><span>Do zapłaty:</span><span id="modal-total">0.00 PLN</span></div>
             
-            <button class="btn-buy" id="btnBuyObj" onclick="checkout()">ZAPŁAĆ</button>
-            <button style="width: 100%; background: none; border: none; color: #666; margin-top: 15px; font-weight: bold; cursor: pointer;" onclick="clearSelection()">ANULUJ ZAZNACZENIE</button>
+            <button class="btn-buy" onclick="processPayment()">ZAPŁAĆ BLIKIEM</button>
+            <button class="btn-cancel" onclick="closeCheckout()">WRÓĆ DO MAPY</button>
         </div>
     </div>
 
@@ -155,28 +130,28 @@
     const canvas = document.getElementById('mapCanvas');
     const ctx = canvas.getContext('2d');
     const tooltip = document.getElementById('hover-tooltip');
-    const btnBuy = document.getElementById('btnBuyObj');
+    const bottomBar = document.getElementById('bottom-bar');
+    const bbBtn = document.getElementById('bb-btn');
+    const modalBg = document.getElementById('checkout-modal-bg');
     
-    const mapSize = 100; 
-    const cellSize = 20;
+    const mapSize = 1000; // ZMIANA: 1000x1000 = 1,000,000 pikseli
+    const cellSize = 10; // Zmniejszamy klocki, żeby mapa nie była gigantyczna na start
     const basePrice = 1.00;
-    const minOrderValue = 4.00; // Minimum 4 PLN
+    const minOrderValue = 4.00; 
     
     let scale = 1;
     let offsetX = window.innerWidth / 2 - (mapSize * cellSize) / 2;
     let offsetY = window.innerHeight / 2 - (mapSize * cellSize) / 2;
     
     let isDragging = false;
+    let startX = 0, startY = 0;
     let lastX = 0, lastY = 0;
     
-    // Baza danych startowa (Mock)
     let db = {
-        "50,50": { owner: 'CryptoBro', price: 1.0, color: '#e74c3c' },
-        "50,51": { owner: 'CryptoBro', price: 1.0, color: '#e74c3c' },
-        "51,50": { owner: 'CryptoBro', price: 1.0, color: '#e74c3c' },
-        "51,51": { owner: 'CryptoBro', price: 1.0, color: '#e74c3c' },
-        "48,48": { owner: 'Whale_99', price: 5.5, color: '#f1c40f' },
-        "48,49": { owner: 'Whale_99', price: 5.5, color: '#f1c40f' }
+        "500,500": { owner: 'Prezes', price: 1.0, color: '#e74c3c' },
+        "500,501": { owner: 'Prezes', price: 1.0, color: '#e74c3c' },
+        "499,500": { owner: 'Prezes', price: 1.0, color: '#e74c3c' },
+        "499,501": { owner: 'Prezes', price: 1.0, color: '#e74c3c' }
     };
     
     let selectedCells = new Set(); 
@@ -186,33 +161,6 @@
         document.getElementById('stat-taken').innerText = taken;
         document.getElementById('stat-free').innerText = ((mapSize * mapSize) - taken).toLocaleString();
         document.getElementById('stat-pool').innerText = (taken * 0.15).toFixed(2) + " PLN";
-    }
-
-    function buildLeaderboard() {
-        let counts = {};
-        for(let key in db) {
-            let owner = db[key].owner;
-            counts[owner] = (counts[owner] || 0) + 1;
-        }
-        
-        let sorted = Object.entries(counts).sort((a,b) => b[1] - a[1]).slice(0, 10);
-        let html = '';
-        sorted.forEach((item, index) => {
-            html += `<div class="lb-row"><span>${index + 1}. ${item[0]}</span><span>${item[1]} pól</span></div>`;
-        });
-        
-        if(sorted.length === 0) html = "<div style='text-align:center; color:#666;'>Brak inwestorów</div>";
-        document.getElementById('lb-content').innerHTML = html;
-    }
-
-    function toggleLeaderboard() {
-        const lb = document.getElementById('leaderboard');
-        if(lb.style.display === 'block') {
-            lb.style.display = 'none';
-        } else {
-            buildLeaderboard();
-            lb.style.display = 'block';
-        }
     }
 
     function init() {
@@ -233,22 +181,22 @@
         ctx.fillStyle = "#0a0a0c";
         ctx.fillRect(0, 0, mapSize * cellSize, mapSize * cellSize);
 
-        // Rysuj zajęte pola
         for (let key in db) {
             const [x, y] = key.split(',').map(Number);
             ctx.fillStyle = db[key].color;
             ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
         }
 
-        // Siatka
-        ctx.strokeStyle = "#1a1a1a";
-        ctx.lineWidth = 1 / scale;
-        for(let i=0; i<=mapSize; i++) {
-            ctx.beginPath(); ctx.moveTo(i*cellSize, 0); ctx.lineTo(i*cellSize, mapSize*cellSize); ctx.stroke();
-            ctx.beginPath(); ctx.moveTo(0, i*cellSize); ctx.lineTo(mapSize*cellSize, i*cellSize); ctx.stroke();
+        // Rysuj siatkę tylko jak przybliżysz (optymalizacja dla miliona pikseli)
+        if (scale > 0.8) {
+            ctx.strokeStyle = "#1a1a1a";
+            ctx.lineWidth = 1 / scale;
+            for(let i=0; i<=mapSize; i++) {
+                ctx.beginPath(); ctx.moveTo(i*cellSize, 0); ctx.lineTo(i*cellSize, mapSize*cellSize); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(0, i*cellSize); ctx.lineTo(mapSize*cellSize, i*cellSize); ctx.stroke();
+            }
         }
 
-        // Zaznaczenie
         ctx.fillStyle = "rgba(0, 242, 255, 0.4)";
         ctx.strokeStyle = "#00f2ff";
         ctx.lineWidth = 2 / scale;
@@ -261,23 +209,34 @@
         ctx.restore();
     }
 
-    canvas.addEventListener('mousedown', e => { isDragging = true; lastX = e.clientX; lastY = e.clientY; });
-    window.addEventListener('mouseup', () => isDragging = false);
-    
-    canvas.addEventListener('mousemove', e => {
+    // Obsługa dotyku i myszy
+    const handleStart = (x, y) => { isDragging = true; startX = x; startY = y; lastX = x; lastY = y; };
+    const handleMove = (x, y) => {
         if (isDragging) {
-            offsetX += e.clientX - lastX;
-            offsetY += e.clientY - lastY;
-            lastX = e.clientX;
-            lastY = e.clientY;
+            offsetX += x - lastX;
+            offsetY += y - lastY;
+            lastX = x; lastY = y;
             draw();
             tooltip.style.display = 'none';
-            return;
         }
+    };
+    const handleEnd = () => { isDragging = false; };
 
+    canvas.addEventListener('mousedown', e => handleStart(e.clientX, e.clientY));
+    window.addEventListener('mousemove', e => {
+        handleMove(e.clientX, e.clientY);
+        if (!isDragging) checkHover(e.clientX, e.clientY);
+    });
+    window.addEventListener('mouseup', handleEnd);
+
+    canvas.addEventListener('touchstart', e => handleStart(e.touches[0].clientX, e.touches[0].clientY));
+    canvas.addEventListener('touchmove', e => handleMove(e.touches[0].clientX, e.touches[0].clientY));
+    canvas.addEventListener('touchend', handleEnd);
+
+    function checkHover(cx, cy) {
         const rect = canvas.getBoundingClientRect();
-        const mouseX = (e.clientX - rect.left - offsetX) / scale;
-        const mouseY = (e.clientY - rect.top - offsetY) / scale;
+        const mouseX = (cx - rect.left - offsetX) / scale;
+        const mouseY = (cy - rect.top - offsetY) / scale;
         const x = Math.floor(mouseX / cellSize);
         const y = Math.floor(mouseY / cellSize);
 
@@ -285,25 +244,27 @@
             const key = `${x},${y}`;
             if (db[key]) {
                 tooltip.style.display = 'block';
-                tooltip.style.left = e.clientX + 20 + 'px';
-                tooltip.style.top = e.clientY + 20 + 'px';
-                tooltip.innerHTML = `Właściciel: <b>${db[key].owner}</b><br>Obecna wartość: <b>${db[key].price.toFixed(2)} PLN</b><br><span style="color:#888; font-size:0.75rem; margin-top:5px; display:block;">Kliknij, aby przebić ofertę (+10%)</span>`;
+                tooltip.style.left = cx + 20 + 'px';
+                tooltip.style.top = cy + 20 + 'px';
+                tooltip.innerHTML = `Właściciel: <b>${db[key].owner}</b><br>Wartość: <b>${db[key].price.toFixed(2)} PLN</b><br><span style="color:#888; font-size:0.75rem;">Kliknij, aby przebić (+10%)</span>`;
             } else {
                 tooltip.style.display = 'none';
             }
         } else {
             tooltip.style.display = 'none';
         }
-    });
+    }
 
     canvas.addEventListener('wheel', e => {
         const delta = e.deltaY > 0 ? 0.9 : 1.1;
-        scale = Math.max(0.2, Math.min(scale * delta, 5));
+        scale = Math.max(0.1, Math.min(scale * delta, 5));
         draw();
     });
 
+    // Zaznaczanie przy kliknięciu/puszczeniu palca
     canvas.addEventListener('click', e => {
-        if (Math.abs(lastX - e.clientX) > 5) return; 
+        // Ignoruj jeśli to było przesunięcie mapy
+        if (Math.abs(startX - e.clientX) > 5 || Math.abs(startY - e.clientY) > 5) return; 
 
         const rect = canvas.getBoundingClientRect();
         const mouseX = (e.clientX - rect.left - offsetX) / scale;
@@ -313,75 +274,56 @@
 
         if (x >= 0 && x < mapSize && y >= 0 && y < mapSize) {
             const key = `${x},${y}`;
-            if (selectedCells.has(key)) {
-                selectedCells.delete(key);
-            } else {
-                selectedCells.add(key);
-            }
-            updateActionPanel();
+            if (selectedCells.has(key)) selectedCells.delete(key);
+            else selectedCells.add(key);
+            
+            updateBottomBar();
             draw();
         }
     });
 
-    function updateActionPanel() {
-        const panel = document.getElementById('action-panel');
-        const form = document.getElementById('purchase-form');
-        const listUI = document.getElementById('selected-list-ui');
-        
+    let currentTotal = 0;
+
+    function updateBottomBar() {
         if (selectedCells.size === 0) {
-            panel.style.display = 'none';
+            bottomBar.style.display = 'none';
             return;
         }
 
-        panel.style.display = 'block';
-        form.style.display = 'block';
+        bottomBar.style.display = 'flex';
         
-        let freeCount = 0;
-        let stealCount = 0;
         let totalPrice = 0;
-
-        let listHtml = '';
         selectedCells.forEach(key => {
-            if (db[key]) {
-                let newPrice = db[key].price * 1.10;
-                stealCount++;
-                totalPrice += newPrice;
-                listHtml += `<div>[${key}] Odbicie od <b>${db[key].owner}</b> (${newPrice.toFixed(2)} PLN)</div>`;
-            } else {
-                freeCount++;
-                totalPrice += basePrice;
-                listHtml += `<div>[${key}] Wolny teren (${basePrice.toFixed(2)} PLN)</div>`;
-            }
+            if (db[key]) totalPrice += db[key].price * 1.10;
+            else totalPrice += basePrice;
         });
 
-        listUI.innerHTML = listHtml;
-        document.getElementById('sum-free').innerText = `${freeCount}x ${basePrice.toFixed(2)} PLN`;
-        document.getElementById('sum-steal').innerText = `${stealCount} pól`;
-        document.getElementById('sum-total').innerText = `${totalPrice.toFixed(2)} PLN`;
+        currentTotal = totalPrice;
+        document.getElementById('bb-count').innerText = selectedCells.size;
+        document.getElementById('bb-total').innerText = totalPrice.toFixed(2) + " PLN";
         
         if (totalPrice < minOrderValue) {
-            btnBuy.innerText = `DOBIERZ KLOCKI (MIN. ${minOrderValue.toFixed(2)} PLN)`;
-            btnBuy.style.background = "#333";
-            btnBuy.style.color = "#888";
-            btnBuy.disabled = true;
+            bbBtn.innerText = `DOBIERZ KLOCKI (MIN. ${minOrderValue.toFixed(2)} PLN)`;
+            bbBtn.disabled = true;
         } else {
-            btnBuy.innerText = "PRZEJDŹ DO PŁATNOŚCI";
-            btnBuy.style.background = "#00f2ff";
-            btnBuy.style.color = "#000";
-            btnBuy.disabled = false;
+            bbBtn.innerText = "PRZEJDŹ DO ZAKUPU";
+            bbBtn.disabled = false;
         }
     }
 
-    function clearSelection() {
-        selectedCells.clear();
-        updateActionPanel();
-        draw();
+    function openCheckout() {
+        document.getElementById('modal-total').innerText = currentTotal.toFixed(2) + " PLN";
+        modalBg.style.display = 'block';
     }
 
-    function checkout() {
+    function closeCheckout() {
+        modalBg.style.display = 'none';
+    }
+
+    function processPayment() {
         const name = document.getElementById('buyer-name').value;
         if(!name) { alert("Podaj swoją nazwę!"); return; }
-        alert(`Generowanie płatności HotPay dla ${name}. Kwota: ${document.getElementById('sum-total').innerText}`);
+        alert(`Tu następuje weryfikacja na serwerze i przekierowanie do bramki BLIK dla użytkownika: ${name}`);
     }
 
     window.addEventListener('resize', init);
