@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CORE & CARDIO | Dawid Trener</title>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Roboto', sans-serif; background-color: #0a0a0a; color: #fff; line-height: 1.6; padding-bottom: 50px; }
+        
+        .header { background: #111; padding: 20px; text-align: center; border-bottom: 2px solid #00e676; position: sticky; top: 0; z-index: 100; }
+        .header h1 { font-family: 'Oswald', sans-serif; font-size: 2rem; color: #00e676; text-transform: uppercase; margin-bottom: 15px; }
+        
+        .nav-tabs { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 10px; scrollbar-width: none; }
+        .nav-tabs::-webkit-scrollbar { display: none; }
+        .tab-btn { flex: 0 0 auto; background: #222; color: #fff; border: 1px solid #333; padding: 10px 20px; font-family: 'Oswald', sans-serif; font-size: 1.1rem; border-radius: 4px; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
+        .tab-btn.active { background: #00e676; border-color: #00e676; color: #000; }
+
+        .content-area { padding: 20px; max-width: 800px; margin: 0 auto; }
+        .tab-content { display: none; animation: fadeIn 0.3s ease-in-out; }
+        .tab-content.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .workout-title { font-family: 'Oswald', sans-serif; font-size: 1.8rem; color: #fff; margin-bottom: 10px; text-transform: uppercase; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .workout-desc { color: #aaa; margin-bottom: 30px; font-size: 0.95rem; }
+
+        .exercise-card { background: #151515; border: 1px solid #222; border-left: 4px solid #00e676; border-radius: 4px; padding: 20px; margin-bottom: 20px; }
+        .ex-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+        .ex-name { font-family: 'Oswald', sans-serif; font-size: 1.4rem; color: #fff; text-transform: uppercase; }
+        .ex-stats { background: #222; padding: 5px 10px; border-radius: 4px; font-weight: bold; color: #00e676; font-size: 0.9rem; }
+        
+        .ex-details { color: #ccc; font-size: 0.95rem; margin-bottom: 15px; }
+        .ex-details strong { color: #fff; }
+        
+        .ex-sub { background: #1a1a1a; padding: 10px 15px; border-radius: 4px; font-size: 0.85rem; color: #888; border: 1px dashed #333; }
+        .ex-sub span { color: #00e676; font-weight: bold; }
+
+        .schedule-card { background: #151515; border: 1px solid #333; border-radius: 4px; padding: 20px; margin-bottom: 20px; }
+        .schedule-card h3 { font-family: 'Oswald', sans-serif; font-size: 1.5rem; color: #00e676; margin-bottom: 15px; text-transform: uppercase; }
+        .day-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #222; }
+        .day-row:last-child { border-bottom: none; }
+        .day-name { font-weight: bold; color: #888; width: 100px; }
+        .day-workout { color: #fff; flex-grow: 1; text-align: right; }
+        .day-workout.rest { color: #555; }
+        .day-workout.core { color: #00e676; font-weight: bold; }
+
+        .btn-back { display: block; text-align: center; margin: 40px auto 0; padding: 15px 30px; background: none; border: 1px solid #444; color: #aaa; text-decoration: none; font-weight: bold; border-radius: 4px; text-transform: uppercase; width: 100%; max-width: 300px; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>CORE & CARDIO</h1>
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="showTab('w1', this)">Core 1 (Siła)</button>
+            <button class="tab-btn" onclick="showTab('w2', this)">Core 2 (Izometria)</button>
+            <button class="tab-btn" onclick="showTab('w3', this)">Core 3 (Obwód)</button>
+            <button class="tab-btn" onclick="showTab('w4', this)">Cardio (HIIT)</button>
+            <button class="tab-btn" onclick="showTab('w5', this)">Cardio (LISS)</button>
+            <button class="tab-btn" onclick="showTab('rozpiska', this)" style="color:#d32f2f; border-color:#d32f2f;">Rozpiska</button>
+        </div>
+    </div>
+
+    <div class="content-area">
+
+        <div id="w1" class="tab-content active">
+            <h2 class="workout-title">Core 1: Gruba kostka (Siła brzucha)</h2>
+            <p class="workout-desc">Brzuch to mięsień jak każdy inny. Jeśli chcesz grubą kostkę widoczną nawet przy lekkim zatłuszczeniu, musisz trenować go z obciążeniem.</p>
+            
+            <div class="exercise-card">
+                <div class="ex-header">
+                    <div class="ex-name">1. Allahy (Spięcia na wyciągu górnym)</div>
+                    <div class="ex-stats">4 serie x 12-15 powt.</div>
+                </div>
+                <div class="ex-details">
+                    <strong>Przerwa:</strong> 60 sek. <br>
+                    <strong>Wskazówki:</strong> Trzymaj sznur przy głowie. Zwijaj tułów do środka, spinając mocno brzuch. Biodra w miejscu.
+                </div>
+                <div class="ex-sub"><span>Zamiennik:</span> Spięcia brzucha leżąc z talerzem na klatce.</div>
+            </div>
+
+            <div class="exercise-card">
+                <div class="ex-header">
+                    <div class="ex-name">2. Wznosy nóg w zwisie na drążku</div>
+                    <div class="ex-stats">4 serie x 10-15 powt.</div>
+                </div>
+                <div class="ex-details">
+                    <strong>Przerwa:</strong> 60 sek. <br>
+                    <strong>Wskazówki:</strong> Prowadź kolana do klatki piersiowej i podwijaj miednicę. Bez podwinięcia miednicy pracuje głównie zginacz biodra, a nie brzuch.
+                </div>
+                <div class="ex-sub"><span>Zamiennik:</span> Wznosy kolan w podporze na poręczach.</div>
+            </div>
+
+            <div class="exercise-card">
+                <div class="ex-header">
+                    <div class="ex-name">3. Russian Twist z obciążeniem</div>
+                    <div class="ex-stats">3 serie x 20 powt. (po 10 na stronę)</div>
+                </div>
+                <div class="ex-details">
+                    <strong>Przerwa:</strong> 45 sek. <br>
+                    <strong>Wskazówki:</strong> Pracują mięśnie skośne. Wzrok podąża za ciężarem, a tułów rotuje się maksymalnie w bok.
+                </div>
+                <div class="ex-sub"><span>Zamiennik:</span> Skrętoskłony z hantlem stojąc.</div>
+            </div>
+
+            <div class="exercise-card">
+                <div class="ex-header">
+                    <div class="ex-name">4. Spacer Farmera jednorącz</div>
+                    <div class="ex-stats">3 serie x 40 metrów (na stronę)</div>
+                </div>
+                <div class="ex-details">
+                    <strong>Przerwa:</strong> 60 sek. <br>
+                    <strong>Wskazówki:</strong> Bierzesz ciężki hantel w jedną rękę i idziesz prosto. Brzuch musi przeciwdziałać wygięciu kręgosłupa na bok.
+                </div>
+                <div class="ex-sub"><span>Zamiennik:</span> Side Plank (Deska bokiem) z unoszeniem bioder.</div>
+            </div>
+        </div>
+
+        <div id="w2" class="tab-content">
+            <h2 class="workout-title">Core 2: Stalowy rdzeń (Izometria i stabilizacja)</h2>
+            <p class="workout-desc">Idealny zestaw pod budowanie stabilizacji centralnej do ciężkich siadów i martwych ciągów. Wzmacnia głębokie partie brzucha.</p>
+            
+            <div class="exercise-card">
+                <div class="ex-header">
+                    <div class="ex-name">1. Plank (Klasyczna deska)</div>
+                    <div class="ex-stats">3 serie x MAX czasu</div>
+                </div>
+                <div class="ex-details">
+                    <strong>Przerwa:</strong> 60 sek. <br>
+                    <strong>Wskazówki:</strong> Podwiń miednicę, napnij pośladki. Tułów ma być sztywny jak deska, żadnego zapadania w odcinku lędźwiowym.
+                </div>
+                <div class="ex-sub"><span>Zamiennik:</span> Plank z obciążeniem na plecach.</div>
+            </div>
+            
+            <div class="exercise-card">
+                <div class="ex-header">
+                    <div class="ex-name">2. Dead Bug (Martwy robak)</div>
+                    <div class="ex-stats">4 serie x 16 powt. (na przemian)</div>
+                </div>
+                <div class="ex-details">
+                    <strong>Przerwa:</strong> 45 sek. <br>
+                    <strong>Wskazówki:</strong> Najważniejsze ćwiczenie. Lędźwie cały czas wciśnięte w podłogę. Opuszczasz przeciwległą rękę i nogę. Jeśli lędźwie się odrywają, nie schodź tak nisko.
+                </div>
+                <div class="ex-sub"><span>Zamiennik:</span> Opuszczanie samych nóg leżąc z dociśniętymi lędźwiami.</div>
+            </div>
+
+            <div class="exercise-card">
+                <div class="ex-header">
+                    <div class="ex-name">3. Hollow Body Hold</div>
+                    <div class="ex-stats">3 serie x 30-45 sek.</div>
+                </div>
+                <div class="ex-details">
+                    <strong>Przerwa:</strong> 60 sek. <br>
+                    <strong>Wskazówki:</strong> Pozycja łódeczki. Lędźwie w podłodze, ręce i nogi lekko uniesione i wyprostowane. Trzymaj napięcie z całej siły.
+                </div>
+                <div class="ex-sub"><span>Zamiennik:</span> Hollow Body ze zgiętymi kolanami.</div>
+            </div>
+
+            <div class="exercise-card">
+                <div class="ex-header">
+                    <div class="ex-name">4. Pallof Press (Wyciskanie gumy przed siebie)</div>
+                    <div class="ex-stats">3 serie x 12 powt. (na stronę)</div>
+                </div>
+                <div class="ex-details">
+                    <strong>Przerwa:</strong> 45 sek. <br>
+                    <strong>Wskazówki:</strong> Stajesz bokiem do wyciągu. Wyciskasz uchwyt przed klatkę piersiową. Brzuch walczy, żeby wyciąg nie zrotował tułowia.
+                </div>
+                <div class="ex-sub"><span>Zamiennik:</span> To samo ćwiczenie wykonane z gumą oporową (Powerband).</div>
+            </div>
+        </div>
+
+        <div id="w3" class="tab-content">
+            <h2 class="workout-title">Core 3: Morderczy obwód (Spalanie i pompa)</h2>
+            <p class="workout-desc">Szybka, intensywna robota. Robisz jedno ćwiczenie po drugim bez przerwy. Przerwa jest dopiero po całym obwodzie. Zrób 3 takie rundy.</p>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">Stacja 1: Mountain Climbers (Bieg w podporze)</div><div class="ex-stats">30 sekund MAX tempa</div></div><div class="ex-details">Dłonie pod barkami, dynamicznie przyciągaj kolana do klatki piersiowej. Bez przerwy przejdź do stacji 2.</div><div class="ex-sub">Zamiennik: Pajacyki w miejscu.</div></div>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">Stacja 2: Scyzoryki (V-Ups)</div><div class="ex-stats">15 powtórzeń</div></div><div class="ex-details">Z pozycji leżącej składasz się w pół, dotykając dłońmi stóp na górze. Bez przerwy do stacji 3.</div><div class="ex-sub">Zamiennik: Zwykłe spięcia brzucha.</div></div>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">Stacja 3: Rowerek (Bicycle Crunches)</div><div class="ex-stats">30 powtórzeń (15 na stronę)</div></div><div class="ex-details">Dynamiczna rotacja. Łokieć do przeciwległego kolana. Palą skośne brzucha. Przechodzisz do stacji 4.</div><div class="ex-sub">Zamiennik: Naprzemienne dotykanie pięt leżąc (Heel touches).</div></div>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">Stacja 4: Burpees (Padnij-powstań)</div><div class="ex-stats">10 powtórzeń</div></div><div class="ex-details">Pełne zejście klatką do ziemi i mocny wyskok w górę. Dobija kondycyjnie. Odpoczywasz 90 sekund i robisz kolejny obwód.</div><div class="ex-sub">Zamiennik: Wyskoki z przysiadu (Squat jumps).</div></div>
+        </div>
+
+        <div id="w4" class="tab-content">
+            <h2 class="workout-title">Cardio: Protokół HIIT (Interwały)</h2>
+            <p class="workout-desc">Wysiłek interwałowy podkręca metabolizm na długie godziny po treningu. Trwa krótko, ale wyplujesz na nim płuca. Rób to w dni wolne od ciężkich siadów.</p>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">Opcja A: Ergometr wioślarski (Polecane)</div><div class="ex-stats">Czas: 15 minut</div></div><div class="ex-details">5 minut spokojnej rozgrzewki. Potem robisz 10 rund: 20 sekund maksymalnego tempa na 100% możliwości, a następnie 40 sekund luźnego wiosłowania. </div><div class="ex-sub">Efekt: Czysta moc i tlen. Angażuje całe ciało.</div></div>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">Opcja B: Sprinty na bieżni</div><div class="ex-stats">Czas: 15 minut</div></div><div class="ex-details">Ustawiasz prędkość bieżni na bardzo szybki bieg. Biegniesz sprintem przez 15 sekund, potem zeskakujesz nogami na boki bieżni na 45 sekund odpoczynku. Zrób 10 takich sprintów.</div><div class="ex-sub">Efekt: Ogromne spalanie kalorii, uderzenie w dolne partie nóg.</div></div>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">Opcja C: Rowerek stacjonarny (AirBike)</div><div class="ex-stats">Czas: 10 minut</div></div><div class="ex-details">Protokół Tabaty. 8 rund: 20 sekund sprintu o życie, 10 sekund całkowitej przerwy. Krótkie i brutalne. </div><div class="ex-sub">Efekt: Totalne przepalenie płuc i kwas mlekowy w nogach.</div></div>
+        </div>
+
+        <div id="w5" class="tab-content">
+            <h2 class="workout-title">Cardio: Protokół LISS (Tlenowe)</h2>
+            <p class="workout-desc">Cardio o niskiej intensywności. Serce bije w okolicy 120-130 uderzeń na minutę. Nie obciąża układu nerwowego, genialne do budowania bazy tlenowej po treningu siłowym.</p>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">Opcja A: Schody (Stairmaster)</div><div class="ex-stats">Czas: 20-30 minut</div></div><div class="ex-details">Trzymaj stałe, umiarkowane tempo. Nie kładź się całym ciałem na poręczach maszyny, pracuj prosto. Świetnie rzeźbi łydki i pośladki.</div><div class="ex-sub">Wskazówka: Rób to od razu po treningu siłowym (np. po dniu PULL).</div></div>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">Opcja B: Szybki marsz pod górkę na bieżni</div><div class="ex-stats">Czas: 30-40 minut</div></div><div class="ex-details">Ustaw nachylenie bieżni na 10-15% i prędkość w okolicach 5-6 km/h. To ma być dynamiczny marsz, przy którym da się jeszcze w miarę normalnie rozmawiać. Nie trzymaj się rączek.</div><div class="ex-sub">Wskazówka: Minimalne obciążenie kolan. Idealne dla otyłych.</div></div>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">Opcja C: Rower w terenie / Pływanie</div><div class="ex-stats">Czas: 45-60 minut</div></div><div class="ex-details">Wyjście z dusznej siłowni. Aktywna regeneracja w dni wolne (np. w niedzielę). Trzymaj tętno równo, rozluźnij spięte po treningu mięśnie.</div><div class="ex-sub">Wskazówka: Relaksuje głowę i poprawia przepływ krwi.</div></div>
+        </div>
+
+        <div id="rozpiska" class="tab-content">
+            <h2 class="workout-title">Jak wpleść brzuch i cardio w plan?</h2>
+            <p class="workout-desc">Brzucha nie trenujemy na początku treningu siłowego, bo osłabisz swój rdzeń przed ciężkimi seriami. Zawsze wrzucaj go na sam koniec.</p>
+
+            <div class="schedule-card">
+                <h3>Opcja 1: Minimalista (Brzuch na koniec siłowego)</h3>
+                <div class="day-row"><div class="day-name">Trening 1</div><div class="day-workout">Siłowy (PUSH) + <span class="core">Core 1 (Siła)</span></div></div>
+                <div class="day-row"><div class="day-name">Trening 2</div><div class="day-workout">Siłowy (PULL) + <span class="core">Cardio 20 min LISS</span></div></div>
+                <div class="day-row"><div class="day-name">Trening 3</div><div class="day-workout">Siłowy (LEGS) + <span class="core">Core 2 (Izometria)</span></div></div>
+            </div>
+
+            <div class="schedule-card">
+                <h3>Opcja 2: Dni osobne (Dla wolnych dni)</h3>
+                <div class="day-row"><div class="day-name">Poniedziałek</div><div class="day-workout">Trening siłowy</div></div>
+                <div class="day-row"><div class="day-name">Wtorek</div><div class="day-workout core">Tylko Core 3 (Obwód) + Cardio HIIT 15 min</div></div>
+                <div class="day-row"><div class="day-name">Środa</div><div class="day-workout">Trening siłowy</div></div>
+                <div class="day-row"><div class="day-name">Czwartek</div><div class="day-workout core">Tylko Core 1 (Siła) + Cardio LISS 30 min</div></div>
+            </div>
+
+            <div class="schedule-card">
+                <h3>Złote zasady:</h3>
+                <ul style="color:#aaa; font-size:0.95rem; margin-top:10px; padding-left:20px;">
+                    <li style="margin-bottom:8px;">Nie rób ciężkiego brzucha (Core 1) w dniu przed ciężkimi siadami lub martwym ciągiem.</li>
+                    <li style="margin-bottom:8px;">Nie rób sprintów HIIT po dniu nóg. Daj im odpocząć.</li>
+                    <li style="margin-bottom:8px;">Cardio typu LISS (schody/marsz) możesz kręcić po każdym treningu w ramach ucinania kalorii.</li>
+                </ul>
+            </div>
+        </div>
+
+        <a href="index.html" class="btn-back">WRÓĆ DO MENU GŁÓWNEGO</a>
+    </div>
+
+    <script>
+        function showTab(tabId, element) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+            
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            element.classList.add('active');
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
