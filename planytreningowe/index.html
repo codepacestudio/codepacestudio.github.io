@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plany Treningowe | Budowa Masy</title>
+    <title>Dawid | Trener Personalny | Plany Treningowe</title>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Roboto', sans-serif; background-color: #0a0a0a; color: #fff; }
+        body { font-family: 'Roboto', sans-serif; background-color: #0a0a0a; color: #fff; line-height: 1.6; }
         
         /* Sekcja główna z tłem */
         .hero {
@@ -25,111 +25,176 @@
         .hero h1 span { color: #d32f2f; }
         .hero p { font-size: 1.2rem; color: #aaa; max-width: 600px; }
 
-        /* Sekcja planów */
-        .plans-section { padding: 60px 20px; max-width: 1200px; margin: 0 auto; }
-        .section-title { font-family: 'Oswald', sans-serif; font-size: 2.5rem; text-align: center; margin-bottom: 40px; text-transform: uppercase; }
-        
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-        }
+        /* O mnie */
+        .about-section { background: #111; padding: 60px 20px; text-align: center; border-bottom: 1px solid #222; }
+        .about-section h2 { font-family: 'Oswald', sans-serif; font-size: 2.5rem; color: #d32f2f; margin-bottom: 20px; text-transform: uppercase; }
+        .about-section p { max-width: 800px; margin: 0 auto; color: #ccc; font-size: 1.1rem; }
 
-        .card {
-            background: #151515;
-            border: 1px solid #222;
-            border-radius: 8px;
-            padding: 30px;
-            text-align: center;
-            transition: transform 0.3s, box-shadow 0.3s;
-            cursor: pointer;
-        }
+        /* Cennik */
+        .pricing-section { padding: 60px 20px; background: #0a0a0a; }
+        .pricing-container { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; max-width: 1000px; margin: 0 auto; }
+        .price-card { background: #151515; border: 1px solid #333; padding: 40px 30px; border-radius: 8px; width: 320px; text-align: center; }
+        .price-card.premium { border-color: #d32f2f; box-shadow: 0 10px 30px rgba(211, 47, 47, 0.15); position: relative; }
+        .price-card.premium::before { content: 'NAJLEPSZY WYBÓR'; position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: #d32f2f; color: #fff; padding: 5px 15px; font-weight: bold; font-size: 0.8rem; border-radius: 20px; }
+        .price-card h3 { font-family: 'Oswald', sans-serif; font-size: 1.8rem; margin-bottom: 15px; }
+        .price-card .price { font-size: 2.5rem; font-weight: bold; color: #d32f2f; margin-bottom: 20px; }
+        .price-card ul { list-style: none; margin-bottom: 30px; color: #aaa; text-align: left; }
+        .price-card ul li { margin-bottom: 10px; padding-left: 20px; position: relative; }
+        .price-card ul li::before { content: '✓'; color: #d32f2f; position: absolute; left: 0; font-weight: bold; }
+        .btn-buy { background: #d32f2f; color: #fff; border: none; padding: 15px 30px; font-size: 1.1rem; font-weight: bold; border-radius: 4px; cursor: pointer; text-transform: uppercase; width: 100%; transition: background 0.3s; }
+        .btn-buy:hover { background: #b71c1c; }
+
+        /* Sekcja planów (Logowanie) */
+        .plans-section { padding: 60px 20px; max-width: 1200px; margin: 0 auto; border-top: 1px solid #222; }
+        .section-title { font-family: 'Oswald', sans-serif; font-size: 2.5rem; text-align: center; margin-bottom: 40px; text-transform: uppercase; color: #fff; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .card { background: #151515; border: 1px solid #222; border-radius: 8px; padding: 30px; text-align: center; transition: transform 0.3s, box-shadow 0.3s; cursor: pointer; }
         .card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(211, 47, 47, 0.2); border-color: #d32f2f; }
         .card h2 { font-family: 'Oswald', sans-serif; font-size: 2rem; color: #d32f2f; margin-bottom: 15px; }
-        .card p { color: #888; font-size: 0.95rem; margin-bottom: 20px; line-height: 1.5; }
-        .card .btn {
-            background: #d32f2f; color: #fff; border: none; padding: 12px 25px; font-size: 1rem;
-            font-weight: bold; border-radius: 4px; cursor: pointer; text-transform: uppercase; width: 100%;
-        }
-        .card .btn:hover { background: #b71c1c; }
+        .card p { color: #888; font-size: 0.95rem; margin-bottom: 20px; }
+        .card .btn-login { background: #222; color: #fff; border: 1px solid #444; padding: 12px 25px; font-weight: bold; border-radius: 4px; cursor: pointer; text-transform: uppercase; width: 100%; transition: 0.3s; }
+        .card:hover .btn-login { background: #d32f2f; border-color: #d32f2f; }
 
-        /* Kontakt */
-        .contact-section { background: #111; padding: 50px 20px; text-align: center; border-top: 1px solid #222; }
-        .contact-section h3 { font-family: 'Oswald', sans-serif; font-size: 2rem; margin-bottom: 20px; color: #fff; }
-        .contact-info { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; margin-bottom: 20px; }
-        .contact-item { font-size: 1.1rem; color: #aaa; }
-        .contact-item a { color: #d32f2f; text-decoration: none; font-weight: bold; transition: color 0.2s, text-shadow 0.2s; }
-        .contact-item a:hover { color: #ff5252; text-shadow: 0 0 10px rgba(211, 47, 47, 0.4); }
+        /* Modal kontaktowy */
+        .modal-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 100; backdrop-filter: blur(5px); }
+        .modal-content { background: #151515; padding: 40px; border-radius: 8px; border: 1px solid #333; text-align: center; width: 90%; max-width: 400px; }
+        .modal-content h3 { font-family: 'Oswald', sans-serif; font-size: 1.8rem; margin-bottom: 20px; color: #fff; }
+        .contact-btn { display: block; width: 100%; padding: 15px; margin-bottom: 15px; font-size: 1.1rem; font-weight: bold; color: #fff; text-decoration: none; border-radius: 4px; border: none; cursor: pointer; text-transform: uppercase; }
+        .btn-wa { background: #25D366; }
+        .btn-sms { background: #007AFF; }
+        .btn-close { background: none; color: #888; margin-top: 10px; border: none; cursor: pointer; font-size: 0.9rem; text-decoration: underline; }
+
+        /* Stopka */
+        .footer { background: #111; padding: 40px 20px; text-align: center; border-top: 1px solid #222; }
+        .footer-links { margin-bottom: 20px; }
+        .footer-links a { color: #aaa; text-decoration: none; margin: 0 15px; font-size: 0.9rem; }
+        .footer-links a:hover { color: #d32f2f; }
+        .footer-copy { color: #666; font-size: 0.8rem; }
 
         @media (max-width: 768px) {
             .hero h1 { font-size: 2.5rem; }
-            .contact-info { flex-direction: column; gap: 15px; }
+            .pricing-container { flex-direction: column; align-items: center; }
         }
     </style>
 </head>
 <body>
 
     <header class="hero">
-        <h1>Osiągnij <span>Cel</span></h1>
-        <p>Profesjonalne plany treningowe ukierunkowane na budowę masy mięśniowej. Konkretne ćwiczenia, zamienniki i pełna struktura treningu.</p>
+        <h1>Osiągnij <span>Swój Cel</span></h1>
+        <p>Profesjonalne plany treningowe ukierunkowane na budowę masy mięśniowej.</p>
     </header>
 
+    <section class="about-section">
+        <h2>Siema, jestem Dawid</h2>
+        <p>Jestem certyfikowanym trenerem personalnym, ale przede wszystkim gościem, który sam przerzucił na sali tony żelastwa. Nie owijam w bawełnę i nie wciskam magicznych suplementów. Chcesz zbudować solidną masę mięśniową, dołożyć ciężaru na sztangę i świetnie wyglądać? Mam na to sprawdzone, skuteczne schematy. Wybierz odpowiedni plan i bierzemy się do roboty.</p>
+    </section>
+
+    <section class="pricing-section">
+        <h2 class="section-title">Wybierz swój pakiet</h2>
+        <div class="pricing-container">
+            
+            <div class="price-card">
+                <h3>Jeden Plan</h3>
+                <div class="price">39 PLN</div>
+                <ul>
+                    <li>1 wybrany plan (np. PUSH)</li>
+                    <li>5 różnych wariantów treningu</li>
+                    <li>Opisy i zamienniki ćwiczeń</li>
+                    <li>Rozgrzewka i protokoły cardio</li>
+                </ul>
+                <button class="btn-buy" onclick="openContactModal('pojedynczy plan treningowy')">KUPUJĘ PLAN</button>
+            </div>
+
+            <div class="price-card premium">
+                <h3>Pakiet Dzik</h3>
+                <div class="price">149 PLN</div>
+                <ul>
+                    <li>Dostęp do WSZYSTKICH 5 planów</li>
+                    <li>PUSH, PULL, LEGS, FBW, CORE</li>
+                    <li>25 wariantów treningowych</li>
+                    <li>Oszczędzasz 46 PLN</li>
+                </ul>
+                <button class="btn-buy" onclick="openContactModal('Kompletny Pakiet Dzik (5 planów)')">KUPUJĘ PAKIET</button>
+            </div>
+
+        </div>
+    </section>
+
     <section class="plans-section">
-        <h2 class="section-title">Wybierz swój plan</h2>
-        
+        <h2 class="section-title">Masz już hasło? Wejdź do planu</h2>
         <div class="grid">
             <div class="card" onclick="verifyAccess('Kaktus2026', 'push.html')">
                 <h2>Trening PUSH</h2>
-                <p>Klatka piersiowa, barki, tricepsy. 5 pełnych zestawów treningowych z rozgrzewką i zamiennikami.</p>
-                <button class="btn">Odblokuj Plan</button>
+                <p>Klatka piersiowa, barki, tricepsy.</p>
+                <button class="btn-login">Zaloguj się</button>
             </div>
-
             <div class="card" onclick="verifyAccess('NiebieskiBanan', 'pull.html')">
                 <h2>Trening PULL</h2>
-                <p>Plecy, bicepsy, tył barku. Skuteczna hipertrofia i budowanie szerokości. 5 wariantów.</p>
-                <button class="btn">Odblokuj Plan</button>
+                <p>Plecy, bicepsy, tył barku.</p>
+                <button class="btn-login">Zaloguj się</button>
             </div>
-
             <div class="card" onclick="verifyAccess('LatajacyDywan', 'legs.html')">
                 <h2>Trening LEGS</h2>
-                <p>Czworogłowe, dwugłowe, łydki. Kompletny trening dołu ciała budujący fundament.</p>
-                <button class="btn">Odblokuj Plan</button>
+                <p>Czworogłowe, dwugłowe, łydki.</p>
+                <button class="btn-login">Zaloguj się</button>
             </div>
-
             <div class="card" onclick="verifyAccess('StaryZegar', 'fbw.html')">
                 <h2>Trening FBW</h2>
-                <p>Full Body Workout. Trening całego ciała na jednej sesji. Idealny dla zabieganych.</p>
-                <button class="btn">Odblokuj Plan</button>
+                <p>Trening całego ciała na jednej sesji.</p>
+                <button class="btn-login">Zaloguj się</button>
             </div>
-
             <div class="card" onclick="verifyAccess('Cebula99', 'core.html')">
                 <h2>CORE & CARDIO</h2>
-                <p>Mocny brzuch i wydolność. Zestawy ćwiczeń uzupełniających twój główny plan.</p>
-                <button class="btn">Odblokuj Plan</button>
+                <p>Mocny brzuch i wydolność.</p>
+                <button class="btn-login">Zaloguj się</button>
             </div>
         </div>
     </section>
 
-    <footer class="contact-section">
-        <h3>Masz pytania? Chcesz kupić dostęp?</h3>
-        <div class="contact-info">
-            <div class="contact-item">Zadzwoń: <a href="tel:+48792198691">+48 792 198 691</a></div>
-            <div class="contact-item">WhatsApp: <a href="https://wa.me/48792198691" target="_blank">Napisz Wiadomość</a></div>
-            <div class="contact-item">Email: <a href="mailto:codepacestudio@gmail.com">codepacestudio@gmail.com</a></div>
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="mailto:codepacestudio@gmail.com">Kontakt Email</a>
+            <a href="polityka.html">Polityka Prywatności</a>
+            <a href="regulamin.html">Regulamin</a>
         </div>
-        <p style="color: #666; font-size: 0.9rem; margin-top: 20px;">&copy; 2026 Treningi Personalne. Wszelkie prawa zastrzeżone.</p>
+        <div class="footer-copy">&copy; 2026 Dawid Trener Personalny. Wszelkie prawa zastrzeżone.</div>
     </footer>
 
+    <div class="modal-bg" id="contactModal">
+        <div class="modal-content">
+            <h3>Jak wolisz się dogadać?</h3>
+            <p style="margin-bottom: 20px; color: #aaa; font-size: 0.9rem;">Wybierz aplikację, a wiadomość napisze się sama. Podaj mi szczegóły, a ja podeślę Ci BLIK i wyślę hasła.</p>
+            
+            <a href="#" class="contact-btn btn-wa" id="waLink" target="_blank">Napisz na WhatsApp</a>
+            <a href="#" class="contact-btn btn-sms" id="smsLink">Wyślij SMS</a>
+            
+            <button class="btn-close" onclick="closeContactModal()">Anuluj i wróć</button>
+        </div>
+    </div>
+
     <script>
+        const phoneNumber = "48792198691";
+
+        function openContactModal(planName) {
+            const message = `Cześć Dawid! Chcę kupić ${planName}. Podeślij szczegóły do płatności.`;
+            
+            document.getElementById('waLink').href = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+            
+            // Formatowanie pod SMS działa różnie na systemach, to najbezpieczniejsza forma
+            document.getElementById('smsLink').href = `sms:+${phoneNumber}?body=${encodeURIComponent(message)}`;
+            
+            document.getElementById('contactModal').style.display = 'flex';
+        }
+
+        function closeContactModal() {
+            document.getElementById('contactModal').style.display = 'none';
+        }
+
         function verifyAccess(correctPassword, targetUrl) {
             const userInput = prompt("Podaj hasło dostępu do tego planu:");
-            
-            if (userInput === null) {
-                return;
-            }
+            if (userInput === null) return;
             
             if (userInput === correctPassword) {
-                alert("Hasło poprawne. Przekierowuję do planu treningowego.");
                 window.location.href = targetUrl;
             } else {
                 alert("Błędne hasło. Brak dostępu.");
