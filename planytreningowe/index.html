@@ -9,7 +9,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Roboto', sans-serif; background-color: #0a0a0a; color: #fff; line-height: 1.6; }
         
-        /* Sekcja główna z tłem */
         .hero {
             height: 60vh;
             background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.9)), url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1470&auto=format&fit=crop') center/cover;
@@ -25,37 +24,43 @@
         .hero h1 span { color: #d32f2f; }
         .hero p { font-size: 1.2rem; color: #aaa; max-width: 600px; }
 
-        /* O mnie */
         .about-section { background: #111; padding: 60px 20px; text-align: center; border-bottom: 1px solid #222; }
         .about-section h2 { font-family: 'Oswald', sans-serif; font-size: 2.5rem; color: #d32f2f; margin-bottom: 20px; text-transform: uppercase; }
         .about-section p { max-width: 800px; margin: 0 auto; color: #ccc; font-size: 1.1rem; }
 
-        /* Cennik */
         .pricing-section { padding: 60px 20px; background: #0a0a0a; }
-        .pricing-container { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; max-width: 1000px; margin: 0 auto; }
-        .price-card { background: #151515; border: 1px solid #333; padding: 40px 30px; border-radius: 8px; width: 320px; text-align: center; }
+        .pricing-container { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; max-width: 1200px; margin: 0 auto; }
+        .price-card { background: #151515; border: 1px solid #333; padding: 40px 30px; border-radius: 8px; width: 320px; text-align: center; display: flex; flex-direction: column; }
         .price-card.premium { border-color: #d32f2f; box-shadow: 0 10px 30px rgba(211, 47, 47, 0.15); position: relative; }
-        .price-card.premium::before { content: 'NAJLEPSZY WYBÓR'; position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: #d32f2f; color: #fff; padding: 5px 15px; font-weight: bold; font-size: 0.8rem; border-radius: 20px; }
+        .price-card.pro { border-color: #ffcc00; box-shadow: 0 10px 30px rgba(255, 204, 0, 0.1); position: relative; }
+        .price-card.pro::before { content: 'FULL PAKIET'; position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: #ffcc00; color: #000; padding: 5px 15px; font-weight: bold; font-size: 0.8rem; border-radius: 20px; }
         .price-card h3 { font-family: 'Oswald', sans-serif; font-size: 1.8rem; margin-bottom: 15px; }
         .price-card .price { font-size: 2.5rem; font-weight: bold; color: #d32f2f; margin-bottom: 20px; }
-        .price-card ul { list-style: none; margin-bottom: 30px; color: #aaa; text-align: left; }
+        .price-card.pro .price { color: #ffcc00; }
+        .price-card ul { list-style: none; margin-bottom: 30px; color: #aaa; text-align: left; flex-grow: 1; }
         .price-card ul li { margin-bottom: 10px; padding-left: 20px; position: relative; }
         .price-card ul li::before { content: '✓'; color: #d32f2f; position: absolute; left: 0; font-weight: bold; }
-        .btn-buy { background: #d32f2f; color: #fff; border: none; padding: 15px 30px; font-size: 1.1rem; font-weight: bold; border-radius: 4px; cursor: pointer; text-transform: uppercase; width: 100%; transition: background 0.3s; }
+        .price-card.pro ul li::before { color: #ffcc00; }
+        .btn-buy { background: #d32f2f; color: #fff; border: none; padding: 15px 30px; font-size: 1.1rem; font-weight: bold; border-radius: 4px; cursor: pointer; text-transform: uppercase; width: 100%; transition: background 0.3s; margin-top: auto; }
         .btn-buy:hover { background: #b71c1c; }
+        .btn-buy.pro-btn { background: #ffcc00; color: #000; }
+        .btn-buy.pro-btn:hover { background: #e6b800; }
 
-        /* Sekcja planów (Logowanie) */
         .plans-section { padding: 60px 20px; max-width: 1200px; margin: 0 auto; border-top: 1px solid #222; }
         .section-title { font-family: 'Oswald', sans-serif; font-size: 2.5rem; text-align: center; margin-bottom: 40px; text-transform: uppercase; color: #fff; }
+        .section-subtitle { font-family: 'Oswald', sans-serif; font-size: 1.8rem; color: #ffcc00; margin: 40px 0 20px 0; text-transform: uppercase; text-align: center; }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        
         .card { background: #151515; border: 1px solid #222; border-radius: 8px; padding: 30px; text-align: center; transition: transform 0.3s, box-shadow 0.3s; cursor: pointer; }
         .card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(211, 47, 47, 0.2); border-color: #d32f2f; }
         .card h2 { font-family: 'Oswald', sans-serif; font-size: 2rem; color: #d32f2f; margin-bottom: 15px; }
+        .card.extra h2 { color: #ffcc00; }
+        .card.extra:hover { border-color: #ffcc00; box-shadow: 0 10px 20px rgba(255, 204, 0, 0.15); }
         .card p { color: #888; font-size: 0.95rem; margin-bottom: 20px; }
         .card .btn-login { background: #222; color: #fff; border: 1px solid #444; padding: 12px 25px; font-weight: bold; border-radius: 4px; cursor: pointer; text-transform: uppercase; width: 100%; transition: 0.3s; }
         .card:hover .btn-login { background: #d32f2f; border-color: #d32f2f; }
+        .card.extra:hover .btn-login { background: #ffcc00; border-color: #ffcc00; color: #000; }
 
-        /* Modal kontaktowy */
         .modal-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 100; backdrop-filter: blur(5px); }
         .modal-content { background: #151515; padding: 40px; border-radius: 8px; border: 1px solid #333; text-align: center; width: 90%; max-width: 400px; }
         .modal-content h3 { font-family: 'Oswald', sans-serif; font-size: 1.8rem; margin-bottom: 20px; color: #fff; }
@@ -64,7 +69,6 @@
         .btn-sms { background: #007AFF; }
         .btn-close { background: none; color: #888; margin-top: 10px; border: none; cursor: pointer; font-size: 0.9rem; text-decoration: underline; }
 
-        /* Stopka */
         .footer { background: #111; padding: 40px 20px; text-align: center; border-top: 1px solid #222; }
         .footer-links { margin-bottom: 20px; }
         .footer-links a { color: #aaa; text-decoration: none; margin: 0 15px; font-size: 0.9rem; }
@@ -86,7 +90,7 @@
 
     <section class="about-section">
         <h2>Siema, jestem Dawid</h2>
-        <p>Jestem certyfikowanym trenerem personalnym, ale przede wszystkim gościem, który sam przerzucił na sali tony żelastwa. Nie owijam w bawełnę i nie wciskam magicznych suplementów. Chcesz zbudować solidną masę mięśniową, dołożyć ciężaru na sztangę i świetnie wyglądać? Mam na to sprawdzone, skuteczne schematy. Wybierz odpowiedni plan i bierzemy się do roboty.</p>
+        <p>Jestem certyfikowanym trenerem personalnym, ale przede wszystkim gościem, który sam przerzucił na sali tony żelastwa. Nie owijam w bawełnę i nie wciskam magicznych suplementów. Chcesz zbudować solidną masę mięśniową, dołożyć ciężaru na sztangę i świetnie wyglądać? Mam na to sprawdzone i brutalnie skuteczne schematy. Wybierz odpowiedni plan i bierzemy się do roboty.</p>
     </section>
 
     <section class="pricing-section">
@@ -97,58 +101,91 @@
                 <h3>Jeden Plan</h3>
                 <div class="price">39 PLN</div>
                 <ul>
-                    <li>1 wybrany plan (np. PUSH)</li>
+                    <li>1 wybrany plan główny lub dodatkowy</li>
                     <li>5 różnych wariantów treningu</li>
                     <li>Opisy i zamienniki ćwiczeń</li>
                     <li>Rozgrzewka i protokoły cardio</li>
                 </ul>
-                <button class="btn-buy" onclick="openContactModal('pojedynczy plan treningowy')">KUPUJĘ PLAN</button>
+                <button class="btn-buy" onclick="openContactModal('pojedynczy plan treningowy (napisz który)')">KUPUJĘ PLAN</button>
             </div>
 
             <div class="price-card premium">
                 <h3>Pakiet Dzik</h3>
                 <div class="price">149 PLN</div>
                 <ul>
-                    <li>Dostęp do WSZYSTKICH 5 planów</li>
+                    <li>Dostęp do WSZYSTKICH 5 planów głównych</li>
                     <li>PUSH, PULL, LEGS, FBW, CORE</li>
-                    <li>25 wariantów treningowych</li>
+                    <li>Łącznie 25 wariantów treningowych</li>
                     <li>Oszczędzasz 46 PLN</li>
                 </ul>
-                <button class="btn-buy" onclick="openContactModal('Kompletny Pakiet Dzik (5 planów)')">KUPUJĘ PAKIET</button>
+                <button class="btn-buy" onclick="openContactModal('Pakiet Dzik (5 planów głównych)')">KUPUJĘ PAKIET</button>
+            </div>
+
+            <div class="price-card pro">
+                <h3>Pakiet Dzik PRO</h3>
+                <div class="price">169 PLN</div>
+                <ul>
+                    <li>Wszystko to co w Pakiecie Dzik</li>
+                    <li>+ 1 wybrany PLAN DODATKOWY</li>
+                    <li>(Siła, Mobility lub Domowy)</li>
+                    <li>Mega oszczędność i komplet wiedzy</li>
+                </ul>
+                <button class="btn-buy pro-btn" onclick="openContactModal('Pakiet Dzik PRO + plan dodatkowy (napisz który)')">KUPUJĘ FULL PAKIET</button>
             </div>
 
         </div>
     </section>
 
     <section class="plans-section">
-        <h2 class="section-title">Masz już hasło? Wejdź do planu</h2>
+        <h2 class="section-title">Baza Planów Treningowych</h2>
+        
         <div class="grid">
             <div class="card" onclick="verifyAccess('Kaktus2026', 'push.html')">
                 <h2>Trening PUSH</h2>
-                <p>Klatka piersiowa, barki, tricepsy.</p>
+                <p>Klatka piersiowa, barki, tricepsy. Kompletna hipertrofia góry ciała.</p>
                 <button class="btn-login">Zaloguj się</button>
             </div>
             <div class="card" onclick="verifyAccess('NiebieskiBanan', 'pull.html')">
                 <h2>Trening PULL</h2>
-                <p>Plecy, bicepsy, tył barku.</p>
+                <p>Plecy, bicepsy, tył barku. Budowanie szerokości i grubości pleców.</p>
                 <button class="btn-login">Zaloguj się</button>
             </div>
             <div class="card" onclick="verifyAccess('LatajacyDywan', 'legs.html')">
                 <h2>Trening LEGS</h2>
-                <p>Czworogłowe, dwugłowe, łydki.</p>
+                <p>Czworogłowe, dwugłowe, łydki. Solidny fundament i siła nóg.</p>
                 <button class="btn-login">Zaloguj się</button>
             </div>
             <div class="card" onclick="verifyAccess('StaryZegar', 'fbw.html')">
                 <h2>Trening FBW</h2>
-                <p>Trening całego ciała na jednej sesji.</p>
+                <p>Trening całego ciała na jednej sesji. Maksymalny bodziec do wzrostu.</p>
                 <button class="btn-login">Zaloguj się</button>
             </div>
             <div class="card" onclick="verifyAccess('Cebula99', 'core.html')">
                 <h2>CORE & CARDIO</h2>
-                <p>Mocny brzuch i wydolność.</p>
+                <p>Mocny brzuch i wydolność. Zestawy uzupełniające główne treningi.</p>
                 <button class="btn-login">Zaloguj się</button>
             </div>
         </div>
+
+        <h3 class="section-subtitle">Plany Dodatkowe / Specjalistyczne</h3>
+        <div class="grid">
+            <div class="card extra" onclick="verifyAccess('CiezkiKlocek', 'sila.html')">
+                <h2>SIŁA ABSOLUTNA</h2>
+                <p>Programowanie pod rekordy w martwym ciągu, przysiadzie i wyciskaniu.</p>
+                <button class="btn-login">Zaloguj się</button>
+            </div>
+            <div class="card extra" onclick="verifyAccess('GumowaKaczka', 'mobility.html')">
+                <h2>MOBILITY & REGEN</h2>
+                <p>Protokoły rozciągania i mobilizacji stawów. Koniec z byciem pospinanym.</p>
+                <button class="btn-login">Zaloguj się</button>
+            </div>
+            <div class="card extra" onclick="verifyAccess('StaraKanapa', 'domowy.html')">
+                <h2>TRENING DOMOWY</h2>
+                <p>Trening z masą ciała i gumami. Idealny na wyjazdy i braki czasu.</p>
+                <button class="btn-login">Zaloguj się</button>
+            </div>
+        </div>
+
     </section>
 
     <footer class="footer">
@@ -163,7 +200,7 @@
     <div class="modal-bg" id="contactModal">
         <div class="modal-content">
             <h3>Jak wolisz się dogadać?</h3>
-            <p style="margin-bottom: 20px; color: #aaa; font-size: 0.9rem;">Wybierz aplikację, a wiadomość napisze się sama. Podaj mi szczegóły, a ja podeślę Ci BLIK i wyślę hasła.</p>
+            <p style="margin-bottom: 20px; color: #aaa; font-size: 0.9rem;">Wybierz aplikację. Podaj mi szczegóły, a ja podeślę Ci dane do płatności i wyślę hasła.</p>
             
             <a href="#" class="contact-btn btn-wa" id="waLink" target="_blank">Napisz na WhatsApp</a>
             <a href="#" class="contact-btn btn-sms" id="smsLink">Wyślij SMS</a>
@@ -179,8 +216,6 @@
             const message = `Cześć Dawid! Chcę kupić ${planName}. Podeślij szczegóły do płatności.`;
             
             document.getElementById('waLink').href = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-            
-            // Formatowanie pod SMS działa różnie na systemach, to najbezpieczniejsza forma
             document.getElementById('smsLink').href = `sms:+${phoneNumber}?body=${encodeURIComponent(message)}`;
             
             document.getElementById('contactModal').style.display = 'flex';
