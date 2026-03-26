@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trening FBW | Dawid Trener</title>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Roboto', sans-serif; background-color: #0a0a0a; color: #fff; line-height: 1.6; padding-bottom: 50px; }
+        
+        .header { background: #111; padding: 20px; text-align: center; border-bottom: 2px solid #ff6b00; position: sticky; top: 0; z-index: 100; }
+        .header h1 { font-family: 'Oswald', sans-serif; font-size: 2rem; color: #ff6b00; text-transform: uppercase; margin-bottom: 15px; }
+        
+        .nav-tabs { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 10px; scrollbar-width: none; }
+        .nav-tabs::-webkit-scrollbar { display: none; }
+        .tab-btn { flex: 0 0 auto; background: #222; color: #fff; border: 1px solid #333; padding: 10px 20px; font-family: 'Oswald', sans-serif; font-size: 1.1rem; border-radius: 4px; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
+        .tab-btn.active { background: #ff6b00; border-color: #ff6b00; color: #000; }
+
+        .content-area { padding: 20px; max-width: 800px; margin: 0 auto; }
+        .tab-content { display: none; animation: fadeIn 0.3s ease-in-out; }
+        .tab-content.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .workout-title { font-family: 'Oswald', sans-serif; font-size: 1.8rem; color: #fff; margin-bottom: 10px; text-transform: uppercase; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .workout-desc { color: #aaa; margin-bottom: 30px; font-size: 0.95rem; }
+
+        .exercise-card { background: #151515; border: 1px solid #222; border-left: 4px solid #ff6b00; border-radius: 4px; padding: 20px; margin-bottom: 20px; }
+        .ex-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+        .ex-name { font-family: 'Oswald', sans-serif; font-size: 1.4rem; color: #fff; text-transform: uppercase; }
+        .ex-stats { background: #222; padding: 5px 10px; border-radius: 4px; font-weight: bold; color: #ff6b00; font-size: 0.9rem; }
+        
+        .ex-details { color: #ccc; font-size: 0.95rem; margin-bottom: 15px; }
+        .ex-details strong { color: #fff; }
+        
+        .ex-sub { background: #1a1a1a; padding: 10px 15px; border-radius: 4px; font-size: 0.85rem; color: #888; border: 1px dashed #333; }
+        .ex-sub span { color: #ff6b00; font-weight: bold; }
+
+        .schedule-card { background: #151515; border: 1px solid #333; border-radius: 4px; padding: 20px; margin-bottom: 20px; }
+        .schedule-card h3 { font-family: 'Oswald', sans-serif; font-size: 1.5rem; color: #ff6b00; margin-bottom: 15px; text-transform: uppercase; }
+        .day-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #222; }
+        .day-row:last-child { border-bottom: none; }
+        .day-name { font-weight: bold; color: #888; width: 100px; }
+        .day-workout { color: #fff; flex-grow: 1; text-align: right; }
+        .day-workout.rest { color: #555; }
+        .day-workout.fbw { color: #ff6b00; font-weight: bold; }
+
+        .btn-back { display: block; text-align: center; margin: 40px auto 0; padding: 15px 30px; background: none; border: 1px solid #444; color: #aaa; text-decoration: none; font-weight: bold; border-radius: 4px; text-transform: uppercase; width: 100%; max-width: 300px; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>PLAN FBW</h1>
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="showTab('w1', this)">FBW 1</button>
+            <button class="tab-btn" onclick="showTab('w2', this)">FBW 2</button>
+            <button class="tab-btn" onclick="showTab('w3', this)">FBW 3</button>
+            <button class="tab-btn" onclick="showTab('w4', this)">FBW 4</button>
+            <button class="tab-btn" onclick="showTab('w5', this)">FBW 5</button>
+            <button class="tab-btn" onclick="showTab('rozpiska', this)" style="color:#d32f2f; border-color:#d32f2f;">Rozpiska</button>
+        </div>
+    </div>
+
+    <div class="content-area">
+
+        <div id="w1" class="tab-content active">
+            <h2 class="workout-title">FBW 1: Ciężka Baza (Trening A)</h2>
+            <p class="workout-desc">Klasyczny schemat 5x5 oparty na wolnych ciężarach. Angażuje maksymalną ilość włókien mięśniowych na jednej sesji.</p>
+            
+            <div class="exercise-card">
+                <div class="ex-header">
+                    <div class="ex-name">1. Przysiad ze sztangą na karku</div>
+                    <div class="ex-stats">5 serii x 5 powt.</div>
+                </div>
+                <div class="ex-details">
+                    <strong>Przerwa:</strong> 180 sek. <br>
+                    <strong>Wskazówki:</strong> Pełna kontrola, schodź poniżej kąta prostego. To najważniejsze ćwiczenie na tej sesji.
+                </div>
+                <div class="ex-sub"><span>Zamiennik:</span> Przysiad na maszynie Smitha.</div>
+            </div>
+
+            <div class="exercise-card">
+                <div class="ex-header">
+                    <div class="ex-name">2. Wyciskanie sztangi leżąc</div>
+                    <div class="ex-stats">5 serii x 5 powt.</div>
+                </div>
+                <div class="ex-details">
+                    <strong>Przerwa:</strong> 180 sek. <br>
+                    <strong>Wskazówki:</strong> Ściągnij łopatki i trzymaj mostek. Stopy mocno wbij w ziemię.
+                </div>
+                <div class="ex-sub"><span>Zamiennik:</span> Wyciskanie hantli leżąc na ławce płaskiej.</div>
+            </div>
+
+            <div class="exercise-card">
+                <div class="ex-header">
+                    <div class="ex-name">3. Wiosłowanie sztangą w opadzie</div>
+                    <div class="ex-stats">5 serii x 5 powt.</div>
+                </div>
+                <div class="ex-details">
+                    <strong>Przerwa:</strong> 120 sek. <br>
+                    <strong>Wskazówki:</strong> Nachwyt. Prowadź sztangę w stronę pępka. Pracuj plecami, nie bicepsem.
+                </div>
+                <div class="ex-sub"><span>Zamiennik:</span> Wiosłowanie półsztangą (T-Bar).</div>
+            </div>
+
+            <div class="exercise-card">
+                <div class="ex-header">
+                    <div class="ex-name">4. Wyciskanie żołnierskie (OHP)</div>
+                    <div class="ex-stats">4 serie x 8 powt.</div>
+                </div>
+                <div class="ex-details">
+                    <strong>Przerwa:</strong> 120 sek. <br>
+                    <strong>Wskazówki:</strong> Zepnij mocno pośladki, to ustabilizuje sylwetkę przy wyciskaniu nad głowę.
+                </div>
+                <div class="ex-sub"><span>Zamiennik:</span> Wyciskanie hantli siedząc.</div>
+            </div>
+
+            <div class="exercise-card">
+                <div class="ex-header">
+                    <div class="ex-name">5. Uginanie ramion ze sztangą (Biceps)</div>
+                    <div class="ex-stats">3 serie x 10 powt.</div>
+                </div>
+                <div class="ex-details">
+                    <strong>Przerwa:</strong> 90 sek. <br>
+                    <strong>Wskazówki:</strong> Trzymaj łokcie blisko ciała, pełen wyprost na dole.
+                </div>
+                <div class="ex-sub"><span>Zamiennik:</span> Uginanie z hantlami z supinacją.</div>
+            </div>
+
+            <div class="exercise-card">
+                <div class="ex-header">
+                    <div class="ex-name">6. Wyciskanie francuskie leżąc (Triceps)</div>
+                    <div class="ex-stats">3 serie x 10 powt.</div>
+                </div>
+                <div class="ex-details">
+                    <strong>Przerwa:</strong> 90 sek. <br>
+                    <strong>Wskazówki:</strong> Użyj sztangi łamanej. Opuszczaj ciężar powoli za linię głowy.
+                </div>
+                <div class="ex-sub"><span>Zamiennik:</span> Prostowanie ramion na wyciągu.</div>
+            </div>
+        </div>
+
+        <div id="w2" class="tab-content">
+            <h2 class="workout-title">FBW 2: Ciężka Baza (Trening B)</h2>
+            <p class="workout-desc">Idealne dopełnienie treningu A. Zmieniamy wzorce ruchowe, wchodzi martwy ciąg i podciąganie.</p>
+            
+            <div class="exercise-card">
+                <div class="ex-header">
+                    <div class="ex-name">1. Martwy Ciąg Klasyczny</div>
+                    <div class="ex-stats">5 serii x 5 powt.</div>
+                </div>
+                <div class="ex-details">
+                    <strong>Przerwa:</strong> 180 sek. <br>
+                    <strong>Wskazówki:</strong> Buduje całą tylną taśmę. Prowadź sztangę po samych piszczelach i udach.
+                </div>
+                <div class="ex-sub"><span>Zamiennik:</span> Martwy ciąg Sumo.</div>
+            </div>
+
+            <div class="exercise-card">
+                <div class="ex-header">
+                    <div class="ex-name">2. Wyciskanie hantli na skosie dodatnim</div>
+                    <div class="ex-stats">4 serie x 8-10 powt.</div>
+                </div>
+                <div class="ex-details">
+                    <strong>Przerwa:</strong> 120 sek. <br>
+                    <strong>Wskazówki:</strong> Skup się na głębokim rozciągnięciu klatki piersiowej w dolnej fazie ruchu.
+                </div>
+                <div class="ex-sub"><span>Zamiennik:</span> Wyciskanie sztangi na skosie dodatnim.</div>
+            </div>
+
+            <div class="exercise-card">
+                <div class="ex-header">
+                    <div class="ex-name">3. Podciąganie na drążku (lub wyciąg)</div>
+                    <div class="ex-stats">4 serie x 8-10 powt.</div>
+                </div>
+                <div class="ex-details">
+                    <strong>Przerwa:</strong> 120 sek. <br>
+                    <strong>Wskazówki:</strong> Szeroki nachwyt. Jeśli nie masz siły się podciągać, użyj ściągania drążka na wyciągu górnym.
+                </div>
+                <div class="ex-sub"><span>Zamiennik:</span> Ściąganie drążka wyciągu do klatki.</div>
+            </div>
+
+            <div class="exercise-card">
+                <div class="ex-header">
+                    <div class="ex-name">4. Wyciskanie na suwnicy (Leg Press)</div>
+                    <div class="ex-stats">4 serie x 12 powt.</div>
+                </div>
+                <div class="ex-details">
+                    <strong>Przerwa:</strong> 120 sek. <br>
+                    <strong>Wskazówki:</strong> Uzupełnienie dla nóg po ciężkim martwym ciągu.
+                </div>
+                <div class="ex-sub"><span>Zamiennik:</span> Wykroki z hantlami.</div>
+            </div>
+
+            <div class="exercise-card">
+                <div class="ex-header">
+                    <div class="ex-name">5. Wznosy hantli bokiem (Barki)</div>
+                    <div class="ex-stats">4 serie x 15 powt.</div>
+                </div>
+                <div class="ex-details">
+                    <strong>Przerwa:</strong> 60 sek. <br>
+                    <strong>Wskazówki:</strong> Lekki ciężar, pracuj samym barkiem bez bujania ciałem.
+                </div>
+                <div class="ex-sub"><span>Zamiennik:</span> Wznosy bokiem na wyciągu dolnym.</div>
+            </div>
+
+            <div class="exercise-card">
+                <div class="ex-header">
+                    <div class="ex-name">6. Wspięcia na palce stojąc (Łydki)</div>
+                    <div class="ex-stats">4 serie x 15-20 powt.</div>
+                </div>
+                <div class="ex-details">
+                    <strong>Przerwa:</strong> 60 sek. <br>
+                    <strong>Wskazówki:</strong> Pełen zakres ruchu z sekundowym przytrzymaniem na górze.
+                </div>
+                <div class="ex-sub"><span>Zamiennik:</span> Wspięcia na palce siedząc na maszynie.</div>
+            </div>
+        </div>
+
+        <div id="w3" class="tab-content">
+            <h2 class="workout-title">FBW 3: Maszyny i Hantle (Przyjazny stawom)</h2>
+            <p class="workout-desc">Opcja świetna po ciężkim tygodniu pracy albo kiedy brakuje energii na sztangę. Pracujemy bezpiecznie.</p>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">1. Wypychanie na suwnicy</div><div class="ex-stats">4x 10-12 powt.</div></div><div class="ex-details">Stopy na środku, praca na całe uda bez obciążania pleców.</div><div class="ex-sub">Zamiennik: Hack przysiad maszyna.</div></div>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">2. Wyciskanie na maszynie siedząc (Klatka)</div><div class="ex-stats">4x 10-12 powt.</div></div><div class="ex-details">Skup się na mocnym spięciu klatki przed sobą.</div><div class="ex-sub">Zamiennik: Wyciskanie hantli płasko.</div></div>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">3. Wiosłowanie na maszynie siedząc</div><div class="ex-stats">4x 12 powt.</div></div><div class="ex-details">Oprzyj klatkę, ściągaj łopatki mocno w tył.</div><div class="ex-sub">Zamiennik: Wiosłowanie hantlem jednorącz w opadzie.</div></div>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">4. Uginanie nóg siedząc (Tył uda)</div><div class="ex-stats">4x 12-15 powt.</div></div><div class="ex-details">Powolna faza opuszczania, maksymalne zgięcie.</div><div class="ex-sub">Zamiennik: Uginanie nóg leżąc.</div></div>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">5. Wyciskanie na barki (Maszyna)</div><div class="ex-stats">4x 12 powt.</div></div><div class="ex-details">Płynny ruch, nie blokuj łokci w górnej fazie.</div><div class="ex-sub">Zamiennik: Wyciskanie hantli siedząc.</div></div>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">6. Uginanie z hantlami + Prostowanie na wyciągu</div><div class="ex-stats">3x 12 + 12 powt.</div></div><div class="ex-details">Superseria na ramiona. Biceps i od razu triceps.</div><div class="ex-sub">Zamiennik: Uginanie na wyciągu + Wyciskanie francuskie.</div></div>
+        </div>
+
+        <div id="w4" class="tab-content">
+            <h2 class="workout-title">FBW 4: Hipertrofia (Wysoka objętość)</h2>
+            <p class="workout-desc">Trening nastawiony na pompę mięśniową i uszkodzenie włókien. Krótsze przerwy, więcej powtórzeń.</p>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">1. Przysiad bułgarski</div><div class="ex-stats">4x 10-12 powt. (na nogę)</div></div><div class="ex-details">Przerwy 90 sek. Palenie gwarantowane.</div><div class="ex-sub">Zamiennik: Wykroki chodzone z hantlami.</div></div>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">2. Wyciskanie sztangi na skosie</div><div class="ex-stats">4x 10-12 powt.</div></div><div class="ex-details">Zbuduj górę klatki piersiowej.</div><div class="ex-sub">Zamiennik: Wyciskanie hantli skos dodatni.</div></div>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">3. Ściąganie drążka wyciągu górnego szeroko</div><div class="ex-stats">4x 12-15 powt.</div></div><div class="ex-details">Pracuj szerokością pleców.</div><div class="ex-sub">Zamiennik: Podciąganie chwytem neutralnym.</div></div>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">4. Rumuński Martwy Ciąg (RDL) z hantlami</div><div class="ex-stats">4x 12 powt.</div></div><div class="ex-details">Maksymalne rozciągnięcie dwugłowych uda.</div><div class="ex-sub">Zamiennik: Uginanie nóg na maszynie leżąc.</div></div>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">5. Face Pulls na wyciągu</div><div class="ex-stats">4x 15 powt.</div></div><div class="ex-details">Tył barku i zdrowie obręczy barkowej.</div><div class="ex-sub">Zamiennik: Odwrotne rozpiętki na maszynie.</div></div>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">6. Rozpiętki w bramie (Klatka izolacja)</div><div class="ex-stats">3x 15-20 powt.</div></div><div class="ex-details">Rozciągnij klatkę na koniec treningu.</div><div class="ex-sub">Zamiennik: Pec-Fly Maszyna.</div></div>
+        </div>
+
+        <div id="w5" class="tab-content">
+            <h2 class="workout-title">FBW 5: Szybki Trening (Superserie)</h2>
+            <p class="workout-desc">Masz tylko 40 minut na trening? Ten schemat oszczędza czas poprzez łączenie ćwiczeń w pary. Wykonujesz jedno i od razu przechodzisz do drugiego.</p>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">Superseria 1: Nogi + Klatka</div><div class="ex-stats">4x 10 powt. każdy</div></div><div class="ex-details">Przysiad z hantlem (Goblet) od razu połączony z wyciskaniem hantli płasko leżąc. Przerwa dopiero po obu ćwiczeniach.</div><div class="ex-sub">Zamiennik: Suwnica nogi + Pompki na podłodze.</div></div>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">Superseria 2: Plecy + Tył Uda</div><div class="ex-stats">4x 12 powt. każdy</div></div><div class="ex-details">Ściąganie drążka wyciągu do klatki od razu połączone z uginaniem nóg na maszynie.</div><div class="ex-sub">Zamiennik: Wiosłowanie hantlem + RDL hantlami.</div></div>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">Superseria 3: Barki + Plecy środek</div><div class="ex-stats">3x 12 powt. każdy</div></div><div class="ex-details">Wyciskanie hantli siedząc od razu połączone z wiosłowaniem na wyciągu dolnym siedząc.</div><div class="ex-sub">Zamiennik: Wznosy bokiem + Face pulls.</div></div>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">Superseria 4: Biceps + Triceps</div><div class="ex-stats">3x 15 powt. każdy</div></div><div class="ex-details">Uginanie hantlami młotkowo od razu połączone z prostowaniem ramion na wyciągu (sznur). Pompujemy ramiona.</div><div class="ex-sub">Zamiennik: Uginanie ze sztangą + Wyciskanie francuskie.</div></div>
+        </div>
+
+        <div id="rozpiska" class="tab-content">
+            <h2 class="workout-title">Rozpiski Tygodniowe</h2>
+            <p class="workout-desc">FBW najlepiej sprawdza się przy treningach 2 lub 3 razy w tygodniu. Zapewnia odpowiedni bodziec i czas na regenerację.</p>
+
+            <div class="schedule-card">
+                <h3>Wariant 1: Klasyk FBW (3 dni)</h3>
+                <div class="day-row"><div class="day-name">Poniedziałek</div><div class="day-workout fbw">TRENING FBW 1</div></div>
+                <div class="day-row"><div class="day-name">Wtorek</div><div class="day-workout rest">WOLNE</div></div>
+                <div class="day-row"><div class="day-name">Środa</div><div class="day-workout fbw">TRENING FBW 2</div></div>
+                <div class="day-row"><div class="day-name">Czwartek</div><div class="day-workout rest">WOLNE</div></div>
+                <div class="day-row"><div class="day-name">Piątek</div><div class="day-workout fbw">TRENING FBW 3 (lub 4)</div></div>
+                <div class="day-row"><div class="day-name">Weekend</div><div class="day-workout rest">WOLNE</div></div>
+            </div>
+
+            <div class="schedule-card">
+                <h3>Wariant 2: Zapracowany (2 dni)</h3>
+                <div class="day-row"><div class="day-name">Poniedziałek</div><div class="day-workout rest">WOLNE</div></div>
+                <div class="day-row"><div class="day-name">Wtorek</div><div class="day-workout fbw">TRENING FBW 1</div></div>
+                <div class="day-row"><div class="day-name">Środa</div><div class="day-workout rest">WOLNE</div></div>
+                <div class="day-row"><div class="day-name">Czwartek</div><div class="day-workout rest">WOLNE</div></div>
+                <div class="day-row"><div class="day-name">Piątek</div><div class="day-workout fbw">TRENING FBW 2</div></div>
+                <div class="day-row"><div class="day-name">Weekend</div><div class="day-workout rest">WOLNE</div></div>
+            </div>
+            
+            <div class="schedule-card">
+                <h3>Wariant 3: System ABA / BAB (Co drugi dzień)</h3>
+                <div class="day-row"><div class="day-name">Tydzień 1</div><div class="day-workout fbw">Pon(FBW 1) / Śro(FBW 2) / Pią(FBW 1)</div></div>
+                <div class="day-row"><div class="day-name">Tydzień 2</div><div class="day-workout fbw">Pon(FBW 2) / Śro(FBW 1) / Pią(FBW 2)</div></div>
+            </div>
+
+            <div class="schedule-card">
+                <h3>Wariant 4: Połączenie FBW + PPL (Hybryda)</h3>
+                <div class="day-row"><div class="day-name">Poniedziałek</div><div class="day-workout fbw">TRENING FBW 1</div></div>
+                <div class="day-row"><div class="day-name">Wtorek</div><div class="day-workout rest">WOLNE</div></div>
+                <div class="day-row"><div class="day-name">Środa</div><div class="day-workout">TRENING PUSH</div></div>
+                <div class="day-row"><div class="day-name">Czwartek</div><div class="day-workout">TRENING PULL</div></div>
+                <div class="day-row"><div class="day-name">Piątek</div><div class="day-workout">TRENING LEGS</div></div>
+                <div class="day-row"><div class="day-name">Weekend</div><div class="day-workout rest">WOLNE</div></div>
+            </div>
+
+            <div class="schedule-card">
+                <h3>Wariant 5: FBW codziennie? (Tylko dla zaawansowanych)</h3>
+                <div class="day-row"><div class="day-name">Poniedziałek</div><div class="day-workout fbw">FBW 1 (Niska objętość)</div></div>
+                <div class="day-row"><div class="day-name">Wtorek</div><div class="day-workout fbw">FBW 3 (Niska objętość)</div></div>
+                <div class="day-row"><div class="day-name">Środa</div><div class="day-workout fbw">FBW 2 (Niska objętość)</div></div>
+                <div class="day-row"><div class="day-name">Czwartek</div><div class="day-workout rest">WOLNE</div></div>
+                <div class="day-row"><div class="day-name">Piątek</div><div class="day-workout fbw">FBW 4 (Hipertrofia lekkie ciężary)</div></div>
+                <div class="day-row"><div class="day-name">Weekend</div><div class="day-workout rest">WOLNE</div></div>
+            </div>
+        </div>
+
+        <a href="index.html" class="btn-back">WRÓĆ DO MENU GŁÓWNEGO</a>
+    </div>
+
+    <script>
+        function showTab(tabId, element) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+            
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            element.classList.add('active');
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
