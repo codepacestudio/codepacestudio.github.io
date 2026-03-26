@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trening LEGS | Dawid Trener</title>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Roboto', sans-serif; background-color: #0a0a0a; color: #fff; line-height: 1.6; padding-bottom: 50px; }
+        
+        /* Zmiana akcentu na żółty dla LEGS */
+        .header { background: #111; padding: 20px; text-align: center; border-bottom: 2px solid #f1c40f; position: sticky; top: 0; z-index: 100; }
+        .header h1 { font-family: 'Oswald', sans-serif; font-size: 2rem; color: #f1c40f; text-transform: uppercase; margin-bottom: 15px; }
+        
+        .nav-tabs { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 10px; scrollbar-width: none; }
+        .nav-tabs::-webkit-scrollbar { display: none; }
+        .tab-btn { flex: 0 0 auto; background: #222; color: #fff; border: 1px solid #333; padding: 10px 20px; font-family: 'Oswald', sans-serif; font-size: 1.1rem; border-radius: 4px; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
+        .tab-btn.active { background: #f1c40f; border-color: #f1c40f; color: #000; }
+
+        .content-area { padding: 20px; max-width: 800px; margin: 0 auto; }
+        .tab-content { display: none; animation: fadeIn 0.3s ease-in-out; }
+        .tab-content.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .workout-title { font-family: 'Oswald', sans-serif; font-size: 1.8rem; color: #fff; margin-bottom: 10px; text-transform: uppercase; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .workout-desc { color: #aaa; margin-bottom: 30px; font-size: 0.95rem; }
+
+        .exercise-card { background: #151515; border: 1px solid #222; border-left: 4px solid #f1c40f; border-radius: 4px; padding: 20px; margin-bottom: 20px; }
+        .ex-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+        .ex-name { font-family: 'Oswald', sans-serif; font-size: 1.4rem; color: #fff; text-transform: uppercase; }
+        .ex-stats { background: #222; padding: 5px 10px; border-radius: 4px; font-weight: bold; color: #f1c40f; font-size: 0.9rem; }
+        
+        .ex-details { color: #ccc; font-size: 0.95rem; margin-bottom: 15px; }
+        .ex-details strong { color: #fff; }
+        
+        .ex-sub { background: #1a1a1a; padding: 10px 15px; border-radius: 4px; font-size: 0.85rem; color: #888; border: 1px dashed #333; }
+        .ex-sub span { color: #f1c40f; font-weight: bold; }
+
+        .schedule-card { background: #151515; border: 1px solid #333; border-radius: 4px; padding: 20px; margin-bottom: 20px; }
+        .schedule-card h3 { font-family: 'Oswald', sans-serif; font-size: 1.5rem; color: #f1c40f; margin-bottom: 15px; text-transform: uppercase; }
+        .day-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #222; }
+        .day-row:last-child { border-bottom: none; }
+        .day-name { font-weight: bold; color: #888; width: 100px; }
+        .day-workout { color: #fff; flex-grow: 1; text-align: right; }
+        .day-workout.rest { color: #555; }
+        .day-workout.legs { color: #f1c40f; font-weight: bold; }
+
+        .btn-back { display: block; text-align: center; margin: 40px auto 0; padding: 15px 30px; background: none; border: 1px solid #444; color: #aaa; text-decoration: none; font-weight: bold; border-radius: 4px; text-transform: uppercase; width: 100%; max-width: 300px; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>PLAN LEGS</h1>
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="showTab('w1', this)">Legs 1</button>
+            <button class="tab-btn" onclick="showTab('w2', this)">Legs 2</button>
+            <button class="tab-btn" onclick="showTab('w3', this)">Legs 3</button>
+            <button class="tab-btn" onclick="showTab('w4', this)">Legs 4</button>
+            <button class="tab-btn" onclick="showTab('w5', this)">Legs 5</button>
+            <button class="tab-btn" onclick="showTab('rozpiska', this)" style="color:#d32f2f; border-color:#d32f2f;">Rozpiska</button>
+        </div>
+    </div>
+
+    <div class="content-area">
+
+        <div id="w1" class="tab-content active">
+            <h2 class="workout-title">Legs 1: Baza Siłowa</h2>
+            <p class="workout-desc">Absolutny fundament budowania masy nóg. Skupiamy się na dużych ciężarach w złożonych ruchach wielostawowych.</p>
+            
+            <div class="exercise-card">
+                <div class="ex-header">
+                    <div class="ex-name">1. Przysiad ze sztangą na karku (High Bar)</div>
+                    <div class="ex-stats">4 serie x 5-8 powt.</div>
+                </div>
+                <div class="ex-details">
+                    <strong>Przerwa:</strong> 180 sek. <br>
+                    <strong>Wskazówki:</strong> Głęboki zakres ruchu. Klatka wypchnięta, kolana idą w stronę palców stóp.
+                </div>
+                <div class="ex-sub"><span>Zamiennik:</span> Przysiad na maszynie Smitha.</div>
+            </div>
+
+            <div class="exercise-card">
+                <div class="ex-header">
+                    <div class="ex-name">2. Rumuński Martwy Ciąg (RDL)</div>
+                    <div class="ex-stats">4 serie x 8-10 powt.</div>
+                </div>
+                <div class="ex-details">
+                    <strong>Przerwa:</strong> 120 sek. <br>
+                    <strong>Wskazówki:</strong> Nogi lekko ugięte w kolanach. Wypychaj biodra mocno w tył do uczucia rozciągania w dwugłowych.
+                </div>
+                <div class="ex-sub"><span>Zamiennik:</span> RDL z hantlami.</div>
+            </div>
+
+            <div class="exercise-card">
+                <div class="ex-header">
+                    <div class="ex-name">3. Wypychanie na suwnicy (Leg Press)</div>
+                    <div class="ex-stats">4 serie x 10-12 powt.</div>
+                </div>
+                <div class="ex-details">
+                    <strong>Przerwa:</strong> 120 sek. <br>
+                    <strong>Wskazówki:</strong> Stopy na środku platformy, szerokość barków. Nie przeprostowuj kolan w górnej fazie.
+                </div>
+                <div class="ex-sub"><span>Zamiennik:</span> Hack Przysiad (Hack Squat).</div>
+            </div>
+
+            <div class="exercise-card">
+                <div class="ex-header">
+                    <div class="ex-name">4. Wykroki z hantlami chodzone</div>
+                    <div class="ex-stats">3 serie x 10 powt. (na nogę)</div>
+                </div>
+                <div class="ex-details">
+                    <strong>Przerwa:</strong> 90 sek. <br>
+                    <strong>Wskazówki:</strong> Trzymaj pionową sylwetkę. Kolano tylnej nogi lekko muska podłogę.
+                </div>
+                <div class="ex-sub"><span>Zamiennik:</span> Zakroki w miejscu z hantlami.</div>
+            </div>
+
+            <div class="exercise-card">
+                <div class="ex-header">
+                    <div class="ex-name">5. Wspięcia na palce stojąc</div>
+                    <div class="ex-stats">4 serie x 15-20 powt.</div>
+                </div>
+                <div class="ex-details">
+                    <strong>Przerwa:</strong> 60 sek. <br>
+                    <strong>Wskazówki:</strong> Pełne rozciągnięcie łydki na dole, maksymalne dopięcie na górze z przytrzymaniem.
+                </div>
+                <div class="ex-sub"><span>Zamiennik:</span> Wspięcia na palce wypychając ciężar na suwnicy.</div>
+            </div>
+        </div>
+
+        <div id="w2" class="tab-content">
+            <h2 class="workout-title">Legs 2: Priorytet Czworogłowe</h2>
+            <p class="workout-desc">Trening nastawiony na rozbudowę przodu uda. Maksymalizujemy zgięcie w stawie kolanowym.</p>
+            
+            <div class="exercise-card">
+                <div class="ex-header">
+                    <div class="ex-name">1. Przysiad przedni (Front Squat)</div>
+                    <div class="ex-stats">4 serie x 6-8 powt.</div>
+                </div>
+                <div class="ex-details">
+                    <strong>Przerwa:</strong> 120 sek. <br>
+                    <strong>Wskazówki:</strong> Sztanga oparta na przednich aktonach barków. Łokcie wysoko, tułów maksymalnie pionowo.
+                </div>
+                <div class="ex-sub"><span>Zamiennik:</span> Goblet Squat z ciężkim hantlem.</div>
+            </div>
+            
+            <div class="exercise-card">
+                <div class="ex-header">
+                    <div class="ex-name">2. Hack Przysiad (Maszyna)</div>
+                    <div class="ex-stats">4 serie x 8-12 powt.</div>
+                </div>
+                <div class="ex-details">
+                    <strong>Przerwa:</strong> 120 sek. <br>
+                    <strong>Wskazówki:</strong> Stopy wąsko i nisko na platformie. Schodź jak najgłębiej, nie odrywając pięt.
+                </div>
+                <div class="ex-sub"><span>Zamiennik:</span> Przysiad na suwnicy z nisko ułożonymi stopami.</div>
+            </div>
+
+            <div class="exercise-card">
+                <div class="ex-header">
+                    <div class="ex-name">3. Przysiad bułgarski</div>
+                    <div class="ex-stats">3 serie x 10-12 powt. (na nogę)</div>
+                </div>
+                <div class="ex-details">
+                    <strong>Przerwa:</strong> 90 sek. <br>
+                    <strong>Wskazówki:</strong> Tylna noga na ławce. Pionowy tułów mocniej angażuje czworogłowy udo.
+                </div>
+                <div class="ex-sub"><span>Zamiennik:</span> Wykroki z hantlami w miejscu.</div>
+            </div>
+
+            <div class="exercise-card">
+                <div class="ex-header">
+                    <div class="ex-name">4. Prostowanie nóg na maszynie siedząc</div>
+                    <div class="ex-stats">4 serie x 12-15 powt.</div>
+                </div>
+                <div class="ex-details">
+                    <strong>Przerwa:</strong> 60 sek. <br>
+                    <strong>Wskazówki:</strong> Mocne przytrzymanie w punkcie maksymalnego skurczu na 1 sekundę. Wolne opuszczanie.
+                </div>
+                <div class="ex-sub"><span>Zamiennik:</span> Sissy Squat (przysiady sissy) z masą ciała.</div>
+            </div>
+
+            <div class="exercise-card">
+                <div class="ex-header">
+                    <div class="ex-name">5. Uginanie nóg leżąc przodem</div>
+                    <div class="ex-stats">4 serie x 10-12 powt.</div>
+                </div>
+                <div class="ex-details">
+                    <strong>Przerwa:</strong> 60 sek. <br>
+                    <strong>Wskazówki:</strong> Dociskaj miednicę do ławki, nie wyginaj lędźwi w łuk.
+                </div>
+                <div class="ex-sub"><span>Zamiennik:</span> Uginanie nóg siedząc.</div>
+            </div>
+        </div>
+
+        <div id="w3" class="tab-content">
+            <h2 class="workout-title">Legs 3: Tył Uda i Pośladki</h2>
+            <p class="workout-desc">Skupiamy się na tylnej taśmie. Budujemy potężne dwugłowe i silne pośladki, które stabilizują całą sylwetkę.</p>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">1. Hip Thrust ze sztangą (Wznosy bioder)</div><div class="ex-stats">4x 8-10 powt.</div></div><div class="ex-details">Zatrzymaj ruch na sekundę w górnej fazie. Patrz w przód, by nie obciążać lędźwi.</div><div class="ex-sub">Zamiennik: Wznosy bioder na maszynie.</div></div>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">2. Martwy ciąg na prostych nogach</div><div class="ex-stats">4x 8-10 powt.</div></div><div class="ex-details">Kolana zablokowane z mikrougięciem. Schodź tylko do momentu maksymalnego rozciągnięcia tyłu uda.</div><div class="ex-sub">Zamiennik: Skłony ze sztangą na karku (Good Mornings).</div></div>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">3. Uginanie nóg siedząc na maszynie</div><div class="ex-stats">4x 12 powt.</div></div><div class="ex-details">Najlepsza izolacja na dwugłowe. Pełne rozciągnięcie na górze.</div><div class="ex-sub">Zamiennik: Uginanie nóg leżąc.</div></div>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">4. Przysiad bułgarski (wersja na pośladek)</div><div class="ex-stats">3x 10-12 powt.</div></div><div class="ex-details">Pochyl tułów do przodu i weź większy wykrok, żeby mocniej zaangażować pośladek.</div><div class="ex-sub">Zamiennik: Wypychanie nogi w tył na wyciągu.</div></div>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">5. Odwodzenie nóg na maszynie siedząc</div><div class="ex-stats">3x 15-20 powt.</div></div><div class="ex-details">Ruch budujący pośladek średni. Wykonuj powoli i kontroluj ciężar.</div><div class="ex-sub">Zamiennik: Odwodzenie nogi w bok z gumą oporową.</div></div>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">6. Wspięcia na palce siedząc</div><div class="ex-stats">4x 15 powt.</div></div><div class="ex-details">Celuje w mięsień płaszczkowaty łydki. Przytrzymaj spięcie.</div><div class="ex-sub">Zamiennik: Wspięcia na palce z hantlami na kolanach.</div></div>
+        </div>
+
+        <div id="w4" class="tab-content">
+            <h2 class="workout-title">Legs 4: Maszyny i Izolacje</h2>
+            <p class="workout-desc">Gdy prostownik grzbietu woła o pomoc, wchodzimy na maszyny. Zero obciążania kręgosłupa, czysta praca nóg.</p>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">1. Wypychanie na suwnicy (Szeroko i wysoko)</div><div class="ex-stats">4x 10-12 powt.</div></div><div class="ex-details">Stopy na samej górze platformy mocniej uderzają w tył uda i pośladek.</div><div class="ex-sub">Zamiennik: Klasyczne wypychanie na suwnicy.</div></div>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">2. Hack Przysiad (Maszyna)</div><div class="ex-stats">4x 10-12 powt.</div></div><div class="ex-details">Pełna głębokość, nie odrywaj pleców od oparcia.</div><div class="ex-sub">Zamiennik: Przysiady na maszynie V-Squat.</div></div>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">3. Prostowanie nóg na maszynie</div><div class="ex-stats">4x 15 powt.</div></div><div class="ex-details">Palce stóp zadarte do góry. Dopinaj uda w górnej fazie.</div><div class="ex-sub">Zamiennik: Brak, skup się na maszynie.</div></div>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">4. Uginanie nóg leżąc</div><div class="ex-stats">4x 15 powt.</div></div><div class="ex-details">Ruch wolny i w pełni kontrolowany. Nie szarp miednicą.</div><div class="ex-sub">Zamiennik: Uginanie nóg siedząc.</div></div>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">5. Przywodzenie nóg na maszynie</div><div class="ex-stats">3x 15-20 powt.</div></div><div class="ex-details">Zbuduj wewnętrzną stronę uda. Kontroluj ruch powrotny.</div><div class="ex-sub">Zamiennik: Brak, pracuj na maszynie.</div></div>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">6. Wspięcia na palce wypychając ciężar (Suwnica)</div><div class="ex-stats">4x 15 powt.</div></div><div class="ex-details">Zablokuj kolana, pracuj samymi stawami skokowymi.</div><div class="ex-sub">Zamiennik: Wspięcia na maszynie stojąc.</div></div>
+        </div>
+
+        <div id="w5" class="tab-content">
+            <h2 class="workout-title">Legs 5: Miazga Hipertroficzna</h2>
+            <p class="workout-desc">Wysoka intensywność i potężna pompa. Wyjdź ze strefy komfortu. Jeśli po tym treningu nie robi ci się słabo, to trenowałeś za lekko.</p>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">1. Przysiad ze sztangą (Tempo 3-1-1-0)</div><div class="ex-stats">4x 8-10 powt.</div></div><div class="ex-details">Opuszczasz 3 sekundy, 1 sekunda pauzy na dole, dynamiczna góra. Ogień z czworogłowych.</div><div class="ex-sub">Zamiennik: Przysiad przedni w tempie.</div></div>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">2. Wypychanie na suwnicy + Wykroki (Super-seria)</div><div class="ex-stats">3x 12 + 10 (na nogę)</div></div><div class="ex-details">Robisz suwnicę, łapiesz hantle i od razu idziesz robić wykroki na sali.</div><div class="ex-sub">Zamiennik: Hack Przysiad + Zakroki w miejscu.</div></div>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">3. RDL z hantlami</div><div class="ex-stats">4x 12 powt.</div></div><div class="ex-details">Ciągłe napięcie, nie prostuj się do końca na górze, żeby nie gubić czucia mięśni.</div><div class="ex-sub">Zamiennik: RDL ze sztangą.</div></div>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">4. Uginanie nóg siedząc + Prostowanie (Super-seria)</div><div class="ex-stats">3x 15 + 15 powt.</div></div><div class="ex-details">Tył uda i od razu przód. Ogromny napływ krwi do nóg.</div><div class="ex-sub">Zamiennik: To samo na maszynach leżąc.</div></div>
+            <div class="exercise-card"><div class="ex-header"><div class="ex-name">5. Wspięcia na palce osiołki (Donkey Calf Raises)</div><div class="ex-stats">4x 20 powt.</div></div><div class="ex-details">Maksymalne rozciągnięcie łydki w pochyleniu tułowia.</div><div class="ex-sub">Zamiennik: Wspięcia stojąc z przytrzymaniem.</div></div>
+        </div>
+
+        <div id="rozpiska" class="tab-content">
+            <h2 class="workout-title">Rozpiski Tygodniowe</h2>
+            <p class="workout-desc">Schematy ułożenia całego tygodnia. Dni LEGS dobierasz dowolnie z zakładek 1-5.</p>
+
+            <div class="schedule-card">
+                <h3>Wariant 1: Klasyk 4-dniowy (Polecany)</h3>
+                <div class="day-row"><div class="day-name">Poniedziałek</div><div class="day-workout">TRENING PUSH</div></div>
+                <div class="day-row"><div class="day-name">Wtorek</div><div class="day-workout">TRENING PULL</div></div>
+                <div class="day-row"><div class="day-name">Środa</div><div class="day-workout rest">WOLNE</div></div>
+                <div class="day-row"><div class="day-name">Czwartek</div><div class="day-workout legs">TRENING LEGS</div></div>
+                <div class="day-row"><div class="day-name">Piątek</div><div class="day-workout">WOLNE</div></div>
+                <div class="day-row"><div class="day-name">Sobota</div><div class="day-workout">TRENING FBW</div></div>
+                <div class="day-row"><div class="day-name">Niedziela</div><div class="day-workout rest">WOLNE</div></div>
+            </div>
+
+            <div class="schedule-card">
+                <h3>Wariant 2: Górna połowa priorytet (4 dni)</h3>
+                <div class="day-row"><div class="day-name">Poniedziałek</div><div class="day-workout">GÓRA CIAŁA (Upper)</div></div>
+                <div class="day-row"><div class="day-name">Wtorek</div><div class="day-workout legs">DÓŁ CIAŁA (Lower)</div></div>
+                <div class="day-row"><div class="day-name">Środa</div><div class="day-workout rest">WOLNE</div></div>
+                <div class="day-row"><div class="day-name">Czwartek</div><div class="day-workout">TRENING PUSH</div></div>
+                <div class="day-row"><div class="day-name">Piątek</div><div class="day-workout">TRENING PULL</div></div>
+                <div class="day-row"><div class="day-name">Weekend</div><div class="day-workout rest">WOLNE</div></div>
+            </div>
+
+            <div class="schedule-card">
+                <h3>Wariant 3: Zapracowany (3 dni w tygodniu)</h3>
+                <div class="day-row"><div class="day-name">Poniedziałek</div><div class="day-workout">TRENING PUSH</div></div>
+                <div class="day-row"><div class="day-name">Wtorek</div><div class="day-workout rest">WOLNE</div></div>
+                <div class="day-row"><div class="day-name">Środa</div><div class="day-workout">TRENING PULL</div></div>
+                <div class="day-row"><div class="day-name">Czwartek</div><div class="day-workout rest">WOLNE</div></div>
+                <div class="day-row"><div class="day-name">Piątek</div><div class="day-workout legs">TRENING LEGS</div></div>
+                <div class="day-row"><div class="day-name">Weekend</div><div class="day-workout rest">WOLNE</div></div>
+            </div>
+
+            <div class="schedule-card">
+                <h3>Wariant 4: Ciężki Dzik (5 dni w tygodniu)</h3>
+                <div class="day-row"><div class="day-name">Poniedziałek</div><div class="day-workout">TRENING PUSH</div></div>
+                <div class="day-row"><div class="day-name">Wtorek</div><div class="day-workout">TRENING PULL</div></div>
+                <div class="day-row"><div class="day-name">Środa</div><div class="day-workout legs">TRENING LEGS</div></div>
+                <div class="day-row"><div class="day-name">Czwartek</div><div class="day-workout">TRENING PUSH (Lekki)</div></div>
+                <div class="day-row"><div class="day-name">Piątek</div><div class="day-workout">TRENING PULL (Lekki)</div></div>
+                <div class="day-row"><div class="day-name">Weekend</div><div class="day-workout rest">WOLNE + Cardio</div></div>
+            </div>
+
+            <div class="schedule-card">
+                <h3>Wariant 5: Rotacyjny PPL (6 dni on, 1 off)</h3>
+                <div class="day-row"><div class="day-name">Dzień 1</div><div class="day-workout">TRENING PUSH</div></div>
+                <div class="day-row"><div class="day-name">Dzień 2</div><div class="day-workout">TRENING PULL</div></div>
+                <div class="day-row"><div class="day-name">Dzień 3</div><div class="day-workout legs">TRENING LEGS</div></div>
+                <div class="day-row"><div class="day-name">Dzień 4</div><div class="day-workout">TRENING PUSH</div></div>
+                <div class="day-row"><div class="day-name">Dzień 5</div><div class="day-workout">TRENING PULL</div></div>
+                <div class="day-row"><div class="day-name">Dzień 6</div><div class="day-workout legs">TRENING LEGS</div></div>
+                <div class="day-row"><div class="day-name">Dzień 7</div><div class="day-workout rest">PEŁNA REGENERACJA</div></div>
+            </div>
+        </div>
+
+        <a href="index.html" class="btn-back">WRÓĆ DO MENU GŁÓWNEGO</a>
+    </div>
+
+    <script>
+        function showTab(tabId, element) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+            
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            element.classList.add('active');
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
