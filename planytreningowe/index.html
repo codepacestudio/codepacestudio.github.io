@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plany Treningowe | Budowa Masy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Roboto', sans-serif; background-color: #0a0a0a; color: #fff; }
+        
+        /* Sekcja główna z tłem */
+        .hero {
+            height: 60vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.9)), url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1470&auto=format&fit=crop') center/cover;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            border-bottom: 3px solid #d32f2f;
+        }
+        .hero h1 { font-family: 'Oswald', sans-serif; font-size: 4rem; text-transform: uppercase; letter-spacing: 2px; color: #fff; margin-bottom: 10px; }
+        .hero h1 span { color: #d32f2f; }
+        .hero p { font-size: 1.2rem; color: #aaa; max-width: 600px; }
+
+        /* Sekcja planów */
+        .plans-section { padding: 60px 20px; max-width: 1200px; margin: 0 auto; }
+        .section-title { font-family: 'Oswald', sans-serif; font-size: 2.5rem; text-align: center; margin-bottom: 40px; text-transform: uppercase; }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: #151515;
+            border: 1px solid #222;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(211, 47, 47, 0.2); border-color: #d32f2f; }
+        .card h2 { font-family: 'Oswald', sans-serif; font-size: 2rem; color: #d32f2f; margin-bottom: 15px; }
+        .card p { color: #888; font-size: 0.95rem; margin-bottom: 20px; line-height: 1.5; }
+        .card .btn {
+            background: #d32f2f; color: #fff; border: none; padding: 12px 25px; font-size: 1rem;
+            font-weight: bold; border-radius: 4px; cursor: pointer; text-transform: uppercase; width: 100%;
+        }
+        .card .btn:hover { background: #b71c1c; }
+
+        /* Kontakt */
+        .contact-section { background: #111; padding: 50px 20px; text-align: center; border-top: 1px solid #222; }
+        .contact-section h3 { font-family: 'Oswald', sans-serif; font-size: 2rem; margin-bottom: 20px; color: #fff; }
+        .contact-info { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; margin-bottom: 20px; }
+        .contact-item { font-size: 1.1rem; color: #aaa; }
+        .contact-item a { color: #d32f2f; text-decoration: none; font-weight: bold; transition: color 0.2s, text-shadow 0.2s; }
+        .contact-item a:hover { color: #ff5252; text-shadow: 0 0 10px rgba(211, 47, 47, 0.4); }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .contact-info { flex-direction: column; gap: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="hero">
+        <h1>Osiągnij <span>Cel</span></h1>
+        <p>Profesjonalne plany treningowe ukierunkowane na budowę masy mięśniowej. Konkretne ćwiczenia, zamienniki i pełna struktura treningu.</p>
+    </header>
+
+    <section class="plans-section">
+        <h2 class="section-title">Wybierz swój plan</h2>
+        
+        <div class="grid">
+            <div class="card" onclick="verifyAccess('Kaktus2026', 'push.html')">
+                <h2>Trening PUSH</h2>
+                <p>Klatka piersiowa, barki, tricepsy. 5 pełnych zestawów treningowych z rozgrzewką i zamiennikami.</p>
+                <button class="btn">Odblokuj Plan</button>
+            </div>
+
+            <div class="card" onclick="verifyAccess('NiebieskiBanan', 'pull.html')">
+                <h2>Trening PULL</h2>
+                <p>Plecy, bicepsy, tył barku. Skuteczna hipertrofia i budowanie szerokości. 5 wariantów.</p>
+                <button class="btn">Odblokuj Plan</button>
+            </div>
+
+            <div class="card" onclick="verifyAccess('LatajacyDywan', 'legs.html')">
+                <h2>Trening LEGS</h2>
+                <p>Czworogłowe, dwugłowe, łydki. Kompletny trening dołu ciała budujący fundament.</p>
+                <button class="btn">Odblokuj Plan</button>
+            </div>
+
+            <div class="card" onclick="verifyAccess('StaryZegar', 'fbw.html')">
+                <h2>Trening FBW</h2>
+                <p>Full Body Workout. Trening całego ciała na jednej sesji. Idealny dla zabieganych.</p>
+                <button class="btn">Odblokuj Plan</button>
+            </div>
+
+            <div class="card" onclick="verifyAccess('Cebula99', 'core.html')">
+                <h2>CORE & CARDIO</h2>
+                <p>Mocny brzuch i wydolność. Zestawy ćwiczeń uzupełniających twój główny plan.</p>
+                <button class="btn">Odblokuj Plan</button>
+            </div>
+        </div>
+    </section>
+
+    <footer class="contact-section">
+        <h3>Masz pytania? Chcesz kupić dostęp?</h3>
+        <div class="contact-info">
+            <div class="contact-item">Zadzwoń: <a href="tel:+48792198691">+48 792 198 691</a></div>
+            <div class="contact-item">WhatsApp: <a href="https://wa.me/48792198691" target="_blank">Napisz Wiadomość</a></div>
+            <div class="contact-item">Email: <a href="mailto:codepacestudio@gmail.com">codepacestudio@gmail.com</a></div>
+        </div>
+        <p style="color: #666; font-size: 0.9rem; margin-top: 20px;">&copy; 2026 Treningi Personalne. Wszelkie prawa zastrzeżone.</p>
+    </footer>
+
+    <script>
+        function verifyAccess(correctPassword, targetUrl) {
+            const userInput = prompt("Podaj hasło dostępu do tego planu:");
+            
+            if (userInput === null) {
+                return;
+            }
+            
+            if (userInput === correctPassword) {
+                alert("Hasło poprawne. Przekierowuję do planu treningowego.");
+                window.location.href = targetUrl;
+            } else {
+                alert("Błędne hasło. Brak dostępu.");
+            }
+        }
+    </script>
+</body>
+</html>
