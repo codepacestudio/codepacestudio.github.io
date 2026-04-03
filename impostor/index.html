@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>IMPOSTOR | Neon Horror</title>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050505;
+            --impostor: #ff0000;
+            --citizen: #00f2ff;
+            --jester: #ff00ff;
+            --text: #ffffff;
+            --card: #111;
+        }
+
+        body {
+            margin: 0; padding: 0; background: var(--bg); color: var(--text);
+            font-family: 'Roboto', sans-serif; overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .screen {
+            display: none; min-height: 100vh; padding: 20px;
+            box-sizing: border-box; flex-direction: column; align-items: center;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .screen.active { display: flex; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Krwisty neonowy napis */
+        h1 {
+            font-family: 'Oswald', sans-serif; font-size: 3.5rem; text-transform: uppercase;
+            color: var(--impostor); text-shadow: 0 0 10px rgba(255,0,0,0.7), 0 0 20px rgba(255,0,0,0.5);
+            margin-bottom: 30px; text-align: center; position: relative;
+        }
+
+        .setup-card {
+            background: var(--card); border: 1px solid #333; padding: 25px;
+            border-radius: 12px; width: 100%; max-width: 400px;
+        }
+
+        input, select, button {
+            width: 100%; padding: 15px; margin: 10px 0; border-radius: 8px;
+            border: 1px solid #444; background: #222; color: #fff; font-size: 1rem;
+        }
+
+        button {
+            background: var(--impostor); font-weight: bold; border: none;
+            cursor: pointer; text-transform: uppercase; transition: 0.2s;
+        }
+
+        button:active { transform: scale(0.95); }
+
+        .player-tag {
+            display: inline-block; background: #333; padding: 5px 15px;
+            margin: 5px; border-radius: 20px; font-size: 0.9rem;
+        }
+
+        /* Widok roli */
+        .role-box {
+            width: 300px; height: 400px; background: var(--card);
+            border: 2px solid #333; border-radius: 15px; display: flex;
+            flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; cursor: pointer; transition: 0.5s;
+        }
+
+        .role-box.revealed { border-color: var(--impostor); box-shadow: 0 0 20px rgba(255,0,0,0.3); }
+
+        .hidden-text { font-size: 1.2rem; color: #666; text-transform: uppercase; letter-spacing: 2px; }
+
+        /* Tabela wyników */
+        .score-table { width: 100%; max-width: 500px; margin-top: 20px; border-collapse: collapse; }
+        .score-table td { padding: 12px; border-bottom: 1px solid #222; }
+        .score-val { font-weight: bold; color: var(--citizen); text-align: right; }
+
+        .vote-btn { background: #1a1a1a; border: 1px solid #444; margin: 5px; }
+        .vote-btn.selected { border-color: var(--citizen); background: #002a2e; }
+
+        .hint-text { color: #888; font-style: italic; margin-top: 10px; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+    <section id="screen-setup" class="screen active">
+        <h1>IMPOSTOR</h1>
+        <div class="setup-card">
+            <input type="text" id="player-name" placeholder="Wpisz imię gracza...">
+            <button onclick="addPlayer()">Dodaj Gracza</button>
+            <div id="player-list"></div>
+            
+            <label style="display:block; margin-top:20px;">Punkty do wygranej (10-50): <span id="max-pts-val">20</span></label>
+            <input type="range" id="max-pts" min="10" max="50" value="20" oninput="document.getElementById('max-pts-val').innerText = this.value">
+            
+            <select id="impostor-count">
+                <option value="1">1 Impostor</option>
+                <option value="2">2 Impostorów (4+ graczy)</option>
+            </select>
+
+            <label><input type="checkbox" id="enable-hints"> Podpowiedź dla Impostora</label>
+            <label><input type="checkbox" id="enable-jester"> Szalony Jester (5+ graczy)</label>
+
+            <button onclick="startGame()" style="background: var(--citizen); color: #000; margin-top:20px;">ROZPOCZNIJ GRĘ</button>
+        </div>
+    </section>
+
+    <section id="screen-reveal" class="screen">
+        <h1>TWOJA ROLA</h1>
+        <p id="reveal-instruction">Podaj telefon graczowi: <b id="current-player-name">...</b></p>
+        <div class="role-box" onclick="toggleRole()">
+            <div id="role-inner" class="hidden-text">Dotknij, aby zobaczyć</div>
+        </div>
+        <button id="next-player-btn" onclick="nextPlayer()" style="display:none; margin-top:20px;">NASTĘPNY GRACZ</button>
+    </section>
+
+    <section id="screen-game" class="screen">
+        <h1>GŁOSOWANIE</h1>
+        <p>Kto jest Impostorem? Wybierz podejrzanego:</p>
+        <div id="vote-list"></div>
+        <button onclick="submitVote()" style="background: var(--citizen); color: #000; margin-top: 30px;">ZATWIERDŹ GŁOSOWANIE</button>
+    </section>
+
+    <section id="screen-scores" class="screen">
+        <h1>WYNIKI</h1>
+        <table class="score-table" id="score-board"></table>
+        <button onclick="newRound()" style="margin-top: 30px;">NASTĘPNA RUNDA</button>
+        <button onclick="resetFullGame()" style="background: #222; font-size: 0.8rem;">ZRESETUJ CAŁĄ GRĘ</button>
+    </section>
+
+    <script>
+        // BAZA SŁÓW - CZĘŚĆ 1 (Wstępna)
+        const wordBase = [
+            { word: "Tiktok", cat: "Social Media", hint: "Miejsce, gdzie marnujesz godziny na przewijaniu krótkich filmików." },
+            { word: "Siłownia", cat: "Miejsce", hint: "Budynek pełen żelastwa i ludzi w obcisłych ciuchach." },
+            { word: "Kebap", cat: "Jedzenie", hint: "Najlepszy przyjaciel każdego po imprezie o 3 rano." },
+            { word: "Dubaj", cat: "Geografia", hint: "Miasto na pustyni, gdzie wszystko jest najdroższe i najwyższe." },
+            { word: "Robert Lewandowski", cat: "Sport", hint: "Człowiek, który strzela bramki i reklamuje wszystko w tym kraju." }
+        ];
+
+        let gameState = JSON.parse(localStorage.getItem('impostor_game')) || {
+            players: [],
+            scores: {},
+            maxPoints: 20,
+            impostors: 1,
+            hints: false,
+            jester: false,
+            currentWord: null,
+            roles: []
+        };
+
+        function save() { localStorage.setItem('impostor_game', JSON.stringify(gameState)); }
+
+        function addPlayer() {
+            const input = document.getElementById('player-name');
+            const name = input.value.trim();
+            if (name && !gameState.players.includes(name)) {
+                gameState.players.push(name);
+                gameState.scores[name] = 0;
+                input.value = '';
+                renderPlayers();
+                save();
+            }
+        }
+
+        function renderPlayers() {
+            const list = document.getElementById('player-list');
+            list.innerHTML = gameState.players.map(p => `<span class="player-tag">${p}</span>`).join('');
+        }
+
+        function startGame() {
+            if (gameState.players.length < 3) return alert("Potrzeba min. 3 graczy!");
+            
+            gameState.maxPoints = document.getElementById('max-pts').value;
+            gameState.impostors = parseInt(document.getElementById('impostor-count').value);
+            gameState.hints = document.getElementById('enable-hints').checked;
+            gameState.jester = document.getElementById('enable-jester').checked;
+            
+            newRound();
+        }
+
+        function newRound() {
+            const randomEntry = wordBase[Math.floor(Math.random() * wordBase.length)];
+            gameState.currentWord = randomEntry;
+            gameState.roles = [];
+
+            let pool = [...gameState.players];
+            let tempRoles = {};
+
+            // Losowanie Impostorów
+            for(let i=0; i < gameState.impostors; i++) {
+                let idx = Math.floor(Math.random() * pool.length);
+                tempRoles[pool.splice(idx, 1)[0]] = "IMPOSTOR";
+            }
+
+            // Losowanie Jestera
+            if (gameState.jester && gameState.players.length >= 5) {
+                let idx = Math.floor(Math.random() * pool.length);
+                tempRoles[pool.splice(idx, 1)[0]] = "JESTER";
+            }
+
+            // Reszta to Obywatele
+            pool.forEach(p => tempRoles[p] = "OBYWATEL");
+
+            gameState.roles = tempRoles;
+            save();
+            
+            currentRevealIndex = 0;
+            showScreen('screen-reveal');
+            prepareReveal();
+        }
+
+        let currentRevealIndex = 0;
+        let isRoleVisible = false;
+
+        function prepareReveal() {
+            isRoleVisible = false;
+            const pName = gameState.players[currentRevealIndex];
+            document.getElementById('current-player-name').innerText = pName;
+            document.getElementById('role-inner').innerText = "Dotknij, aby zobaczyć";
+            document.getElementById('role-inner').className = "hidden-text";
+            document.getElementById('next-player-btn').style.display = 'none';
+            document.querySelector('.role-box').classList.remove('revealed');
+        }
+
+        function toggleRole() {
+            const pName = gameState.players[currentRevealIndex];
+            const role = gameState.roles[pName];
+            const inner = document.getElementById('role-inner');
+            const box = document.querySelector('.role-box');
+
+            if (!isRoleVisible) {
+                if (role === "OBYWATEL") {
+                    inner.innerHTML = `<span style="color:var(--citizen)">OBYWATEL</span><br><br>Hasło: <b style="font-size:2rem">${gameState.currentWord.word}</b>`;
+                } else if (role === "IMPOSTOR") {
+                    let hint = gameState.hints ? `<div class="hint-text">Kategoria: ${gameState.currentWord.cat}<br>${gameState.currentWord.hint}</div>` : "";
+                    inner.innerHTML = `<span style="color:var(--impostor)">IMPOSTOR</span><br>${hint}`;
+                } else {
+                    inner.innerHTML = `<span style="color:var(--jester)">JESTER</span><br><br>Twój cel: Daj się wygłosować!`;
+                }
+                inner.className = "";
+                box.classList.add('revealed');
+                document.getElementById('next-player-btn').style.display = 'block';
+                isRoleVisible = true;
+            }
+        }
+
+        function nextPlayer() {
+            currentRevealIndex++;
+            if (currentRevealIndex < gameState.players.length) {
+                prepareReveal();
+            } else {
+                startVoting();
+            }
+        }
+
+        function startVoting() {
+            showScreen('screen-game');
+            const list = document.getElementById('vote-list');
+            list.innerHTML = gameState.players.map(p => `<button class="vote-btn" onclick="selectVoted('${p}', this)">${p}</button>`).join('');
+        }
+
+        let selectedPlayer = null;
+        function selectVoted(name, btn) {
+            selectedPlayer = name;
+            document.querySelectorAll('.vote-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+        }
+
+        function submitVote() {
+            if (!selectedPlayer) return alert("Wybierz kogoś!");
+            
+            const role = gameState.roles[selectedPlayer];
+            
+            if (role === "IMPOSTOR") {
+                alert("ZŁAPANY! Obywatele dostają po 1 pkt.");
+                gameState.players.forEach(p => {
+                    if (gameState.roles[p] === "OBYWATEL") gameState.scores[p]++;
+                });
+            } else if (role === "JESTER") {
+                alert("JESTER WYGRYWA! Dostał się pod gilotynę. +3 pkt dla Jestera.");
+                gameState.scores[selectedPlayer] += 3;
+            } else {
+                alert("POMYŁKA! To był niewinny Obywatel. Impostor wygrywa rundę (+2 pkt).");
+                gameState.players.forEach(p => {
+                    if (gameState.roles[p] === "IMPOSTOR") gameState.scores[p] += 2;
+                });
+            }
+
+            save();
+            renderScores();
+            showScreen('screen-scores');
+        }
+
+        function renderScores() {
+            const board = document.getElementById('score-board');
+            let rows = Object.entries(gameState.scores)
+                .sort((a,b) => b[1] - a[1])
+                .map(([name, score]) => `<tr><td>${name}</td><td class="score-val">${score} / ${gameState.maxPoints}</td></tr>`)
+                .join('');
+            board.innerHTML = rows;
+        }
+
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            window.scrollTo(0,0);
+        }
+
+        function resetFullGame() {
+            if (confirm("Na pewno zresetować całą grę i punkty?")) {
+                localStorage.removeItem('impostor_game');
+                location.reload();
+            }
+        }
+
+        // Przy starcie przywróć widok
+        renderPlayers();
+        if (gameState.players.length > 0) renderScores();
+    </script>
+</body>
+</html>
