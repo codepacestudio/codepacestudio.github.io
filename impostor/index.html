@@ -3,159 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>IMPOSTOR | Neon Horror</title>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <title>IMPOSTOR | Cyber Terror</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rubik+Glitch&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #050505;
+            --bg-dark: #020202;
             --impostor: #ff003c;
-            --impostor-glow: rgba(255, 0, 60, 0.6);
-            --citizen: #00f2ff;
-            --citizen-glow: rgba(0, 242, 255, 0.6);
-            --jester: #b700ff;
-            --text: #ffffff;
-            --card: #111111;
-            --glass: rgba(15, 15, 15, 0.85);
+            --citizen: #00e5ff;
+            --jester: #cc00ff;
+            --text: #e0e0e0;
+            --glass: rgba(10, 10, 10, 0.75);
+            --border: rgba(255, 255, 255, 0.1);
         }
 
         body {
-            margin: 0; padding: 0; background: var(--bg); color: var(--text);
-            font-family: 'Roboto', sans-serif; overflow-x: hidden;
+            margin: 0; padding: 0; color: var(--text);
+            font-family: 'Orbitron', sans-serif; overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
+            background: url('https://images.unsplash.com/photo-1509248961158-e54f6934749c?q=80&w=1080') no-repeat center center fixed;
+            background-size: cover;
         }
 
-        /* Tła i Neony */
-        .ambient-light {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 100vw; height: 100vh; background: radial-gradient(circle, rgba(255,0,60,0.05) 0%, rgba(0,0,0,0) 70%);
-            z-index: -1; pointer-events: none;
+        /* Efekt zepsutego ekranu / scanlines */
+        body::before {
+            content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: -1; background-size: 100% 2px, 3px 100%; pointer-events: none;
         }
 
         .screen {
-            display: none; min-height: 100vh; padding: 30px 20px;
+            display: none; min-height: 100vh; padding: 40px 20px;
             box-sizing: border-box; flex-direction: column; align-items: center;
-            animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: glitchFade 0.4s forwards;
         }
 
         .screen.active { display: flex; }
 
-        @keyframes slideUpFade {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes breathe {
-            0% { text-shadow: 0 0 10px var(--impostor-glow), 0 0 20px var(--impostor-glow); }
-            50% { text-shadow: 0 0 25px var(--impostor-glow), 0 0 40px var(--impostor-glow); }
-            100% { text-shadow: 0 0 10px var(--impostor-glow), 0 0 20px var(--impostor-glow); }
+        @keyframes glitchFade {
+            0% { opacity: 0; transform: scale(1.05) skewX(5deg); filter: blur(5px); }
+            50% { opacity: 0.5; transform: scale(1) skewX(-2deg); filter: blur(2px); }
+            100% { opacity: 1; transform: scale(1) skewX(0); filter: blur(0); }
         }
 
         h1 {
-            font-family: 'Oswald', sans-serif; font-size: 3.5rem; text-transform: uppercase;
-            color: var(--impostor); animation: breathe 3s infinite ease-in-out;
-            margin-bottom: 30px; text-align: center; letter-spacing: 2px;
+            font-family: 'Rubik Glitch', cursive; font-size: 4.5rem; 
+            color: var(--impostor); margin-bottom: 20px; text-align: center;
+            text-shadow: 2px 2px 0px #00e5ff, -2px -2px 0px #cc00ff, 0 0 20px var(--impostor);
+            animation: jitter 2s infinite linear;
         }
 
-        h2 { font-family: 'Oswald', sans-serif; font-size: 2rem; color: var(--citizen); margin-bottom: 15px; text-align: center; }
+        @keyframes jitter {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
+            20%, 40%, 60%, 80% { transform: translateX(2px); }
+        }
+
+        h2 { font-size: 1.8rem; color: var(--citizen); margin-bottom: 15px; text-align: center; text-shadow: 0 0 10px var(--citizen); letter-spacing: 2px; }
 
         .card {
-            background: var(--card); border: 1px solid #222; padding: 25px;
-            border-radius: 16px; width: 100%; max-width: 450px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8); position: relative;
+            background: var(--glass); border: 2px solid var(--border); padding: 30px;
+            border-radius: 8px; width: 100%; max-width: 450px;
+            backdrop-filter: blur(10px); box-shadow: 0 0 40px rgba(0,0,0,0.9), inset 0 0 20px rgba(255,0,60,0.1);
+            position: relative; overflow: hidden;
         }
 
-        /* Formularze i Przyciski */
-        input, select, button {
-            width: 100%; padding: 16px; margin: 8px 0; border-radius: 10px;
-            border: 1px solid #333; background: #1a1a1a; color: #fff; font-size: 1rem;
-            transition: all 0.3s ease; box-sizing: border-box;
+        /* Surowy design elementów */
+        input[type="text"], select {
+            width: 100%; padding: 15px; margin: 10px 0; border-radius: 4px;
+            border: 1px solid #444; background: rgba(0,0,0,0.6); color: var(--citizen); 
+            font-family: 'Orbitron', sans-serif; font-size: 1.1rem; box-sizing: border-box;
+            text-shadow: 0 0 5px var(--citizen);
         }
 
-        input:focus, select:focus { border-color: var(--citizen); outline: none; box-shadow: 0 0 10px var(--citizen-glow); }
+        input:focus, select:focus { border-color: var(--citizen); outline: none; box-shadow: 0 0 15px rgba(0, 229, 255, 0.4); }
 
         button {
-            font-family: 'Oswald', sans-serif; font-size: 1.2rem; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; font-weight: bold;
+            font-family: 'Orbitron', sans-serif; font-size: 1.2rem; cursor: pointer; 
+            text-transform: uppercase; font-weight: 900; letter-spacing: 2px;
+            border-radius: 4px; transition: 0.1s; position: relative; overflow: hidden;
         }
 
-        .btn-primary { background: var(--citizen); color: #000; border: none; box-shadow: 0 0 15px var(--citizen-glow); }
-        .btn-primary:active { transform: scale(0.96); box-shadow: 0 0 5px var(--citizen-glow); }
+        .btn-primary { background: var(--citizen); color: #000; border: none; box-shadow: 0 0 15px var(--citizen); }
+        .btn-primary:active { transform: translateY(4px); box-shadow: 0 0 5px var(--citizen); }
 
-        .btn-danger { background: var(--impostor); color: #fff; border: none; box-shadow: 0 0 15px var(--impostor-glow); margin-top: 15px; }
-        .btn-danger:active { transform: scale(0.96); box-shadow: 0 0 5px var(--impostor-glow); }
+        .btn-danger { background: var(--impostor); color: #fff; border: none; box-shadow: 0 0 20px var(--impostor); margin-top: 20px; width: 100%; padding: 20px; }
+        .btn-danger:active { transform: translateY(4px); box-shadow: 0 0 5px var(--impostor); }
 
-        .btn-ghost { background: transparent; border: 1px solid #444; color: #aaa; margin-top: 15px; }
-        .btn-ghost:active { background: #222; }
+        .btn-ghost { background: transparent; border: 2px solid #555; color: #fff; margin-top: 15px; width: 100%; padding: 15px; }
+        .btn-ghost:active { background: #333; }
 
         .player-tag {
-            display: inline-flex; align-items: center; background: #222; border: 1px solid #444;
-            padding: 8px 15px; margin: 5px; border-radius: 20px; font-size: 0.95rem; font-weight: bold;
+            display: inline-flex; align-items: center; background: rgba(0, 229, 255, 0.1); 
+            border: 1px solid var(--citizen); padding: 8px 12px; margin: 5px; 
+            border-radius: 4px; font-size: 0.9rem; color: var(--citizen); text-shadow: 0 0 5px var(--citizen);
         }
 
-        /* Widok roli */
+        /* Customowe Suwaki */
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; margin: 20px 0; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 24px; width: 16px; border-radius: 2px; background: var(--citizen); cursor: pointer; margin-top: -10px; box-shadow: 0 0 10px var(--citizen); }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #444; border-radius: 2px; }
+
+        /* Customowe Przełączniki (Toggle) */
+        .toggle-row { display: flex; justify-content: space-between; align-items: center; margin: 15px 0; padding: 10px; background: rgba(0,0,0,0.5); border: 1px solid #333; border-radius: 4px; }
+        .toggle-label { font-size: 0.9rem; color: #aaa; }
+        .toggle-switch { position: relative; width: 50px; height: 26px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #222; transition: .4s; border-radius: 34px; border: 1px solid #444; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: #777; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--impostor); box-shadow: 0 0 10px var(--impostor); border-color: var(--impostor); }
+        input:checked + .slider:before { transform: translateX(24px); background-color: #fff; }
+
+        /* Karta Roli */
         .role-box {
-            width: 100%; max-width: 350px; height: 400px; background: #0a0a0a;
-            border: 2px dashed #444; border-radius: 20px; display: flex;
+            width: 100%; height: 400px; background: rgba(0,0,0,0.8);
+            border: 2px dashed #555; border-radius: 8px; display: flex;
             flex-direction: column; align-items: center; justify-content: center;
-            text-align: center; cursor: pointer; transition: all 0.4s ease; margin-bottom: 20px;
+            text-align: center; cursor: pointer; transition: 0.2s; position: relative;
         }
 
-        .role-box:active { transform: scale(0.98); }
-        .role-box.revealed { border-style: solid; border-color: var(--impostor); background: var(--card); box-shadow: 0 0 30px var(--impostor-glow); }
-        .role-box.revealed.citizen-role { border-color: var(--citizen); box-shadow: 0 0 30px var(--citizen-glow); }
-        .role-box.revealed.jester-role { border-color: var(--jester); box-shadow: 0 0 30px rgba(183, 0, 255, 0.6); }
+        .role-box::before { content: ''; position: absolute; top:0; left:0; right:0; bottom:0; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.2) 2px, rgba(0,0,0,0.2) 4px); pointer-events: none; }
+        .role-box.revealed { border-style: solid; border-color: var(--impostor); background: rgba(20,0,0,0.9); box-shadow: inset 0 0 50px rgba(255,0,60,0.2), 0 0 30px var(--impostor); }
+        .role-box.revealed.citizen-role { border-color: var(--citizen); background: rgba(0,20,20,0.9); box-shadow: inset 0 0 50px rgba(0,229,255,0.2), 0 0 30px var(--citizen); }
+        .role-box.revealed.jester-role { border-color: var(--jester); background: rgba(20,0,20,0.9); box-shadow: inset 0 0 50px rgba(204,0,255,0.2), 0 0 30px var(--jester); }
 
-        .hidden-text { font-size: 1.2rem; color: #555; text-transform: uppercase; letter-spacing: 2px; }
-        .role-title { font-family: 'Oswald', sans-serif; font-size: 3rem; text-transform: uppercase; margin-bottom: 10px; }
-        .role-word { font-size: 2.2rem; font-weight: bold; color: #fff; margin-top: 10px; text-transform: uppercase; }
-        .hint-text { color: #888; font-style: italic; margin-top: 15px; font-size: 1.1rem; border-top: 1px solid #333; padding-top: 15px; width: 80%; }
+        .hidden-text { font-size: 1.5rem; color: #555; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+        
+        .role-title { font-family: 'Rubik Glitch', cursive; font-size: 4rem; margin-bottom: 10px; }
+        .role-word { font-size: 2.5rem; font-weight: 900; color: #fff; margin-top: 10px; text-shadow: 0 0 10px #fff; }
+        .hint-text { color: #fff; background: #111; padding: 15px; border-left: 5px solid var(--impostor); margin-top: 20px; font-size: 1.2rem; }
 
-        /* Tabela wyników */
-        .score-table { width: 100%; border-collapse: separate; border-spacing: 0 8px; margin-top: 10px; }
-        .score-table td { padding: 15px; background: #151515; border-bottom: 1px solid #222; }
-        .score-table tr td:first-child { border-radius: 10px 0 0 10px; font-weight: bold; font-size: 1.1rem; }
-        .score-table tr td:last-child { border-radius: 0 10px 10px 0; text-align: right; color: var(--citizen); font-weight: bold; font-size: 1.1rem; }
+        /* Tabele i Lista Głosowania */
+        .vote-btn { background: rgba(0,0,0,0.6); border: 2px solid #444; margin: 8px 0; color: #fff; width: 100%; padding: 20px; font-size: 1.5rem; text-align: left; padding-left: 30px; }
+        .vote-btn.selected { border-color: var(--impostor); background: rgba(255,0,60,0.2); box-shadow: inset 0 0 20px var(--impostor); color: var(--impostor); text-shadow: 0 0 5px var(--impostor); }
 
-        .vote-btn { background: #111; border: 2px solid #333; margin: 5px 0; color: #fff; border-radius: 12px; }
-        .vote-btn.selected { border-color: var(--impostor); background: rgba(255,0,60,0.1); box-shadow: 0 0 15px var(--impostor-glow); }
+        .score-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .score-table td { padding: 20px 10px; border-bottom: 1px solid #333; font-size: 1.2rem; }
+        .score-table tr td:last-child { text-align: right; color: var(--citizen); font-weight: 900; text-shadow: 0 0 5px var(--citizen); }
 
-        /* Custom Modal (Zastępstwo dla alert) */
+        /* Modale */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(5px);
-            display: none; align-items: center; justify-content: center; z-index: 1000;
-            opacity: 0; transition: opacity 0.3s ease;
+            background: rgba(0, 0, 0, 0.9); display: none; align-items: center; justify-content: center; z-index: 1000;
         }
-        .modal-overlay.show { display: flex; opacity: 1; }
-        
+        .modal-overlay.show { display: flex; }
         .modal-content {
-            background: var(--card); border: 1px solid #333; padding: 30px;
-            border-radius: 20px; width: 90%; max-width: 400px; text-align: center;
-            transform: scale(0.8); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.9);
+            background: #050505; border: 2px solid #333; padding: 40px 30px;
+            width: 90%; max-width: 400px; text-align: center; box-shadow: 0 0 50px #000; position: relative;
         }
-        .modal-overlay.show .modal-content { transform: scale(1); }
-        .modal-title { font-family: 'Oswald', sans-serif; font-size: 2.2rem; margin-bottom: 10px; text-transform: uppercase; }
-        .modal-text { font-size: 1.1rem; color: #ccc; margin-bottom: 25px; line-height: 1.5; }
-
-        /* Ustawienia dodatkowe */
-        .settings-group { margin-top: 20px; text-align: left; background: #151515; padding: 15px; border-radius: 12px; border: 1px solid #222; }
-        .settings-group label { display: flex; align-items: center; margin: 10px 0; font-size: 1rem; color: #aaa; cursor: pointer; }
-        .settings-group input[type="checkbox"] { width: 20px; height: 20px; margin-right: 15px; accent-color: var(--citizen); }
-        
-        .rules-text { color: #aaa; font-size: 0.95rem; line-height: 1.6; text-align: left; }
-        .rules-text strong { color: var(--citizen); }
-        .rules-example { background: #1a1a1a; padding: 15px; border-radius: 8px; border-left: 4px solid var(--impostor); margin-top: 15px; font-style: italic; color: #ccc; }
+        .modal-title { font-family: 'Rubik Glitch', cursive; font-size: 3rem; margin-bottom: 20px; }
+        .modal-text { font-size: 1.2rem; color: #ddd; margin-bottom: 30px; line-height: 1.6; }
     </style>
 </head>
 <body>
 
-    <div class="ambient-light"></div>
-
     <div class="modal-overlay" id="custom-modal">
         <div class="modal-content" id="modal-box">
-            <div class="modal-title" id="modal-title">Tytuł</div>
+            <div class="modal-title" id="modal-title">INFO</div>
             <div class="modal-text" id="modal-text">Wiadomość</div>
-            <button class="btn-primary" onclick="closeModal()">Dalej</button>
+            <button class="btn-primary" style="width:100%; padding: 15px;" onclick="closeModal()">AKCEPTUJ</button>
         </div>
     </div>
 
@@ -163,103 +169,89 @@
         <h1>IMPOSTOR</h1>
         
         <div class="card">
-            <button class="btn-ghost" onclick="showScreen('screen-rules')" style="margin-top: 0; margin-bottom: 20px; border-color: var(--citizen); color: var(--citizen);">ZASADY GRY I PRZYKŁAD</button>
+            <button class="btn-ghost" onclick="showScreen('screen-rules')" style="margin-top: 0; margin-bottom: 25px; border-color: var(--citizen); color: var(--citizen); box-shadow: inset 0 0 10px rgba(0,229,255,0.2);">ZASADY GRY</button>
             
-            <div style="display:flex; gap:10px;">
-                <input type="text" id="player-name" placeholder="Imię gracza...">
-                <button class="btn-primary" onclick="addPlayer()" style="width: auto; padding: 0 20px;">+</button>
+            <div style="display:flex; gap:10px; margin-bottom: 15px;">
+                <input type="text" id="player-name" placeholder="NICK GRACZA...">
+                <button class="btn-primary" onclick="addPlayer()" style="padding: 0 25px; font-size: 1.5rem;">+</button>
             </div>
-            <div id="player-list" style="margin: 10px 0; min-height: 40px;"></div>
             
-            <div class="settings-group">
-                <div style="display:flex; justify-content: space-between; color: #fff; font-weight: bold; margin-bottom: 10px;">
-                    <span>Punkty do wygranej:</span> <span id="max-pts-val" style="color: var(--citizen);">20</span>
-                </div>
-                <input type="range" id="max-pts" min="10" max="50" value="20" oninput="document.getElementById('max-pts-val').innerText = this.value">
-                
-                <select id="impostor-count" style="margin-top: 15px;">
-                    <option value="1">1 Impostor w grze</option>
-                    <option value="2">2 Impostorów (wymaga 4+ graczy)</option>
-                </select>
+            <div id="player-list" style="margin-bottom: 20px; min-height: 50px; background: rgba(0,0,0,0.4); padding: 10px; border: 1px dashed #333;"></div>
+            
+            <div style="display:flex; justify-content: space-between; font-weight: 900; font-size: 1.2rem;">
+                <span>LIMIT PUNKTÓW:</span> <span id="max-pts-val" style="color: var(--citizen); text-shadow: 0 0 10px var(--citizen);">20</span>
+            </div>
+            <input type="range" id="max-pts" min="10" max="50" value="20" oninput="document.getElementById('max-pts-val').innerText = this.value">
+            
+            <select id="impostor-count">
+                <option value="1">1 IMPOSTOR</option>
+                <option value="2">2 IMPOSTORÓW (4+ graczy)</option>
+            </select>
 
-                <label><input type="checkbox" id="enable-hints" checked> Podpowiedź dla Impostora</label>
-                <label><input type="checkbox" id="enable-jester"> Dodaj Jestera (wymaga 5+ graczy)</label>
+            <div class="toggle-row">
+                <span class="toggle-label">PODPOWIEDŹ DLA IMPOSTORA</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="enable-hints" checked>
+                    <span class="slider"></span>
+                </label>
             </div>
 
-            <button class="btn-danger" onclick="startGame()" style="margin-top:25px; padding: 20px;">ROZPOCZNIJ GRĘ</button>
+            <div class="toggle-row">
+                <span class="toggle-label">DODAJ JESTERA (5+ graczy)</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="enable-jester">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <button class="btn-danger" onclick="startGame()">INICJUJ PROTOKÓŁ GRY</button>
         </div>
     </section>
 
     <section id="screen-rules" class="screen">
-        <h2>JAK GRAĆ?</h2>
-        <div class="card rules-text">
-            <p>1. Każdy gracz w tajemnicy sprawdza swoją rolę na tym samym telefonie.</p>
-            <p>2. <strong>Obywatele</strong> dostają tajne hasło. Ich celem jest znalezienie oszusta.</p>
-            <p>3. <strong>Impostor</strong> nie zna hasła. Dostaje tylko jedną podpowiedź. Musi wtopić się w tłum i nie dać się złapać.</p>
-            <p>4. <strong>Jester</strong> (opcjonalnie) chce przegrać. Jego celem jest zachowywać się tak podejrzanie, by inni zagłosowali na niego.</p>
-            <p>5. Gracze po kolei mówią <strong>tylko jedno słowo</strong> kojarzące się z hasłem. Nie wolno używać słów o tym samym rdzeniu co hasło.</p>
-            
-            <div class="rules-example">
-                <strong>PRZYKŁAD:</strong><br>
-                Hasło to "Kawa".<br>
-                Gracz 1 (Obywatel): "Kubek"<br>
-                Gracz 2 (Obywatel): "Rano"<br>
-                Gracz 3 (Impostor - ma podpowiedź 'Kofeina'): "Pobudzenie"<br>
-                Gracz 4 (Obywatel): "Czarna"<br>
-                Na koniec wszyscy dyskutują i głosują w aplikacji kto kłamał.
-            </div>
-
-            <button class="btn-ghost" onclick="showScreen('screen-setup')">WRÓĆ DO MENU</button>
+        <h2>INSTRUKCJA BAZOWA</h2>
+        <div class="card" style="font-size: 1.1rem; line-height: 1.7;">
+            <p><span style="color:var(--citizen)">1.</span> Gracze w tajemnicy sprawdzają swoją rolę.</p>
+            <p><span style="color:var(--citizen)">2.</span> <b>OBYWATELE</b> poznają tajne hasło.</p>
+            <p><span style="color:var(--impostor)">3.</span> <b>IMPOSTOR</b> nie zna hasła. Musi kłamać.</p>
+            <p><span style="color:var(--jester)">4.</span> <b>JESTER</b> chce przegrać. Udaje Impostora.</p>
+            <p><span style="color:var(--citizen)">5.</span> Po kolei mówicie <b>jedno słowo</b> skojarzenia. Na koniec głosujecie kto kłamał.</p>
+            <button class="btn-ghost" onclick="showScreen('screen-setup')">POWRÓT DO TERMINALA</button>
         </div>
     </section>
 
     <section id="screen-reveal" class="screen">
-        <h2>ODKRYJ ROLĘ</h2>
-        <p style="color: #aaa; margin-bottom: 20px;">Telefon trzyma teraz: <b id="current-player-name" style="color: #fff; font-size: 1.2rem;">...</b></p>
+        <h2>IDENTYFIKACJA</h2>
+        <p style="color: #777; font-size: 1.2rem; margin-bottom: 20px;">Właściciel urządzenia: <b id="current-player-name" style="color: #fff; font-size: 1.5rem;">...</b></p>
         
         <div class="role-box" id="role-box-element" onclick="toggleRole()">
-            <div id="role-inner" class="hidden-text">DOTKNIJ EKRANU<br><span style="font-size:0.8rem; color:#444;">aby zobaczyć rolę</span></div>
+            <div id="role-inner" class="hidden-text">KLIKNIJ ABY DEKODOWAĆ</div>
         </div>
         
-        <button id="next-player-btn" class="btn-primary" onclick="nextPlayer()" style="display:none; width: 100%; max-width: 350px;">ZROZUMIAŁEM, ZASŁOŃ</button>
+        <button id="next-player-btn" class="btn-primary" onclick="nextPlayer()" style="display:none; width: 100%; max-width: 450px; padding: 20px; margin-top: 20px;">ZASZYFRUJ I PODAJ DALEJ</button>
     </section>
 
     <section id="screen-game" class="screen">
-        <h1 style="font-size: 2.5rem;">KTO KŁAMIE?</h1>
-        <div class="card">
-            <p style="text-align: center; color: #aaa; margin-bottom: 20px;">Zakończyliście rundę słów. Wybierzcie osobę, którą chcecie wyrzucić:</p>
+        <h1 style="font-size: 3rem;">ELIMINACJA</h1>
+        <div class="card" style="padding: 15px;">
             <div id="vote-list"></div>
-            <button class="btn-danger" onclick="submitVote()" style="margin-top: 30px;">ZATWIERDŹ WYROK</button>
+            <button class="btn-danger" onclick="submitVote()">POTWIERDŹ WYROK</button>
         </div>
     </section>
 
     <section id="screen-scores" class="screen">
-        <h2>WYNIKI</h2>
+        <h2>BAZA DANYCH (WYNIKI)</h2>
         <div class="card">
             <table class="score-table" id="score-board"></table>
-            <button class="btn-primary" onclick="newRound()" style="margin-top: 30px; padding: 20px;">NASTĘPNA RUNDA</button>
-            <button class="btn-ghost" onclick="resetFullGame()">ZAKOŃCZ I ZRESETUJ GRĘ</button>
+            <button class="btn-primary" onclick="newRound()" style="margin-top: 30px; width: 100%; padding: 20px;">KOLEJNA RUNDA</button>
+            <button class="btn-ghost" onclick="resetFullGame()">RESTART SYSTEMU</button>
         </div>
     </section>
 
     <script>
        
 
-        let gameState = JSON.parse(localStorage.getItem('impostor_game_v2')) || {
-            players: [], scores: {}, maxPoints: 20, impostors: 1, hints: true, jester: false, currentWord: null, roles: {}
-        };
-
-        let currentRevealIndex = 0;
-        let isRoleVisible = false;
-        let selectedPlayer = null;
-        let modalCallback = null;
-
-        function save() { localStorage.setItem('impostor_game_v2', JSON.stringify(gameState)); }
-
-        // System Modali
-        function showModal(title, text, btnText, colorVar, callback) {
-            document.getElementById('modal-title').innerText = title;
-            document.getElementById('modal-title'). const wordBase = [
+const wordBase = [
             { word: "Tiktok", cat: "Social Media", hint: "Algorytm" },
             { word: "Siłownia", cat: "Miejsce", hint: "Testosteron" },
             { word: "Kebap", cat: "Jedzenie", hint: "Mieszany" },
@@ -1555,21 +1547,36 @@
         { word: "Księżyc w pełni", cat: "Zjawisko", hint: "Wilkołak" },
         { word: "Zaćmienie słońca", cat: "Zjawisko", hint: "Okulary" },
         { word: "Czarna perła", cat: "Klejnot", hint: "Małża" }
-        ]; 
-style.color = `var(${colorVar})`;
-            document.getElementById('modal-text').innerHTML = text;
-            document.querySelector('#modal-box button').innerText = btnText;
-            document.querySelector('#modal-box button').style.background = `var(${colorVar})`;
+        ];
+
+        let gameState = JSON.parse(localStorage.getItem('impostor_game_v3'));
+        
+        if (!gameState) {
+            gameState = { players: [], scores: {}, maxPoints: 20, impostors: 1, hints: true, jester: false, currentWord: null, roles: {} };
+        }
+
+        let currentRevealIndex = 0;
+        let isRoleVisible = false;
+        let selectedPlayer = null;
+        let modalCallback = null;
+
+        function save() { localStorage.setItem('impostor_game_v3', JSON.stringify(gameState)); }
+
+        function showModal(title, text, btnText, colorVar, callback) {
+            const titleEl = document.getElementById('modal-title');
+            const boxEl = document.getElementById('modal-box');
+            const btnEl = document.querySelector('#modal-box button');
+
+            titleEl.innerText = title;
+            titleEl.style.color = `var(${colorVar})`;
+            titleEl.style.textShadow = `0 0 15px var(${colorVar})`;
             
-            if(colorVar === '--impostor') {
-                document.querySelector('#modal-box').style.borderColor = 'var(--impostor)';
-                document.querySelector('#modal-box').style.boxShadow = '0 20px 50px rgba(255,0,60,0.3)';
-                document.querySelector('#modal-box button').style.color = '#fff';
-            } else {
-                document.querySelector('#modal-box').style.borderColor = '#333';
-                document.querySelector('#modal-box').style.boxShadow = '0 20px 50px rgba(0,0,0,0.9)';
-                document.querySelector('#modal-box button').style.color = '#000';
-            }
+            document.getElementById('modal-text').innerHTML = text;
+            btnEl.innerText = btnText;
+            btnEl.style.background = `var(${colorVar})`;
+            
+            boxEl.style.borderColor = `var(${colorVar})`;
+            boxEl.style.boxShadow = `0 0 40px rgba(0,0,0,0.9), inset 0 0 20px var(${colorVar})`;
 
             modalCallback = callback;
             document.getElementById('custom-modal').classList.add('show');
@@ -1604,7 +1611,7 @@ style.color = `var(${colorVar})`;
         }
 
         function startGame() {
-            if (gameState.players.length < 3) return showModal("BŁĄD", "Do gry potrzeba minimum 3 graczy.", "OK", "--impostor", null);
+            if (gameState.players.length < 3) return showModal("BŁĄD SYSTEMU", "Potrzebujesz minimum 3 obiektów (graczy) do startu.", "ZROZUMIANO", "--impostor", null);
             
             gameState.maxPoints = parseInt(document.getElementById('max-pts').value);
             gameState.impostors = parseInt(document.getElementById('impostor-count').value);
@@ -1612,7 +1619,7 @@ style.color = `var(${colorVar})`;
             gameState.jester = document.getElementById('enable-jester').checked;
             
             if (gameState.impostors > 1 && gameState.players.length < 4) {
-                return showModal("BŁĄD", "Dla 2 Impostorów potrzebujesz przynajmniej 4 graczy.", "OK", "--impostor", null);
+                return showModal("BŁĄD SYSTEMU", "Dla dwóch oszustów musisz mieć min. 4 graczy.", "ZROZUMIANO", "--impostor", null);
             }
             
             newRound();
@@ -1649,7 +1656,7 @@ style.color = `var(${colorVar})`;
             document.getElementById('current-player-name').innerText = pName;
             
             const inner = document.getElementById('role-inner');
-            inner.innerHTML = 'DOTKNIJ EKRANU<br><span style="font-size:0.8rem; color:#444;">aby zobaczyć rolę</span>';
+            inner.innerHTML = 'KLIKNIJ ABY DEKODOWAĆ';
             inner.className = "hidden-text";
             
             const box = document.getElementById('role-box-element');
@@ -1670,13 +1677,13 @@ style.color = `var(${colorVar})`;
             
             if (role === "OBYWATEL") {
                 box.classList.add('citizen-role');
-                inner.innerHTML = `<div class="role-title" style="color:var(--citizen)">OBYWATEL</div>Hasło:<div class="role-word">${gameState.currentWord.word}</div>`;
+                inner.innerHTML = `<div class="role-title" style="color:var(--citizen)">OBYWATEL</div>CEL:<div class="role-word">${gameState.currentWord.word}</div>`;
             } else if (role === "IMPOSTOR") {
-                let hintText = gameState.hints ? `<div class="hint-text">Kategoria: ${gameState.currentWord.cat}<br>Podpowiedź: <span style="color:#fff; font-weight:bold;">${gameState.currentWord.hint}</span></div>` : "";
-                inner.innerHTML = `<div class="role-title" style="color:var(--impostor)">IMPOSTOR</div>Nie znasz hasła. Kłam.${hintText}`;
+                let hintText = gameState.hints ? `<div class="hint-text">KAT: ${gameState.currentWord.cat}<br>PODPOWIEDŹ: <span style="color:#fff; font-weight:900;">${gameState.currentWord.hint}</span></div>` : "";
+                inner.innerHTML = `<div class="role-title" style="color:var(--impostor)">IMPOSTOR</div>KŁAM.<br>NIE ZNASZ HASŁA.${hintText}`;
             } else {
                 box.classList.add('jester-role');
-                inner.innerHTML = `<div class="role-title" style="color:var(--jester)">JESTER</div>Daj się wygłosować,<br>żeby wygrać rundę!`;
+                inner.innerHTML = `<div class="role-title" style="color:var(--jester)">JESTER</div>ZMYŁKA.<br>DAJ SIĘ WYGŁOSOWAĆ.`;
             }
             
             inner.className = "";
@@ -1697,32 +1704,36 @@ style.color = `var(${colorVar})`;
             selectedPlayer = null;
             showScreen('screen-game');
             const list = document.getElementById('vote-list');
-            list.innerHTML = gameState.players.map(p => `<button class="vote-btn" onclick="selectVoted('${p}', this)">${p}</button>`).join('');
+            list.innerHTML = gameState.players.map(p => `<button class="vote-btn" onclick="selectVoted('${p}', this)">[ ] ${p}</button>`).join('');
         }
 
         function selectVoted(name, btn) {
             selectedPlayer = name;
-            document.querySelectorAll('.vote-btn').forEach(b => b.classList.remove('selected'));
+            document.querySelectorAll('.vote-btn').forEach(b => {
+                b.classList.remove('selected');
+                b.innerText = "[ ] " + b.innerText.substring(4);
+            });
             btn.classList.add('selected');
+            btn.innerText = "[X] " + name;
         }
 
         function submitVote() {
-            if (!selectedPlayer) return showModal("BRAK WYBORU", "Musicie zaznaczyć kogoś z listy.", "OK", "--citizen", null);
+            if (!selectedPlayer) return showModal("BŁĄD", "Wybierz cel eliminacji.", "OK", "--citizen", null);
             
             const role = gameState.roles[selectedPlayer];
             
             if (role === "IMPOSTOR") {
                 gameState.players.forEach(p => { if (gameState.roles[p] === "OBYWATEL") gameState.scores[p]++; });
                 save();
-                showModal("ZŁAPANY!", `Wybraliście dobrze. <b style="color:var(--impostor)">${selectedPlayer}</b> był Impostorem.<br><br>Hasło to: <b>${gameState.currentWord.word}</b><br>Obywatele zyskują punkt.`, "ZOBACZ WYNIKI", "--citizen", goToScores);
+                showModal("ZŁAPANY", `Wyeliminowano Oszusta: <b style="color:var(--impostor)">${selectedPlayer}</b>.<br><br>Prawdziwe hasło: <b style="color:var(--citizen)">${gameState.currentWord.word}</b><br>Obywatele: +1 PKT`, "TABELA WYNIKÓW", "--citizen", goToScores);
             } else if (role === "JESTER") {
                 gameState.scores[selectedPlayer] += 3;
                 save();
-                showModal("OSZUKANI!", `Wpadliście w pułapkę. <b style="color:var(--jester)">${selectedPlayer}</b> był Jesterem i chciał odpaść!<br><br>Jester zyskuje 3 punkty.`, "ZOBACZ WYNIKI", "--jester", goToScores);
+                showModal("AWaria SYSTEMU", `Wyeliminowano Jestera: <b style="color:var(--jester)">${selectedPlayer}</b>! Celowo was oszukał.<br><br>Jester: +3 PKT`, "TABELA WYNIKÓW", "--jester", goToScores);
             } else {
                 gameState.players.forEach(p => { if (gameState.roles[p] === "IMPOSTOR") gameState.scores[p] += 2; });
                 save();
-                showModal("PUDŁO!", `Zabiliście niewinnego. <b style="color:var(--citizen)">${selectedPlayer}</b> był Obywatelem.<br><br>Hasło to: <b>${gameState.currentWord.word}</b><br>Impostorzy zyskują po 2 punkty.`, "ZOBACZ WYNIKI", "--impostor", goToScores);
+                showModal("PUDŁO", `Wyeliminowano Niewinnego: <b style="color:var(--citizen)">${selectedPlayer}</b>.<br><br>Prawdziwe hasło: <b style="color:var(--citizen)">${gameState.currentWord.word}</b><br>Impostorzy: +2 PKT`, "TABELA WYNIKÓW", "--impostor", goToScores);
             }
         }
 
@@ -1742,13 +1753,13 @@ style.color = `var(${colorVar})`;
             let winner = Object.entries(gameState.scores).find(([n, s]) => s >= gameState.maxPoints);
             if (winner) {
                 setTimeout(() => {
-                    showModal("KONIEC GRY!", `Gracz <b>${winner[0]}</b> osiągnął limit punktów i wygrywa całą grę!`, "ZAKOŃCZ", "--citizen", resetFullGame);
+                    showModal("KONIEC GRY", `OBIEKT <b>${winner[0]}</b> OSIĄGNĄŁ LIMIT PUNKTÓW.`, "RESTART", "--citizen", resetFullGame);
                 }, 500);
             }
         }
 
         function resetFullGame() {
-            localStorage.removeItem('impostor_game_v2');
+            localStorage.removeItem('impostor_game_v3');
             location.reload();
         }
 
