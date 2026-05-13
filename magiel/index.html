@@ -1,1 +1,292 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Klubokawiarnia Magiel | Koncepcja</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    :root {
+      --bg-color: #f9f6f0;
+      --text-main: #2c1e16;
+      --accent: #d35400;
+      --border-color: #e0d5c1;
+    }
 
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: #ccc;
+      color: var(--text-main);
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    .page {
+      width: 210mm;
+      height: 297mm;
+      margin: 0 auto;
+      background: var(--bg-color);
+      position: relative;
+      page-break-after: always;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .page.dark-mode {
+      background: var(--text-main);
+      color: var(--bg-color);
+    }
+
+    .header {
+      padding: 15mm 20mm;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      text-transform: uppercase;
+      font-size: 10px;
+      letter-spacing: 3px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .dark-mode .header {
+      border-bottom: 1px solid #4a3629;
+      color: #9d8c7c;
+    }
+
+    .content {
+      padding: 10mm 20mm;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    h1 {
+      font-family: 'Lora', serif;
+      font-size: 65px;
+      line-height: 1;
+      font-weight: 400;
+      margin-bottom: 15px;
+    }
+
+    h2 {
+      font-family: 'Lora', serif;
+      font-size: 32px;
+      font-style: italic;
+      color: var(--accent);
+      margin-bottom: 25px;
+      font-weight: 400;
+    }
+
+    p {
+      font-size: 14px;
+      line-height: 1.7;
+      font-weight: 300;
+      max-width: 500px;
+    }
+
+    .cover-img {
+      width: 100%;
+      height: 55%;
+      background: url('https://images.unsplash.com/photo-1497935586351-b67a49e012bf?auto=format&fit=crop&w=1200&q=80') center/cover;
+      margin-top: auto;
+    }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 50px;
+      margin-top: 30px;
+    }
+
+    .menu-category {
+      font-family: 'Lora', serif;
+      font-size: 22px;
+      color: var(--accent);
+      margin-bottom: 20px;
+      border-bottom: 1px solid #4a3629;
+      padding-bottom: 8px;
+    }
+
+    .menu-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 16px;
+    }
+
+    .menu-item strong {
+      font-weight: 600;
+    }
+
+    .menu-desc {
+      font-size: 11px;
+      color: #9d8c7c;
+      margin-bottom: 15px;
+      font-weight: 300;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 40px;
+    }
+
+    .gallery-img {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+
+    .footer-box {
+      border: 2px solid var(--accent);
+      padding: 30px;
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    .footer-box h3 {
+      font-family: 'Lora', serif;
+      font-size: 26px;
+      margin-bottom: 10px;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 40px;
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .details-grid strong {
+      color: var(--accent);
+      display: block;
+      margin-bottom: 5px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    @media print {
+      body { background: none; }
+      .page { margin: 0; box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page">
+    <div class="header">
+      <span>Propozycja Projektu</span>
+      <span>Polkowice 2026</span>
+    </div>
+    <div class="content" style="padding-top: 30mm;">
+      <h1>Magiel</h1>
+      <h2>Klubokawiarnia z klimatem</h2>
+      <p>
+        Dobra kawa, coś do przegryzienia, fajna muzyka i pełna kultura. Wasza wizytówka w sieci powinna w stu procentach oddawać ten sam urok, który przyciąga gości do lokalu.
+      </p>
+    </div>
+    <div class="cover-img"></div>
+  </div>
+
+  <div class="page dark-mode">
+    <div class="header">
+      <span>Podgląd Menu</span>
+      <span>Strona 02</span>
+    </div>
+    <div class="content">
+      <h1 style="color: var(--bg-color);">Czytelna Karta</h1>
+      <p style="color: #9d8c7c; margin-bottom: 30px;">
+        Zaprojektujemy menu, które idealnie wygląda na smartfonach. Klienci szybko znajdą to, na co mają ochotę przed wyjściem z domu.
+      </p>
+
+      <div class="menu-grid">
+        <div>
+          <div class="menu-category">Kawy Czarne i Mleczne</div>
+          
+          <div class="menu-item"><strong>Espresso</strong> <span>11 zł</span></div>
+          <div class="menu-desc">Mała, czarna i mocna (35 ml)</div>
+          
+          <div class="menu-item"><strong>Cappuccino</strong> <span>15 zł</span></div>
+          <div class="menu-desc">Espresso z dodatkiem spienionego mleka</div>
+
+          <div class="menu-item"><strong>Kawa z dripa</strong> <span>18 zł</span></div>
+          <div class="menu-desc">Parzona metodą przelewową</div>
+
+          <div class="menu-item"><strong>Kawa mrożona</strong> <span>22 zł</span></div>
+          <div class="menu-desc">Z mlekiem, lodami waniliowymi i bitą śmietaną</div>
+        </div>
+
+        <div>
+          <div class="menu-category">Coś do zjedzenia</div>
+          
+          <div class="menu-item"><strong>Tost</strong> <span>20 zł</span></div>
+          <div class="menu-desc">Chleb pszenno-żytni z serem i szynką</div>
+          
+          <div class="menu-item"><strong>Jajecznica</strong> <span>26 zł</span></div>
+          <div class="menu-desc">Z trzech jajek, na szynce, z pieczywem i masłem</div>
+
+          <div class="menu-item"><strong>Zestaw śniadaniowy</strong> <span>34 zł</span></div>
+          <div class="menu-desc">Jajko sadzone, frankfurterki, wędlina, sery</div>
+
+          <div class="menu-category" style="margin-top: 30px;">Zimne Napoje</div>
+          <div class="menu-item"><strong>Piwa rzemieślnicze</strong> <span>od 15 zł</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page">
+    <div class="header">
+      <span>Wizualizacje</span>
+      <span>Strona 03</span>
+    </div>
+    <div class="content">
+      <h1>Estetyka i Detale</h1>
+      <p>Wykorzystamy profesjonalne zdjęcia oddające Wasz wystrój. Zbudujemy układ, w którym goście od razu poczują zapach mielonej kawy i ciepło Waszego miejsca.</p>
+
+      <div class="gallery-grid">
+        <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=600&q=80" class="gallery-img" alt="Klimat kawiarni">
+        <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=600&q=80" class="gallery-img" alt="Kawa">
+        <img src="https://images.unsplash.com/photo-1484723091791-c0e7e14fac16?auto=format&fit=crop&w=600&q=80" class="gallery-img" alt="Jedzenie">
+        <img src="https://images.unsplash.com/photo-1600093463592-8e36ae95ef56?auto=format&fit=crop&w=600&q=80" class="gallery-img" alt="Wnętrze">
+      </div>
+    </div>
+  </div>
+
+  <div class="page">
+    <div class="header">
+      <span>Kontakt</span>
+      <span>Strona 04</span>
+    </div>
+    <div class="content">
+      <div class="footer-box">
+        <h3>Bądźcie widoczni</h3>
+        <p style="margin: 0 auto;">Pokażcie pełen potencjał Magla w internecie. Dobra strona to inwestycja, która ułatwia życie Wam i Waszym gościom.</p>
+      </div>
+
+      <div class="details-grid">
+        <div>
+          <strong>Lokalizacja</strong>
+          Jana Kilińskiego 2A / W. Kossaka 1A<br>
+          59-100 Polkowice
+        </div>
+        <div>
+          <strong>Kontakt do Was</strong>
+          663 807 267<br>
+          info@klubokawiarniamagiel.pl
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
