@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KAFKA GŁOGOWSKA | Proposal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Montserrat:wght@200;300;400&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    :root {
+      --bg: #ffffff;
+      --text: #1a1a1a;
+      --accent: #c4a484; /* Ciepły beż/kawa */
+      --light-gray: #f2f2f2;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* FORMATOWANIE POD PDF (A4) */
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      padding: 20mm;
+      margin: 0 auto;
+      background: white;
+      position: relative;
+      page-break-after: always;
+    }
+
+    /* TYPOGRAFIA */
+    h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 60px;
+      font-weight: 300;
+      letter-spacing: -2px;
+      line-height: 0.9;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 32px;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .label {
+      font-size: 10px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 40px;
+      display: block;
+    }
+
+    /* SEKACJA HERO */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin-top: 60px;
+    }
+
+    .hero-img {
+      width: 100%;
+      height: 500px;
+      background: url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=800&q=80') center/cover;
+      filter: grayscale(20%);
+    }
+
+    .hero-text {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    /* GRID INSTAGRAMOWY */
+    .insta-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 60px;
+    }
+
+    .insta-item {
+      aspect-ratio: 1 / 1;
+      background: var(--light-gray);
+      overflow: hidden;
+    }
+
+    .insta-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: 0.5s;
+    }
+
+    /* MENU MOCKUP */
+    .menu-preview {
+      margin-top: 80px;
+      border-top: 1px solid #eee;
+      padding-top: 40px;
+    }
+
+    .menu-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+    }
+
+    /* STOPKA */
+    .footer {
+      position: absolute;
+      bottom: 20mm;
+      left: 20mm;
+      right: 20mm;
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      border-top: 1px solid #eee;
+      padding-top: 10px;
+      color: #999;
+    }
+
+    /* ELEMENTY GRAFICZNE */
+    .border-box {
+      border: 1px solid var(--accent);
+      padding: 40px;
+      margin-top: 40px;
+    }
+
+    @media print {
+      body { background: none; }
+      .page { margin: 0; border: none; width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page">
+    <span class="label">Proposal Projektu Strony Internetowej</span>
+    <div class="hero">
+      <div class="hero-text">
+        <h1>KAFKA<br>GŁOGOWSKA</h1>
+        <h2>Sztuka poranków przy Szewskiej 5</h2>
+        <p style="margin-top: 20px; font-weight: 200; font-size: 14px;">
+          Wasza kawiarnia to nie tylko miejsce. To estetyka, zapach świeżych wypieków i lokalna społeczność. Wasza obecność w sieci powinna oddawać ten sam klimat.
+        </p>
+      </div>
+      <div class="hero-img"></div>
+    </div>
+
+    <div class="border-box">
+      <h2 style="font-style: normal; text-align: center;">Dlaczego teraz?</h2>
+      <p style="text-align: center; font-size: 13px; font-weight: 300;">
+        Ponad 70% klientów szuka menu i godzin otwarcia w Google przed wyjściem z domu. Profesjonalna witryna to Wasza wizytówka, która pracuje 24/7.
+      </p>
+    </div>
+
+    <div class="footer">
+      <span>KAFKA GŁOGOWSKA x TWOJE IMIE</span>
+      <span>2026 PROPOSAL</span>
+    </div>
+  </div>
+
+  <div class="page">
+    <span class="label">Koncepcja Wizualna — Instagram Vibes</span>
+    <h1>ESTETYKA<br>& MINIMALIZM</h1>
+    
+    <div class="insta-grid">
+      <div class="insta-item"><img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=500&q=80"></div>
+      <div class="insta-item"><img src="https://images.unsplash.com/photo-1559496417-e7f25cb247f3?auto=format&fit=crop&w=500&q=80"></div>
+      <div class="insta-item"><img src="https://images.unsplash.com/photo-1444418776041-9c7e33cc5a9c?auto=format&fit=crop&w=500&q=80"></div>
+      <div class="insta-item"><img src="https://images.unsplash.com/photo-1525648199074-cee30ba79a4a?auto=format&fit=crop&w=500&q=80"></div>
+      <div class="insta-item"><img src="https://images.unsplash.com/photo-1504639725590-34d0984388bd?auto=format&fit=crop&w=500&q=80"></div>
+      <div class="insta-item"><img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=500&q=80"></div>
+    </div>
+
+    <div class="menu-preview">
+      <h2>Interaktywne Menu</h2>
+      <div class="menu-row"><span>Słony Karmel Latte</span><span>18 zł</span></div>
+      <div class="menu-row"><span>Śniadanie Sezonowe</span><span>32 zł</span></div>
+      <div class="menu-row"><span>Domowa Szarlotka</span><span>16 zł</span></div>
+      <p style="font-size: 12px; font-weight: 300; margin-top: 20px; color: #666;">
+        *To tylko podgląd. Finalna strona będzie posiadać system łatwej aktualizacji cen i pozycji w menu bezpośrednio przez Wasz zespół.
+      </p>
+    </div>
+
+    <div class="footer">
+      <span>Zaprojektowane z myślą o lokalnej jakości</span>
+      <span>STRONA 02</span>
+    </div>
+  </div>
+
+</body>
+</html>
