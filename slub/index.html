@@ -5,10 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Majaplanuje | Luksusowy Wedding Planner</title>
   
-  <!-- Fonty -->
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
-  
-  <!-- Biblioteka do animacji przy scrollowaniu (AOS) -->
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
   <style>
@@ -30,14 +27,12 @@
       overflow-x: hidden;
     }
 
-    /* PŁYWAJĄCE TŁO (SZUM) */
     body::after {
       content: ''; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
       background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
       pointer-events: none; z-index: 9999;
     }
 
-    /* NAWIGACJA */
     nav {
       position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
       display: flex; justify-content: space-between; align-items: center;
@@ -54,7 +49,6 @@
     .nav-links a { text-decoration: none; color: var(--text); font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; transition: 0.3s; }
     .nav-links a:hover { color: var(--gold); }
 
-    /* HERO SECTION Z PARALAKSĄ */
     .hero {
       position: relative; height: 100vh; display: flex; align-items: center; justify-content: center;
       background-image: url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
@@ -62,7 +56,7 @@
     }
     .hero::before {
       content: ''; position: absolute; inset: 0;
-      background: linear-gradient(to bottom, rgba(251, 249, 246, 0.4), rgba(251, 249, 246, 0.9) 95%, var(--cream));
+      background: linear-gradient(to bottom, rgba(251, 249, 246, 0.3), rgba(251, 249, 246, 0.95) 90%, var(--cream));
     }
     .hero-content {
       position: relative; z-index: 2; text-align: center; max-width: 800px; padding: 0 20px;
@@ -73,85 +67,92 @@
     .hero-btn {
       display: inline-block; padding: 15px 40px; background: var(--gold); color: #fff;
       text-decoration: none; text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem;
-      border-radius: 30px; transition: 0.4s; box-shadow: 0 15px 30px rgba(212, 175, 55, 0.3);
+      border-radius: 30px; transition: 0.4s; box-shadow: 0 15px 30px rgba(212, 175, 55, 0.3); border: 1px solid transparent;
     }
-    .hero-btn:hover { background: var(--gold-dark); transform: translateY(-5px); box-shadow: 0 20px 40px rgba(212, 175, 55, 0.4); }
+    .hero-btn:hover { background: transparent; color: var(--gold-dark); border-color: var(--gold-dark); transform: translateY(-3px); box-shadow: none; }
 
-    /* LEWITUJĄCE ELEMENTY */
     .floating-flower {
-      position: absolute; width: 150px; opacity: 0.4; pointer-events: none;
-      animation: float 10s ease-in-out infinite; z-index: 1; filter: grayscale(50%) sepia(20%);
+      position: absolute; width: 150px; opacity: 0.3; pointer-events: none;
+      animation: float 12s ease-in-out infinite; z-index: 1; filter: grayscale(30%) sepia(30%);
     }
-    .f1 { top: 15%; left: 10%; animation-delay: 0s; width: 250px; }
-    .f2 { bottom: 20%; right: 5%; animation-delay: 2s; width: 200px; }
+    .f1 { top: 10%; left: 5%; animation-delay: 0s; width: 280px; }
+    .f2 { bottom: 15%; right: 2%; animation-delay: 3s; width: 220px; }
     @keyframes float {
       0%, 100% { transform: translateY(0) rotate(0deg); }
-      50% { transform: translateY(-30px) rotate(5deg); }
+      50% { transform: translateY(-40px) rotate(8deg); }
     }
 
-    /* WSPÓLNE DLA SEKCJI */
     section { padding: 8rem 10%; position: relative; overflow: hidden; }
     .bg-alt { background-color: var(--warm); }
     .sec-head { text-align: center; margin-bottom: 5rem; }
     .sec-label { font-size: 0.85rem; letter-spacing: 4px; color: var(--gold); text-transform: uppercase; margin-bottom: 10px; }
     .sec-title { font-family: 'Cormorant Garamond', serif; font-size: 3.5rem; color: var(--text); }
 
-    /* O MNIE - ZAAWANSOWANY UKŁAD */
     .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
     .about-img-wrap { position: relative; }
     .about-img-main { width: 80%; border-radius: 10px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); position: relative; z-index: 2; }
-    .about-img-sec { position: absolute; bottom: -30px; right: 0; width: 50%; border: 10px solid var(--cream); border-radius: 10px; z-index: 3; box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
-    .about-shape { position: absolute; top: -20px; left: -20px; width: 100px; height: 100px; border: 2px solid var(--gold); z-index: 1; }
+    .about-img-sec { position: absolute; bottom: -30px; right: 0; width: 55%; border: 12px solid var(--cream); border-radius: 10px; z-index: 3; box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+    .about-shape { position: absolute; top: -20px; left: -20px; width: 120px; height: 120px; border: 2px solid var(--gold); z-index: 1; }
     .about-text p { font-size: 1.1rem; line-height: 1.8; color: var(--muted); margin-bottom: 20px; }
     
-    /* USŁUGI - EFEKTY HOVER */
     .serv-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
-    .serv-card { background: #fff; padding: 3rem 2rem; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); transition: 0.4s; position: relative; overflow: hidden; border: 1px solid rgba(0,0,0,0.03); }
+    .serv-card { background: #fff; padding: 3rem 2.5rem; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); transition: 0.4s; position: relative; overflow: hidden; border: 1px solid rgba(0,0,0,0.03); }
     .serv-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--gold); transform: scaleX(0); transform-origin: left; transition: 0.4s; }
-    .serv-card:hover { transform: translateY(-15px); box-shadow: 0 20px 50px rgba(212, 175, 55, 0.15); }
+    .serv-card:hover { transform: translateY(-10px); box-shadow: 0 20px 50px rgba(212, 175, 55, 0.1); }
     .serv-card:hover::before { transform: scaleX(1); }
-    .serv-icon { font-family: 'Cormorant Garamond', serif; font-size: 4rem; color: rgba(212, 175, 55, 0.2); position: absolute; top: 20px; right: 20px; line-height: 1; }
+    .serv-icon { font-family: 'Cormorant Garamond', serif; font-size: 4rem; color: rgba(212, 175, 55, 0.15); position: absolute; top: 15px; right: 20px; line-height: 1; }
     .serv-title { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; margin-bottom: 15px; color: var(--text); position: relative; z-index: 2; }
     .serv-desc { color: var(--muted); line-height: 1.7; position: relative; z-index: 2; }
 
-    /* CENNIK - MIEJSCE WYBUCHU KONFETTI */
     #cennik { position: relative; }
     .price-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; align-items: center; }
-    .price-card { background: var(--cream); padding: 3rem; border-radius: 20px; border: 1px solid rgba(212, 175, 55, 0.2); transition: 0.4s; text-align: center; }
+    .price-card { background: var(--cream); padding: 3.5rem 2.5rem; border-radius: 20px; border: 1px solid rgba(212, 175, 55, 0.2); transition: 0.4s; text-align: center; display: flex; flex-direction: column; justify-content: space-between; height: 100%; }
     .price-card:hover { border-color: var(--gold); }
-    .price-card.premium { background: #fff; transform: scale(1.05); box-shadow: 0 30px 60px rgba(212, 175, 55, 0.15); border: 2px solid var(--gold); position: relative; }
+    .price-card.premium { background: #fff; transform: scale(1.05); box-shadow: 0 30px 60px rgba(212, 175, 55, 0.1); border: 2px solid var(--gold); position: relative; z-index: 2; }
     .badge { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: var(--gold); color: #fff; padding: 5px 20px; border-radius: 20px; font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; }
-    .p-name { font-family: 'Cormorant Garamond', serif; font-size: 2rem; margin-bottom: 10px; }
-    .p-price { font-size: 2.5rem; font-weight: 500; color: var(--gold); margin-bottom: 30px; }
-    .p-list { list-style: none; text-align: left; margin-bottom: 30px; }
-    .p-list li { padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.05); color: var(--muted); position: relative; padding-left: 25px; }
-    .p-list li::before { content: '✦'; position: absolute; left: 0; color: var(--gold); font-size: 0.8rem; top: 13px; }
+    .p-name { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; margin-bottom: 5px; }
+    .p-price { font-size: 2.5rem; font-weight: 500; color: var(--gold); margin-bottom: 25px; }
+    .p-list { list-style: none; text-align: left; margin-bottom: 30px; flex-grow: 1; }
+    .p-list li { padding: 12px 0; border-bottom: 1px solid rgba(0,0,0,0.04); color: var(--muted); position: relative; padding-left: 25px; font-size: 0.95rem; }
+    .p-list li::before { content: '✦'; position: absolute; left: 0; color: var(--gold); font-size: 0.8rem; top: 15px; }
+    
+    .sms-btn {
+      display: inline-block; width: 100%; padding: 15px 0; background: transparent; color: var(--gold-dark);
+      text-decoration: none; text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem; font-weight: 500;
+      border: 1px solid var(--gold); border-radius: 30px; transition: 0.3s;
+    }
+    .sms-btn:hover { background: var(--gold); color: #fff; }
+    .premium .sms-btn { background: var(--gold); color: #fff; }
+    .premium .sms-btn:hover { background: transparent; color: var(--gold-dark); border-color: var(--gold-dark); }
 
-    /* PORTFOLIO Z MASONRY EFEKTEM */
+    .faq-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; max-width: 800px; margin: 0 auto; }
+    .faq-item { background: #fff; border: 1px solid rgba(0,0,0,0.05); padding: 25px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.02); }
+    .faq-q { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; color: var(--text); margin-bottom: 10px; }
+    .faq-a { color: var(--muted); line-height: 1.7; font-size: 1rem; }
+
     .port-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
     .port-item { position: relative; overflow: hidden; border-radius: 10px; height: 350px; cursor: pointer; }
     .port-item.large { grid-row: span 2; height: 100%; }
-    .port-item img { width: 100%; height: 100%; object-fit: cover; transition: 0.7s ease; }
-    .port-item:hover img { transform: scale(1.1); filter: brightness(0.8); }
+    .port-item img { width: 100%; height: 100%; object-fit: cover; transition: 0.8s ease; }
+    .port-item:hover img { transform: scale(1.08); filter: brightness(0.7); }
     .port-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); opacity: 0; transition: 0.4s; display: flex; align-items: flex-end; justify-content: center; padding: 30px; }
     .port-item:hover .port-overlay { opacity: 1; }
-    .port-text { color: #fff; font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; transform: translateY(20px); transition: 0.4s; }
+    .port-text { color: #fff; font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; transform: translateY(20px); transition: 0.4s; text-align: center; }
     .port-item:hover .port-text { transform: translateY(0); }
 
-    /* KONTAKT */
-    .contact-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; background: #fff; padding: 4rem; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.05); }
+    .contact-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; background: #fff; padding: 4rem; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.03); }
     .c-info h3 { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; margin-bottom: 20px; }
-    .c-info p { color: var(--muted); line-height: 1.8; margin-bottom: 30px; }
-    .c-detail { display: flex; align-items: center; gap: 20px; margin-bottom: 20px; }
-    .c-icon { width: 50px; height: 50px; background: var(--warm); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--gold); font-size: 1.2rem; }
-    .c-text h4 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); }
-    .c-text a { text-decoration: none; color: var(--text); font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 600; transition: 0.3s; }
+    .c-info p { color: var(--muted); line-height: 1.8; margin-bottom: 30px; font-size: 1.05rem; }
+    .c-detail { display: flex; align-items: center; gap: 20px; margin-bottom: 25px; }
+    .c-icon { width: 55px; height: 55px; background: var(--warm); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--gold); font-size: 1.3rem; }
+    .c-text h4 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 3px; color: var(--muted); margin-bottom: 5px; }
+    .c-text a { text-decoration: none; color: var(--text); font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 600; transition: 0.3s; }
     .c-text a:hover { color: var(--gold); }
 
-    footer { background: #1a1612; padding: 4rem 10%; text-align: center; color: #fff; }
-    .foot-logo { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; margin-bottom: 20px; display: block; }
+    footer { background: #151311; padding: 4rem 10%; text-align: center; color: #fff; }
+    .foot-logo { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; margin-bottom: 15px; display: block; text-decoration: none; color: #fff; }
     .foot-logo span { color: var(--gold); font-style: italic; }
-    .foot-copy { color: rgba(255,255,255,0.4); font-size: 0.9rem; }
+    .foot-copy { color: rgba(255,255,255,0.3); font-size: 0.9rem; letter-spacing: 1px; }
 
     @media (max-width: 900px) {
       .about-grid, .serv-grid, .price-grid, .contact-wrap { grid-template-columns: 1fr; }
@@ -159,14 +160,19 @@
       .hero-title { font-size: 3.5rem; }
       .nav-links { display: none; }
       section { padding: 5rem 5%; }
+      .price-card.premium { transform: scale(1); }
+      nav { padding: 1rem 5%; }
+    }
+    @media (max-width: 600px) {
+      .port-grid { grid-template-columns: 1fr; }
+      .about-img-sec { width: 70%; }
     }
   </style>
 </head>
 <body>
 
-  <!-- OBRAZKI DEKORACYJNE TŁA -->
-  <img src="https://images.unsplash.com/photo-1505902722411-fa0812edc05c?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="flower" class="floating-flower f1">
-  <img src="https://images.unsplash.com/photo-1520854221256-17451cc331bf?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="flower" class="floating-flower f2">
+  <img src="https://images.unsplash.com/photo-1505902722411-fa0812edc05c?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Kwiat dekoracyjny" class="floating-flower f1">
+  <img src="https://images.unsplash.com/photo-1520854221256-17451cc331bf?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Kwiat dekoracyjny" class="floating-flower f2">
 
   <nav id="navbar">
     <a href="#" class="logo">maja<span>planuje</span></a>
@@ -174,7 +180,7 @@
       <li><a href="#o-mnie">O mnie</a></li>
       <li><a href="#uslugi">Usługi</a></li>
       <li><a href="#cennik">Cennik</a></li>
-      <li><a href="#portfolio">Portfolio</a></li>
+      <li><a href="#portfolio">Realizacje</a></li>
       <li><a href="#kontakt">Kontakt</a></li>
     </ul>
   </nav>
@@ -192,13 +198,13 @@
       <div class="about-img-wrap" data-aos="fade-right" data-aos-duration="1200">
         <div class="about-shape"></div>
         <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="about-img-main" alt="Maja w pracy">
-        <img src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" class="about-img-sec" alt="Detale ślubne" data-aos="fade-up" data-aos-delay="400" data-aos-duration="1000">
+        <img src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" class="about-img-sec" alt="Detale ślubne" data-aos="fade-up" data-aos-delay="300" data-aos-duration="1000">
       </div>
       <div class="about-text" data-aos="fade-left" data-aos-duration="1200">
         <div class="sec-label">Odkryj moją pasję</div>
         <h2 class="sec-title">Cześć, jestem <em>Maja</em></h2>
-        <p>Tworzę śluby, które zapierają dech w piersiach. Od lat projektuję i koordynuję uroczystości, które idealnie odzwierciedlają charakter moich par.</p>
-        <p>Nie ma dla mnie rzeczy niemożliwych. Działam gównie we Wrocławiu i Głogowie, łącząc moją wiedzę z siatką najlepszych, sprawdzonych podwykonawców z całej Polski.</p>
+        <p>Tworzę śluby, które zapierają dech w piersiach. Moim celem nie jest tylko organizacja imprezy, ale zaprojektowanie niepowtarzalnego doświadczenia, które idealnie odzwierciedla Wasz charakter.</p>
+        <p>Zdejmuję z Waszych barków cały stres. Wybieracie tylko te najprzyjemniejsze rzeczy, a ja dbam o umowy, harmonogramy i logistykę. Działam we Wrocławiu, Głogowie i wszędzie tam, gdzie zaprowadzi Was wyobraźnia.</p>
       </div>
     </div>
   </section>
@@ -212,17 +218,17 @@
       <div class="serv-card" data-aos="fade-up" data-aos-delay="100">
         <div class="serv-icon">01</div>
         <h3 class="serv-title">Pełna organizacja</h3>
-        <p class="serv-desc">Biorę na siebie wszystko. Od stworzenia kosztorysu, przez negocjacje umów, aż po dopilnowanie, by każda serwetka leżała idealnie prosto.</p>
+        <p class="serv-desc">Prowadzę Was od pierwszego spotkania aż do końca poprawin. Projektuję, dobieram podwykonawców, negocjuję umowy i czuwam nad budżetem, aby wszystko było perfekcyjne.</p>
       </div>
-      <div class="serv-card" data-aos="fade-up" data-aos-delay="300">
+      <div class="serv-card" data-aos="fade-up" data-aos-delay="200">
         <div class="serv-icon">02</div>
         <h3 class="serv-title">Koordynacja dnia</h3>
-        <p class="serv-desc">Macie wszystko załatwione, ale w dniu ślubu chcecie pić szampana zamiast odbierać telefony od DJ-a? Wkraczam ja. Zarządzam kryzysami z uśmiechem.</p>
+        <p class="serv-desc">Jeśli zaplanowaliście już wszystko sami, wejdę na miesiąc przed ślubem. Zepnę to w jeden harmonogram i w dniu wesela dopilnuję, żebyście mogli pić szampana bez patrzenia na zegarek.</p>
       </div>
-      <div class="serv-card" data-aos="fade-up" data-aos-delay="500">
+      <div class="serv-card" data-aos="fade-up" data-aos-delay="300">
         <div class="serv-icon">03</div>
         <h3 class="serv-title">Konsultacje</h3>
-        <p class="serv-desc">Utknęliście? Brakuje wam pomysłu na motyw przewodni? Spotkajmy się przy kawie. Rozwiążę wasze ślubne dylematy w dwie godziny.</p>
+        <p class="serv-desc">Utknęliście w martwym punkcie? Nie wiecie, jak spiąć budżet lub jak dobrać motyw? Zarezerwujcie dwugodzinne spotkanie. Rozłożę Wasze dylematy na czynniki pierwsze.</p>
       </div>
     </div>
   </section>
@@ -230,79 +236,106 @@
   <section id="cennik" class="bg-alt">
     <div class="sec-head" data-aos="fade-up">
       <div class="sec-label" style="justify-content: center;">Inwestycja w spokój</div>
-      <h2 class="sec-title">Przejrzysty <em>Cennik</em></h2>
+      <h2 class="sec-title">Wybierzcie swój <em>Pakiet</em></h2>
     </div>
-    <!-- Ten element to nasz trigger dla konfetti -->
     <div class="price-grid" id="confetti-trigger">
-      <div class="price-card" data-aos="flip-left" data-aos-delay="200">
+      <div class="price-card" data-aos="fade-right" data-aos-delay="100">
         <h3 class="p-name">Koordynacja</h3>
         <div class="p-price">1500 zł</div>
         <ul class="p-list">
-          <li>Spotkanie organizacyjne</li>
+          <li>Spotkanie na 4 tygodnie przed</li>
           <li>Przejęcie kontaktów z usługodawcami</li>
-          <li>Stworzenie osi czasu</li>
-          <li>Moja obecność do oczepin</li>
+          <li>Stworzenie szczegółowej osi czasu</li>
+          <li>Moja obecność do godziny 1:00</li>
+          <li>Zarządzanie nieprzewidzianymi sytuacjami</li>
         </ul>
+        <a href="sms:+48575133139?body=Cześć%20Maja!%20Jestem%20zainteresowana%20pakietem%20KOORDYNACJA%20(1500zl).%20Proszę%20o%20kontakt." class="sms-btn">Napisz SMS</a>
       </div>
-      <div class="price-card premium" data-aos="flip-up" data-aos-delay="0">
+      <div class="price-card premium" data-aos="fade-up" data-aos-delay="0">
         <div class="badge">Najczęściej wybierane</div>
         <h3 class="p-name">Kompleksowo</h3>
         <div class="p-price">3500 zł</div>
         <ul class="p-list">
-          <li>Stworzenie budżetu</li>
-          <li>Dobór podwykonawców</li>
-          <li>Negocjowanie zniżek</li>
-          <li>Projekt wizualny wesela</li>
+          <li>Stworzenie i pilnowanie budżetu</li>
+          <li>Dobór sprawdzonych podwykonawców</li>
+          <li>Weryfikacja i negocjowanie umów</li>
+          <li>Stworzenie moodboardu wizualnego</li>
+          <li>Pomoc w formalnościach (USC, Kościół)</li>
           <li>Pełna koordynacja w dniu ślubu</li>
         </ul>
+        <a href="sms:+48575133139?body=Cześć%20Maja!%20Jestem%20zainteresowana%20pakietem%20KOMPLEKSOWYM%20(3500zl).%20Proszę%20o%20kontakt." class="sms-btn">Napisz SMS</a>
       </div>
-      <div class="price-card" data-aos="flip-right" data-aos-delay="400">
+      <div class="price-card" data-aos="fade-left" data-aos-delay="200">
         <h3 class="p-name">Konsultacje</h3>
         <div class="p-price">300 zł</div>
         <ul class="p-list">
-          <li>Dwugodzinne spotkanie na żywo</li>
-          <li>Rozwiązanie problemów</li>
-          <li>Mój autorski planer ślubny w PDF</li>
+          <li>Dwugodzinne spotkanie (live / online)</li>
+          <li>Odpowiedzi na każde Wasze pytanie</li>
+          <li>Burza mózgów i dobór stylu</li>
+          <li>Mój autorski planer ślubny PDF gratis</li>
+          <li>Lista zadań do zrobienia samodzielnie</li>
         </ul>
+        <a href="sms:+48575133139?body=Cześć%20Maja!%20Jestem%20zainteresowana%20KONSULTACJAMI%20(300zl).%20Proszę%20o%20kontakt." class="sms-btn">Napisz SMS</a>
       </div>
     </div>
   </section>
 
-  <section id="portfolio">
+  <section id="faq">
+    <div class="sec-head" data-aos="fade-up">
+      <div class="sec-label" style="justify-content: center;">Rozwiejmy wątpliwości</div>
+      <h2 class="sec-title">Najczęstsze <em>Pytania</em></h2>
+    </div>
+    <div class="faq-grid">
+      <div class="faq-item" data-aos="fade-up" data-aos-delay="100">
+        <h3 class="faq-q">Kiedy powinniśmy zatrudnić wedding plannera?</h3>
+        <p class="faq-a">Najlepiej rok lub półtora roku przed ślubem, jeśli planujecie wziąć pakiet kompleksowy. Pozwoli to nam na spokojny wybór wymarzonej sali i najlepszych usługodawców bez presji czasu.</p>
+      </div>
+      <div class="faq-item" data-aos="fade-up" data-aos-delay="200">
+        <h3 class="faq-q">Czy działasz tylko na terenie Wrocławia i Głogowa?</h3>
+        <p class="faq-a">Wrocław i Głogów to moje główne bazy, ale z wielką przyjemnością zorganizuję Wasz ślub w dowolnym miejscu w Polsce, a nawet za granicą. Kwestia dojazdów jest zawsze do indywidualnego dogadania.</p>
+      </div>
+      <div class="faq-item" data-aos="fade-up" data-aos-delay="300">
+        <h3 class="faq-q">Czy musimy brać firmy, które Ty nam polecisz?</h3>
+        <p class="faq-a">Absolutnie nie. Moim zadaniem jest przedstawienie Wam sprawdzonych ekspertów, z którymi współpraca to czysta przyjemność, ale ostateczna decyzja zawsze należy do Was.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="portfolio" class="bg-alt">
     <div class="sec-head" data-aos="fade-up">
       <div class="sec-label" style="justify-content: center;">Moje dzieła</div>
       <h2 class="sec-title">Galeria <em>Wspomnień</em></h2>
     </div>
     <div class="port-grid">
       <div class="port-item large" data-aos="zoom-in" data-aos-delay="0">
-        <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Wesele">
+        <img src="https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Wesele w plenerze">
         <div class="port-overlay"><div class="port-text">Wesele w plenerze</div></div>
       </div>
-      <div class="port-item" data-aos="zoom-in" data-aos-delay="200">
-        <img src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Detale">
+      <div class="port-item" data-aos="zoom-in" data-aos-delay="100">
+        <img src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Złote detale">
         <div class="port-overlay"><div class="port-text">Złote akcenty</div></div>
       </div>
-      <div class="port-item" data-aos="zoom-in" data-aos-delay="400">
-        <img src="https://images.unsplash.com/photo-1520854221256-17451cc331bf?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Dekoracje">
+      <div class="port-item" data-aos="zoom-in" data-aos-delay="200">
+        <img src="https://images.unsplash.com/photo-1520854221256-17451cc331bf?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Kwiaty">
         <div class="port-overlay"><div class="port-text">Kwiatowe kompozycje</div></div>
       </div>
-      <div class="port-item" data-aos="zoom-in" data-aos-delay="200">
-        <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Stół">
-        <div class="port-overlay"><div class="port-text">Zastawa stołowa</div></div>
+      <div class="port-item" data-aos="zoom-in" data-aos-delay="100">
+        <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Zastawa">
+        <div class="port-overlay"><div class="port-text">Elegancka zastawa</div></div>
       </div>
-      <div class="port-item" data-aos="zoom-in" data-aos-delay="400">
-        <img src="https://images.unsplash.com/photo-1505902722411-fa0812edc05c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Goście">
-        <div class="port-overlay"><div class="port-text">Radość gości</div></div>
+      <div class="port-item" data-aos="zoom-in" data-aos-delay="200">
+        <img src="https://images.unsplash.com/photo-1543857778-c4a1a3e0b2eb?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Tort">
+        <div class="port-overlay"><div class="port-text">Słodkie chwile</div></div>
       </div>
     </div>
   </section>
 
-  <section id="kontakt" class="bg-alt">
+  <section id="kontakt">
     <div class="contact-wrap" data-aos="fade-up">
       <div class="c-info">
-        <div class="sec-label">Zadzwoń do mnie</div>
+        <div class="sec-label">Odezwij się do mnie</div>
         <h3>Zróbmy razem<br>coś <em>pięknego</em></h3>
-        <p>Moja kawa stygnie w oczekiwaniu na opowieść o waszych zaręczynach. Napisz do mnie, a w ciągu 24 godzin wrócę z wolnym terminem na darmowe spotkanie.</p>
+        <p>Moja kawa stygnie w oczekiwaniu na opowieść o waszych zaręczynach. Napisz lub zadzwoń, a w ciągu 24 godzin wrócę z wolnym terminem na niezobowiązujące spotkanie.</p>
         
         <div class="c-detail">
           <div class="c-icon">☎</div>
@@ -326,22 +359,16 @@
   </section>
 
   <footer>
-    <div class="foot-logo">maja<span>planuje</span></div>
-    <div class="foot-copy">© 2026 Majaplanuje | Zbudowane z pasją</div>
+    <a href="#" class="foot-logo">maja<span>planuje</span></a>
+    <div class="foot-copy">© 2026 Majaplanuje | Wedding Planner we Wrocławiu i Głogowie</div>
   </footer>
 
-  <!-- Zewnętrzne biblioteki -->
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <script>
-    // Inicjalizacja animacji na scrollowanie
-    AOS.init({
-      once: true, // animacje wykonają się tylko raz przy zjeżdżaniu w dół
-      offset: 100
-    });
+    AOS.init({ once: true, offset: 50 });
 
-    // Efekt przyklejonego menu
     window.addEventListener('scroll', () => {
       if (window.scrollY > 50) {
         document.getElementById('navbar').classList.add('scrolled');
@@ -350,35 +377,30 @@
       }
     });
 
-    // Skrypt wystrzeliwujący konfetti, gdy użytkownik dociera do Cennika
+    // Subtelne i eleganckie konfetti 
     const confettiTrigger = document.getElementById('confetti-trigger');
     let confettiFired = false;
 
     window.addEventListener('scroll', () => {
       if (confettiFired) return;
       const rect = confettiTrigger.getBoundingClientRect();
-      // Jeśli cennik wjeżdża w widok ekranu
-      if (rect.top < window.innerHeight && rect.bottom >= 0) {
+      if (rect.top < window.innerHeight - 100 && rect.bottom >= 0) {
         confettiFired = true;
         
-        // Funkcja z biblioteki canvas-confetti tworząca złoty deszcz
-        var duration = 3000;
+        var duration = 4000;
         var end = Date.now() + duration;
 
         (function frame() {
+          // Bardzo delikatny, opadający deszcz płatków
           confetti({
-            particleCount: 5,
-            angle: 60,
-            spread: 55,
-            origin: { x: 0 },
-            colors: ['#d4af37', '#aa8620', '#ffffff'] // kolory ślubne
-          });
-          confetti({
-            particleCount: 5,
-            angle: 120,
-            spread: 55,
-            origin: { x: 1 },
-            colors: ['#d4af37', '#aa8620', '#ffffff']
+            particleCount: 2,
+            angle: 270,
+            spread: 90,
+            origin: { x: Math.random(), y: -0.1 },
+            colors: ['#d4af37', '#e8d5b0', '#ffffff'],
+            gravity: 0.4,
+            scalar: 0.8,
+            ticks: 400
           });
 
           if (Date.now() < end) {
