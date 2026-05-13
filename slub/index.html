@@ -3,393 +3,254 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Majaplanuje | Ekskluzywny Wedding Planner</title>
+  <title>Majaplanuje | Ekskluzywna Organizacja Ślubów</title>
   
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Montserrat:wght@200;300;400&display=swap" rel="stylesheet">
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
-      --cream: #fbf9f6;
-      --warm: #f2ebe1;
-      --gold: #d4af37;
-      --gold-dark: #aa8620;
-      --text: #2a2520;
-      --muted: #7a7065;
-      --border: rgba(212, 175, 55, 0.2);
+      --bg-color: #faf9f7;
+      --text-main: #1a1a1a;
+      --text-muted: #666666;
+      --accent: #bda573;
     }
 
     body {
-      font-family: 'Jost', sans-serif;
-      background-color: var(--cream);
-      color: var(--text);
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
       overflow-x: hidden;
-    }
-
-    /* SUBTELNE, LEWITUJĄCE ŚWIATŁA W TLE ZAMIAST ZDJĘĆ */
-    .ambient-orb {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(80px);
-      z-index: 0;
-      opacity: 0.4;
-      animation: drift 20s infinite alternate ease-in-out;
-      pointer-events: none;
-    }
-    .orb-1 { width: 400px; height: 400px; background: #e8d5b0; top: -100px; left: -150px; }
-    .orb-2 { width: 500px; height: 500px; background: rgba(212, 175, 55, 0.15); top: 40%; right: -200px; animation-delay: -5s; }
-    .orb-3 { width: 350px; height: 350px; background: #e8d5b0; bottom: -100px; left: 10%; animation-delay: -10s; }
-
-    @keyframes drift {
-      0% { transform: translate(0, 0) scale(1); }
-      100% { transform: translate(50px, 50px) scale(1.1); }
+      -webkit-font-smoothing: antialiased;
     }
 
     /* NAWIGACJA */
     nav {
       position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
       display: flex; justify-content: space-between; align-items: center;
-      padding: 1.5rem 5rem; transition: 0.4s ease;
-      background: rgba(251, 249, 246, 0);
+      padding: 2rem 5%; transition: 0.4s ease;
+      background: transparent;
     }
     nav.scrolled {
-      background: rgba(251, 249, 246, 0.95); backdrop-filter: blur(15px);
-      padding: 1rem 5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+      background: rgba(250, 249, 247, 0.98);
+      padding: 1.5rem 5%; border-bottom: 1px solid rgba(0,0,0,0.05);
     }
-    .logo { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; color: var(--text); text-decoration: none; font-weight: 400; position: relative; z-index: 10; }
-    .logo span { color: var(--gold); font-style: italic; }
-    .nav-links { display: flex; gap: 3rem; list-style: none; position: relative; z-index: 10; }
-    .nav-links a { text-decoration: none; color: var(--text); font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; transition: 0.3s; }
-    .nav-links a:hover { color: var(--gold); }
+    .logo { 
+      font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; 
+      color: var(--text-main); text-decoration: none; font-weight: 400; letter-spacing: 2px;
+    }
+    .nav-links { display: flex; gap: 3rem; list-style: none; }
+    .nav-links a { 
+      text-decoration: none; color: var(--text-main); font-size: 0.75rem; 
+      letter-spacing: 2px; text-transform: uppercase; transition: 0.3s;
+    }
+    .nav-links a:hover { color: var(--accent); }
 
-    /* HERO SECTION */
+    /* HERO */
     .hero {
-      position: relative; height: 100vh; display: flex; align-items: center; justify-content: center;
-      background-image: url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
-      background-attachment: fixed; background-position: center; background-size: cover;
+      height: 100vh; display: flex; align-items: center; justify-content: center;
+      background: url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+      position: relative;
     }
-    .hero::before {
-      content: ''; position: absolute; inset: 0;
-      background: linear-gradient(to bottom, rgba(251, 249, 246, 0.2), rgba(251, 249, 246, 0.98) 95%, var(--cream));
+    .hero::after {
+      content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(250, 249, 247, 0.3);
     }
     .hero-content {
-      position: relative; z-index: 2; text-align: center; max-width: 800px; padding: 0 20px;
+      position: relative; z-index: 2; text-align: center; max-width: 900px; padding: 0 20px;
     }
-    .hero-subtitle { font-size: 0.9rem; letter-spacing: 6px; text-transform: uppercase; color: var(--gold-dark); margin-bottom: 25px; font-weight: 500; }
-    .hero-title { font-family: 'Cormorant Garamond', serif; font-size: 5.5rem; line-height: 1.1; margin-bottom: 40px; color: var(--text); }
-    .hero-title em { color: var(--gold); font-style: italic; }
-    
-    .btn {
-      display: inline-block; padding: 16px 45px; background: var(--gold); color: #fff;
-      text-decoration: none; text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem;
-      border-radius: 30px; transition: 0.4s; border: 1px solid transparent; cursor: pointer;
+    .hero-subtitle { 
+      font-size: 0.8rem; letter-spacing: 6px; text-transform: uppercase; 
+      color: var(--text-main); margin-bottom: 30px; font-weight: 300;
     }
-    .btn:hover { background: transparent; color: var(--gold-dark); border-color: var(--gold-dark); transform: translateY(-3px); }
-
-    /* SEKCJE BAZOWE */
-    section { padding: 8rem 10%; position: relative; z-index: 1; }
-    .bg-alt { background-color: var(--warm); }
-    .sec-head { text-align: center; margin-bottom: 5rem; position: relative; z-index: 2; }
-    .sec-label { font-size: 0.85rem; letter-spacing: 4px; color: var(--gold); text-transform: uppercase; margin-bottom: 15px; }
-    .sec-title { font-family: 'Cormorant Garamond', serif; font-size: 3.8rem; color: var(--text); }
-    .sec-title em { color: var(--gold); font-style: italic; }
-
-    /* O MNIE */
-    .about-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 6rem; align-items: center; position: relative; z-index: 2; }
-    .about-img-wrap { position: relative; }
-    .about-img-main { width: 85%; border-radius: 8px; box-shadow: 0 20px 50px rgba(0,0,0,0.08); position: relative; z-index: 2; }
-    .about-img-sec { position: absolute; bottom: -40px; right: -20px; width: 60%; border: 15px solid var(--cream); border-radius: 8px; z-index: 3; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
-    .about-text p { font-size: 1.15rem; line-height: 1.9; color: var(--muted); margin-bottom: 25px; }
-    .about-text .btn { margin-top: 20px; }
-
-    /* INTERAKTYWNE USŁUGI (AKORDEON) */
-    .services-wrapper { max-width: 900px; margin: 0 auto; position: relative; z-index: 2; }
-    .accordion-item { border-bottom: 1px solid var(--border); padding: 25px 0; cursor: pointer; transition: 0.3s; }
-    .accordion-header { display: flex; justify-content: space-between; align-items: center; }
-    .acc-title { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; color: var(--text); transition: 0.3s; }
-    .acc-icon { font-size: 1.5rem; color: var(--gold); transition: transform 0.4s ease; font-weight: 300; }
-    .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.5s ease; color: var(--muted); line-height: 1.8; font-size: 1.05rem; padding-right: 40px; }
-    
-    .accordion-item.active .accordion-content { max-height: 300px; margin-top: 20px; }
-    .accordion-item.active .acc-icon { transform: rotate(45deg); }
-    .accordion-item:hover .acc-title { color: var(--gold); padding-left: 10px; }
-
-    /* CENNIK Z PRZYCISKAMI SMS */
-    .price-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; align-items: center; position: relative; z-index: 2; }
-    .price-card { background: var(--cream); padding: 4rem 2.5rem; border-radius: 15px; border: 1px solid var(--border); transition: 0.4s; text-align: center; display: flex; flex-direction: column; justify-content: space-between; height: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.02); }
-    .price-card:hover { border-color: var(--gold); transform: translateY(-10px); }
-    .price-card.premium { background: #fff; transform: scale(1.05); box-shadow: 0 30px 60px rgba(212, 175, 55, 0.1); border: 2px solid var(--gold); position: relative; z-index: 2; }
-    .price-card.premium:hover { transform: scale(1.05) translateY(-10px); }
-    .badge { position: absolute; top: -16px; left: 50%; transform: translateX(-50%); background: var(--gold); color: #fff; padding: 6px 25px; border-radius: 30px; font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; }
-    
-    .p-name { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; margin-bottom: 10px; }
-    .p-price { font-size: 2.5rem; font-weight: 500; color: var(--gold); margin-bottom: 30px; }
-    .p-list { list-style: none; text-align: left; margin-bottom: 40px; flex-grow: 1; }
-    .p-list li { padding: 12px 0; border-bottom: 1px solid rgba(0,0,0,0.04); color: var(--muted); position: relative; padding-left: 25px; font-size: 0.95rem; }
-    .p-list li::before { content: '✦'; position: absolute; left: 0; color: var(--gold); font-size: 0.8rem; top: 15px; }
-    
-    .sms-btn {
-      display: inline-block; width: 100%; padding: 15px 0; background: transparent; color: var(--gold-dark);
-      text-decoration: none; text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem; font-weight: 500;
-      border: 1px solid var(--gold); border-radius: 30px; transition: 0.3s;
+    .hero-title { 
+      font-family: 'Cormorant Garamond', serif; font-size: 5rem; font-weight: 300; 
+      line-height: 1.1; margin-bottom: 40px; color: var(--text-main);
     }
-    .sms-btn:hover { background: var(--gold); color: #fff; }
-    .premium .sms-btn { background: var(--gold); color: #fff; }
-    .premium .sms-btn:hover { background: transparent; color: var(--gold-dark); border-color: var(--gold-dark); }
+    .hero-title i { color: var(--accent); font-style: italic; }
+    .btn-outline {
+      display: inline-block; padding: 15px 40px; color: var(--text-main);
+      text-decoration: none; text-transform: uppercase; letter-spacing: 3px; font-size: 0.75rem;
+      border: 1px solid var(--text-main); transition: 0.4s;
+    }
+    .btn-outline:hover { background: var(--text-main); color: #fff; }
 
-    /* PORTFOLIO KLIKALNE */
-    .port-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; position: relative; z-index: 2; }
-    .port-item { position: relative; overflow: hidden; border-radius: 8px; height: 350px; cursor: pointer; }
-    .port-item.large { grid-row: span 2; height: 100%; }
-    .port-item img { width: 100%; height: 100%; object-fit: cover; transition: 0.8s ease; }
-    .port-item:hover img { transform: scale(1.08); filter: brightness(0.6); }
-    .port-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); opacity: 0; transition: 0.4s; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; }
-    .port-item:hover .port-overlay { opacity: 1; }
-    .port-text { color: #fff; font-family: 'Cormorant Garamond', serif; font-size: 2rem; transform: translateY(20px); transition: 0.4s; text-align: center; margin-bottom: 15px; }
-    .port-item:hover .port-text { transform: translateY(0); }
-    .port-action { font-size: 0.8rem; color: var(--gold); text-transform: uppercase; letter-spacing: 3px; border: 1px solid var(--gold); padding: 8px 20px; border-radius: 20px; opacity: 0; transform: translateY(20px); transition: 0.5s 0.1s; }
-    .port-item:hover .port-action { opacity: 1; transform: translateY(0); }
+    /* SEKCJE */
+    section { padding: 10rem 5%; }
+    .text-center { text-align: center; }
+    
+    .sec-label { 
+      font-size: 0.75rem; letter-spacing: 4px; color: var(--accent); 
+      text-transform: uppercase; margin-bottom: 20px; display: block;
+    }
+    .sec-title { 
+      font-family: 'Cormorant Garamond', serif; font-size: 3.5rem; 
+      font-weight: 300; color: var(--text-main); margin-bottom: 3rem;
+    }
+
+    /* O MNIE MINIMAL */
+    .about-wrap { display: grid; grid-template-columns: 5fr 6fr; gap: 8rem; align-items: center; max-width: 1200px; margin: 0 auto; }
+    .about-img { width: 100%; height: 700px; object-fit: cover; }
+    .about-text p { font-size: 1rem; line-height: 2; color: var(--text-muted); margin-bottom: 25px; font-weight: 300; }
+    .signature { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; color: var(--accent); font-style: italic; margin-top: 40px; }
+
+    /* USŁUGI EDITORIAL */
+    .services-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3rem; max-width: 1200px; margin: 0 auto; }
+    .service-item { text-align: center; }
+    .service-img { width: 100%; height: 400px; object-fit: cover; margin-bottom: 30px; }
+    .service-title { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 400; margin-bottom: 15px; }
+    .service-desc { font-size: 0.9rem; line-height: 1.8; color: var(--text-muted); font-weight: 300; }
+
+    /* CENNIK */
+    .pricing-wrap { max-width: 1000px; margin: 0 auto; border-top: 1px solid rgba(0,0,0,0.1); border-bottom: 1px solid rgba(0,0,0,0.1); }
+    .price-row { display: grid; grid-template-columns: 1fr 2fr 1fr; padding: 4rem 0; border-bottom: 1px solid rgba(0,0,0,0.05); align-items: center; }
+    .price-row:last-child { border-bottom: none; }
+    .p-title { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 400; }
+    .p-details { font-size: 0.9rem; line-height: 1.8; color: var(--text-muted); font-weight: 300; padding: 0 2rem; }
+    .p-action { text-align: right; }
+    .p-action .btn-outline { padding: 12px 30px; font-size: 0.7rem; }
+
+    /* PORTFOLIO GRID */
+    .portfolio-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; max-width: 1400px; margin: 0 auto; }
+    .port-item { position: relative; overflow: hidden; height: 600px; }
+    .port-item img { width: 100%; height: 100%; object-fit: cover; transition: 1s ease; }
+    .port-item:hover img { transform: scale(1.05); }
 
     /* KONTAKT */
-    .contact-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; background: #fff; padding: 5rem; border-radius: 15px; box-shadow: 0 20px 50px rgba(0,0,0,0.03); position: relative; z-index: 2; }
-    .c-info h3 { font-family: 'Cormorant Garamond', serif; font-size: 2.8rem; margin-bottom: 20px; }
-    .c-info p { color: var(--muted); line-height: 1.8; margin-bottom: 40px; font-size: 1.05rem; }
-    .c-detail { display: flex; align-items: center; gap: 20px; margin-bottom: 25px; }
-    .c-icon { width: 55px; height: 55px; background: var(--warm); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--gold); font-size: 1.3rem; }
-    .c-text h4 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 3px; color: var(--muted); margin-bottom: 5px; }
-    .c-text a { text-decoration: none; color: var(--text); font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 600; transition: 0.3s; }
-    .c-text a:hover { color: var(--gold); }
+    .contact-sec { background: #111; color: #fff; text-align: center; padding: 10rem 5%; }
+    .contact-sec .sec-title { color: #fff; }
+    .contact-links { display: flex; justify-content: center; gap: 5rem; margin-top: 4rem; }
+    .c-link { text-decoration: none; color: #fff; font-family: 'Cormorant Garamond', serif; font-size: 2rem; transition: 0.3s; }
+    .c-link:hover { color: var(--accent); }
 
-    footer { background: #151311; padding: 5rem 10%; text-align: center; color: #fff; position: relative; z-index: 2; }
-    .foot-logo { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; margin-bottom: 15px; display: block; text-decoration: none; color: #fff; }
-    .foot-logo span { color: var(--gold); font-style: italic; }
-    .foot-copy { color: rgba(255,255,255,0.3); font-size: 0.9rem; letter-spacing: 1px; margin-top: 20px; }
+    footer { background: #0a0a0a; padding: 3rem 5%; text-align: center; color: rgba(255,255,255,0.3); font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 300; }
 
     @media (max-width: 1024px) {
-      .about-grid { gap: 3rem; }
-      .price-grid { grid-template-columns: 1fr; max-width: 500px; margin: 0 auto; }
-      .price-card.premium { transform: scale(1); }
-      .price-card.premium:hover { transform: scale(1) translateY(-10px); }
+      .about-wrap { grid-template-columns: 1fr; gap: 4rem; }
+      .about-img { height: 500px; }
+      .services-grid { grid-template-columns: 1fr; }
+      .price-row { grid-template-columns: 1fr; gap: 2rem; text-align: center; }
+      .p-details { padding: 0; }
+      .p-action { text-align: center; }
     }
     @media (max-width: 768px) {
-      nav { padding: 1rem 5%; }
+      nav { padding: 1.5rem 5%; }
       .nav-links { display: none; }
-      .hero-title { font-size: 3.8rem; }
-      section { padding: 5rem 5%; }
-      .about-grid, .contact-wrap { grid-template-columns: 1fr; }
-      .about-img-sec { width: 70%; right: 0; }
-      .port-grid { grid-template-columns: 1fr 1fr; }
-      .contact-wrap { padding: 3rem 2rem; }
-    }
-    @media (max-width: 480px) {
-      .port-grid { grid-template-columns: 1fr; }
-      .hero-title { font-size: 3rem; }
+      .hero-title { font-size: 3.5rem; }
+      .portfolio-grid { grid-template-columns: 1fr; }
+      .port-item { height: 400px; }
+      .contact-links { flex-direction: column; gap: 2rem; }
     }
   </style>
 </head>
 <body>
 
-  <!-- ELEMENTY TŁA -->
-  <div class="ambient-orb orb-1"></div>
-  <div class="ambient-orb orb-2"></div>
-  <div class="ambient-orb orb-3"></div>
-
   <nav id="navbar">
-    <a href="#" class="logo">maja<span>planuje</span></a>
+    <a href="#" class="logo">majaplanuje</a>
     <ul class="nav-links">
       <li><a href="#o-mnie">O mnie</a></li>
-      <li><a href="#uslugi">Usługi</a></li>
-      <li><a href="#cennik">Cennik</a></li>
-      <li><a href="#portfolio">Realizacje</a></li>
+      <li><a href="#uslugi">Oferta</a></li>
+      <li><a href="#cennik">Wycena</a></li>
+      <li><a href="#portfolio">Portfolio</a></li>
       <li><a href="#kontakt">Kontakt</a></li>
     </ul>
   </nav>
 
   <section class="hero">
     <div class="hero-content" data-aos="fade-up" data-aos-duration="1500">
-      <div class="hero-subtitle">Ekskluzywny Wedding Planner</div>
-      <h1 class="hero-title">Zaprojektujmy Twój<br>najpiękniejszy <em>dzień</em></h1>
-      <a href="#kontakt" class="btn">Umów bezpłatną konsultację</a>
+      <div class="hero-subtitle">Ekskluzywna organizacja ślubów</div>
+      <h1 class="hero-title">Twój dzień, zaplanowany z <i>perfekcją</i></h1>
+      <a href="#kontakt" class="btn-outline">Umów spotkanie</a>
     </div>
   </section>
 
   <section id="o-mnie">
-    <div class="about-grid">
-      <div class="about-img-wrap" data-aos="fade-right" data-aos-duration="1200">
-        <div class="about-shape"></div>
-        <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="about-img-main" alt="Ślub detal">
-        <img src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" class="about-img-sec" alt="Kwiaty ślubne" data-aos="fade-up" data-aos-delay="300" data-aos-duration="1000">
-      </div>
-      <div class="about-text" data-aos="fade-left" data-aos-duration="1200">
-        <div class="sec-label">Odkryj moją pasję</div>
-        <h2 class="sec-title">Cześć, jestem <em>Maja</em></h2>
-        <p>Projektuję śluby, które zapierają dech w piersiach. Zdejmuję z Waszych barków cały ciężar logistyki, formalności i stresu. Wybieracie tylko najprzyjemniejsze opcje z przygotowanych przeze mnie katalogów.</p>
-        <p>Współpracuję wyłącznie z najwyższej klasy podwykonawcami. Mój cel to sprawić, aby Wasz wielki dzień wyglądał dokładnie tak, jak na pintereście, a Wy żebyście bawili się na nim jak goście honorowi.</p>
-        <a href="#kontakt" class="btn">Porozmawiajmy</a>
+    <div class="about-wrap">
+      <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=80" alt="Maja" class="about-img" data-aos="fade-right" data-aos-duration="1200">
+      <div data-aos="fade-left" data-aos-duration="1200">
+        <span class="sec-label">Podejście</span>
+        <h2 class="sec-title">Cześć, jestem <i>Maja</i></h2>
+        <p>Specjalizuję się w tworzeniu ślubów, które wymykają się schematom. Koncentruję się na minimalistycznej elegancji, dopracowanych detalach i nieskazitelnej logistyce.</p>
+        <p>Wrocław i Głogów to moje główne obszary działania, ale realizuję wizje moich klientów w całej Polsce. Zdejmuję z Was ciężar planowania, zostawiając Wam wyłącznie przestrzeń na radość z narzeczeństwa.</p>
+        <div class="signature">Maja Mrozicka</div>
       </div>
     </div>
   </section>
 
-  <section id="uslugi" class="bg-alt">
-    <div class="sec-head" data-aos="fade-up">
-      <div class="sec-label" style="justify-content: center;">Rozwiązania szyte na miarę</div>
-      <h2 class="sec-title">Jak mogę Wam <em>pomóc?</em></h2>
+  <section id="uslugi" style="background: #fff;">
+    <div class="text-center" data-aos="fade-up">
+      <span class="sec-label">Współpraca</span>
+      <h2 class="sec-title">Zakres <i>usług</i></h2>
     </div>
-    
-    <div class="services-wrapper">
-      <div class="accordion-item" data-aos="fade-up" data-aos-delay="100">
-        <div class="accordion-header">
-          <div class="acc-title">1. Kompleksowa organizacja</div>
-          <div class="acc-icon">+</div>
-        </div>
-        <div class="accordion-content">
-          Biorę na siebie absolutnie wszystko od pierwszego dnia. Tworzę szczegółowy budżet, szukam idealnej sali, negocjuję zniżki z podwykonawcami. Projektuję wizualną oprawę ślubu i pilnuję każdego terminu z kalendarza, aby dopiąć wszystko na ostatni guzik. Oszczędzacie setki godzin pracy.
-        </div>
+    <div class="services-grid">
+      <div class="service-item" data-aos="fade-up" data-aos-delay="100">
+        <img src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?auto=format&fit=crop&w=600&q=80" alt="Organizacja" class="service-img">
+        <h3 class="service-title">Pełna organizacja</h3>
+        <p class="service-desc">Od pustej kartki po ostatniego gościa na parkiecie. Zarządzam budżetem, dobieram podwykonawców i czuwam nad spójną wizją całego wydarzenia.</p>
       </div>
-      
-      <div class="accordion-item" data-aos="fade-up" data-aos-delay="200">
-        <div class="accordion-header">
-          <div class="acc-title">2. Koordynacja dnia ślubu</div>
-          <div class="acc-icon">+</div>
-        </div>
-        <div class="accordion-content">
-          Macie już wybraną salę i zespół, ale boicie się, że w dniu wesela coś pójdzie nie tak? Wkraczam na miesiąc przed ślubem. Przejmuję wszystkie kontakty, układam rygorystyczny scenariusz dnia, a podczas uroczystości jestem "cieniem", który dba o to, żebyście nie musieli zajmować się niczym innym, niż dobrą zabawą.
-        </div>
+      <div class="service-item" data-aos="fade-up" data-aos-delay="200">
+        <img src="https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=600&q=80" alt="Koordynacja" class="service-img">
+        <h3 class="service-title">Koordynacja</h3>
+        <p class="service-desc">Przejmuję stery na kilka tygodni przed ślubem. Tworzę precyzyjny scenariusz i dbam o to, by w dniu wesela wszystko przebiegło bez najmniejszych zakłóceń.</p>
       </div>
-      
-      <div class="accordion-item" data-aos="fade-up" data-aos-delay="300">
-        <div class="accordion-header">
-          <div class="acc-title">3. Indywidualne konsultacje</div>
-          <div class="acc-icon">+</div>
-        </div>
-        <div class="accordion-content">
-          Utknęliście w martwym punkcie podczas samodzielnego planowania? Umówmy się na dwugodzinne spotkanie przy kawie. Przejrzymy wasze umowy, odpowiem na każde pytanie, wskażę, na co uważać i pomogę Wam wrócić na właściwe tory z gotowym planem działania.
-        </div>
+      <div class="service-item" data-aos="fade-up" data-aos-delay="300">
+        <img src="https://images.unsplash.com/photo-1543857778-c4a1a3e0b2eb?auto=format&fit=crop&w=600&q=80" alt="Konsultacje" class="service-img">
+        <h3 class="service-title">Konsultacje</h3>
+        <p class="service-desc">Profesjonalne wsparcie na wyciągnięcie ręki. Analiza umów, układanie budżetu i rozwiązywanie problemów podczas dedykowanych spotkań.</p>
       </div>
     </div>
   </section>
 
   <section id="cennik">
-    <div class="sec-head" data-aos="fade-up">
-      <div class="sec-label" style="justify-content: center;">Inwestycja w perfekcję</div>
-      <h2 class="sec-title">Wybierzcie swój <em>Pakiet</em></h2>
+    <div class="text-center" data-aos="fade-up">
+      <span class="sec-label">Wycena</span>
+      <h2 class="sec-title">Transparentne <i>warunki</i></h2>
     </div>
-    <div class="price-grid">
-      <div class="price-card" data-aos="fade-right" data-aos-delay="100">
-        <h3 class="p-name">Koordynacja</h3>
-        <div class="p-price">1500 zł</div>
-        <ul class="p-list">
-          <li>Spotkanie na 4 tygodnie przed</li>
-          <li>Przejęcie kontaktów z usługodawcami</li>
-          <li>Stworzenie szczegółowej osi czasu</li>
-          <li>Moja obecność w dniu ślubu</li>
-        </ul>
-        <a href="sms:+48575133139?body=Cześć%20Maja!%20Jestem%20zainteresowana%20pakietem%20KOORDYNACJA.%20Proszę%20o%20kontakt." class="sms-btn">Zarezerwuj Termin SMS</a>
+    <div class="pricing-wrap">
+      
+      <div class="price-row" data-aos="fade-up">
+        <h3 class="p-title">Koordynacja<br><span style="font-size: 1.2rem; color: var(--accent);">1 500 PLN</span></h3>
+        <div class="p-details">Przejęcie pełnej komunikacji z podwykonawcami na miesiąc przed uroczystością. Budowa szczegółowego harmonogramu dnia i dyskretna, profesjonalna koordynacja na miejscu.</div>
+        <div class="p-action"><a href="sms:+48575133139" class="btn-outline">Wybieram</a></div>
       </div>
-      <div class="price-card premium" data-aos="fade-up" data-aos-delay="0">
-        <div class="badge">Najczęściej wybierane</div>
-        <h3 class="p-name">Kompleksowo</h3>
-        <div class="p-price">3500 zł</div>
-        <ul class="p-list">
-          <li>Zarządzanie pełnym budżetem</li>
-          <li>Dobór zaufanych podwykonawców</li>
-          <li>Projekt wizualny i moodboard</li>
-          <li>Pomoc w logistyce dla gości</li>
-          <li>Pełna koordynacja na żywo</li>
-        </ul>
-        <a href="sms:+48575133139?body=Cześć%20Maja!%20Jestem%20zainteresowana%20pakietem%20KOMPLEKSOWYM.%20Proszę%20o%20kontakt." class="sms-btn">Zarezerwuj Termin SMS</a>
+
+      <div class="price-row" data-aos="fade-up">
+        <h3 class="p-title">Kompleksowo<br><span style="font-size: 1.2rem; color: var(--accent);">3 500 PLN</span></h3>
+        <div class="p-details">Zarządzanie budżetem, weryfikacja umów, dobór zaufanych ekspertów oraz pełen nadzór logistyczny i estetyczny od pierwszego spotkania aż po poprawiny.</div>
+        <div class="p-action"><a href="sms:+48575133139" class="btn-outline">Wybieram</a></div>
       </div>
-      <div class="price-card" data-aos="fade-left" data-aos-delay="200">
-        <h3 class="p-name">Konsultacje</h3>
-        <div class="p-price">300 zł</div>
-        <ul class="p-list">
-          <li>2h spotkanie (live / online)</li>
-          <li>Burza mózgów i weryfikacja umów</li>
-          <li>Autorski planer ślubny w PDF</li>
-          <li>Gotowa lista zadań</li>
-        </ul>
-        <a href="sms:+48575133139?body=Cześć%20Maja!%20Chciałabym%20umówić%20się%20na%20KONSULTACJE.%20Proszę%20o%20kontakt." class="sms-btn">Umów Konsultację SMS</a>
+
+      <div class="price-row" data-aos="fade-up">
+        <h3 class="p-title">Konsultacje<br><span style="font-size: 1.2rem; color: var(--accent);">300 PLN</span></h3>
+        <div class="p-details">Dwugodzinne spotkanie audytowe. Sprawdzimy postępy Waszych przygotowań, zoptymalizujemy budżet i ułożymy plan działania na kolejne miesiące.</div>
+        <div class="p-action"><a href="sms:+48575133139" class="btn-outline">Wybieram</a></div>
       </div>
+
     </div>
   </section>
 
-  <section id="portfolio" class="bg-alt">
-    <div class="sec-head" data-aos="fade-up">
-      <div class="sec-label" style="justify-content: center;">Realizacje</div>
-      <h2 class="sec-title">Moje <em>Inspiracje</em></h2>
-    </div>
-    <div class="port-grid">
-      <div class="port-item large" data-aos="zoom-in" data-aos-delay="0" onclick="window.location.href='#kontakt'">
-        <img src="https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Wesele w plenerze">
-        <div class="port-overlay">
-          <div class="port-text">Wesele w plenerze</div>
-          <div class="port-action">Sprawdź wolny termin</div>
-        </div>
-      </div>
-      <div class="port-item" data-aos="zoom-in" data-aos-delay="100" onclick="window.location.href='#kontakt'">
-        <img src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Złote detale">
-        <div class="port-overlay">
-          <div class="port-text">Szczegóły</div>
-          <div class="port-action">Zapytaj o ofertę</div>
-        </div>
-      </div>
-      <div class="port-item" data-aos="zoom-in" data-aos-delay="200" onclick="window.location.href='#kontakt'">
-        <img src="https://images.unsplash.com/photo-1520854221256-17451cc331bf?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Kwiaty">
-        <div class="port-overlay">
-          <div class="port-text">Florystyka</div>
-          <div class="port-action">Zapytaj o ofertę</div>
-        </div>
-      </div>
-      <div class="port-item" data-aos="zoom-in" data-aos-delay="100" onclick="window.location.href='#kontakt'">
-        <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Zastawa">
-        <div class="port-overlay">
-          <div class="port-text">Elegancja</div>
-          <div class="port-action">Zapytaj o ofertę</div>
-        </div>
-      </div>
-      <div class="port-item" data-aos="zoom-in" data-aos-delay="200" onclick="window.location.href='#kontakt'">
-        <img src="https://images.unsplash.com/photo-1543857778-c4a1a3e0b2eb?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Tort">
-        <div class="port-overlay">
-          <div class="port-text">Słodkie chwile</div>
-          <div class="port-action">Zapytaj o ofertę</div>
-        </div>
-      </div>
+  <section id="portfolio" style="padding: 0;">
+    <div class="portfolio-grid">
+      <div class="port-item" data-aos="fade-in"><img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80" alt="Realizacja 1"></div>
+      <div class="port-item" data-aos="fade-in"><img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=80" alt="Realizacja 2"></div>
+      <div class="port-item" data-aos="fade-in"><img src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?auto=format&fit=crop&w=800&q=80" alt="Realizacja 3"></div>
+      <div class="port-item" data-aos="fade-in"><img src="https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=800&q=80" alt="Realizacja 4"></div>
     </div>
   </section>
 
-  <section id="kontakt">
-    <div class="contact-wrap" data-aos="fade-up">
-      <div class="c-info">
-        <div class="sec-label">Odezwij się do mnie</div>
-        <h3>Zróbmy razem<br>coś <em>pięknego</em></h3>
-        <p>Każda realizacja zaczyna się od pierwszego e-maila. Napisz lub zadzwoń, a znajdę dla Was wolny termin na niezobowiązującą rozmowę o Waszych marzeniach.</p>
-        
-        <div class="c-detail">
-          <div class="c-icon">☎</div>
-          <div class="c-text">
-            <h4>Telefon</h4>
-            <a href="tel:+48575133139">575 133 139</a>
-          </div>
-        </div>
-        <div class="c-detail">
-          <div class="c-icon">✉</div>
-          <div class="c-text">
-            <h4>Email</h4>
-            <a href="mailto:majamrozicka@wp.pl">majamrozicka@wp.pl</a>
-          </div>
-        </div>
-      </div>
-      <div class="c-form">
-        <img src="https://images.unsplash.com/photo-1532452119098-a3650b3c46d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;" alt="Szampan na weselu">
-      </div>
+  <section id="kontakt" class="contact-sec">
+    <span class="sec-label" style="color: #fff; margin-bottom: 30px;">Zacznijmy projekt</span>
+    <h2 class="sec-title">Stwórzmy coś <i>niezapomnianego</i></h2>
+    <div class="contact-links">
+      <a href="tel:+48575133139" class="c-link">575 133 139</a>
+      <a href="mailto:majamrozicka@wp.pl" class="c-link">majamrozicka@wp.pl</a>
     </div>
   </section>
 
   <footer>
-    <a href="#" class="foot-logo">maja<span>planuje</span></a>
-    <div class="foot-copy">© 2026 Majaplanuje | Wyjątkowy Wedding Planner | Wrocław & Głogów</div>
+    © 2026 Majaplanuje. Wszelkie prawa zastrzeżone.
   </footer>
 
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
@@ -402,20 +263,6 @@
       } else {
         document.getElementById('navbar').classList.remove('scrolled');
       }
-    });
-
-    // Skrypt do interaktywnego akordeonu w usługach
-    const accordions = document.querySelectorAll('.accordion-item');
-    accordions.forEach(item => {
-      item.addEventListener('click', () => {
-        // Zamykanie innych, jeśli chcesz żeby tylko jeden był otwarty na raz (opcjonalnie)
-        accordions.forEach(acc => {
-          if(acc !== item) acc.classList.remove('active');
-        });
-        
-        // Przełączanie klikniętego
-        item.classList.toggle('active');
-      });
     });
   </script>
 </body>
