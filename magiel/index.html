@@ -61,12 +61,11 @@
       flex-grow: 1;
       display: flex;
       flex-direction: column;
-      justify-content: center;
     }
 
     h1 {
       font-family: 'Lora', serif;
-      font-size: 65px;
+      font-size: 55px;
       line-height: 1;
       font-weight: 400;
       margin-bottom: 15px;
@@ -74,7 +73,7 @@
 
     h2 {
       font-family: 'Lora', serif;
-      font-size: 32px;
+      font-size: 28px;
       font-style: italic;
       color: var(--accent);
       margin-bottom: 25px;
@@ -98,24 +97,26 @@
     .menu-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 50px;
-      margin-top: 30px;
+      gap: 40px;
+      margin-top: 20px;
     }
 
     .menu-category {
       font-family: 'Lora', serif;
-      font-size: 22px;
+      font-size: 18px;
       color: var(--accent);
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       border-bottom: 1px solid #4a3629;
-      padding-bottom: 8px;
+      padding-bottom: 5px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .menu-item {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 8px;
-      font-size: 16px;
+      margin-bottom: 4px;
+      font-size: 13px;
     }
 
     .menu-item strong {
@@ -123,10 +124,12 @@
     }
 
     .menu-desc {
-      font-size: 11px;
+      font-size: 10px;
       color: #9d8c7c;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
       font-weight: 300;
+      line-height: 1.3;
+      padding-right: 20px;
     }
 
     .gallery-grid {
@@ -182,76 +185,174 @@
 </head>
 <body>
 
+  <!-- STRONA 1: OKŁADKA -->
   <div class="page">
     <div class="header">
       <span>Propozycja Projektu</span>
       <span>Polkowice 2026</span>
     </div>
-    <div class="content" style="padding-top: 30mm;">
-      <h1>Magiel</h1>
-      <h2>Klubokawiarnia z klimatem</h2>
+    <div class="content" style="justify-content: center;">
+      <h1>Klubokawiarnia<br>Magiel</h1>
+      <h2>Klimat w cyfrowym wydaniu</h2>
       <p>
-        Dobra kawa, coś do przegryzienia, fajna muzyka i pełna kultura. Wasza wizytówka w sieci powinna w stu procentach oddawać ten sam urok, który przyciąga gości do lokalu.
+        Dobra kawa, coś do przegryzienia, fajna muzyka i pełna kultura. Wasza wizytówka w sieci powinna w stu procentach oddawać urok, który przyciąga gości do Waszego lokalu na Kilińskiego.
       </p>
     </div>
     <div class="cover-img"></div>
   </div>
 
+  <!-- STRONA 2: MENU CZĘŚĆ 1 (KAWY) -->
   <div class="page dark-mode">
     <div class="header">
-      <span>Podgląd Menu</span>
+      <span>Podgląd Menu (1/2)</span>
       <span>Strona 02</span>
     </div>
     <div class="content">
-      <h1 style="color: var(--bg-color);">Czytelna Karta</h1>
-      <p style="color: #9d8c7c; margin-bottom: 30px;">
-        Zaprojektujemy menu, które idealnie wygląda na smartfonach. Klienci szybko znajdą to, na co mają ochotę przed wyjściem z domu.
+      <h1 style="color: var(--bg-color);">Kawa i Herbata</h1>
+      <p style="color: #9d8c7c; margin-bottom: 20px;">
+        Zaprojektujemy menu, które idealnie wygląda na smartfonach. Przejrzysty układ sprawi, że klienci szybko znajdą swoją ulubioną kawę.
       </p>
 
       <div class="menu-grid">
+        <!-- Kolumna lewa -->
         <div>
           <div class="menu-category">Kawy Czarne i Mleczne</div>
           
           <div class="menu-item"><strong>Espresso</strong> <span>11 zł</span></div>
           <div class="menu-desc">Mała, czarna i mocna (35 ml)</div>
           
-          <div class="menu-item"><strong>Cappuccino</strong> <span>15 zł</span></div>
-          <div class="menu-desc">Espresso z dodatkiem spienionego mleka</div>
+          <div class="menu-item"><strong>Espresso macchiato</strong> <span>13 zł</span></div>
+          <div class="menu-desc">Espresso z plamką spienionego mleka (45 ml)</div>
 
-          <div class="menu-item"><strong>Kawa z dripa</strong> <span>18 zł</span></div>
-          <div class="menu-desc">Parzona metodą przelewową</div>
+          <div class="menu-item"><strong>Doppio</strong> <span>15 zł</span></div>
+          <div class="menu-desc">Podwójne espresso (70 ml)</div>
 
-          <div class="menu-item"><strong>Kawa mrożona</strong> <span>22 zł</span></div>
-          <div class="menu-desc">Z mlekiem, lodami waniliowymi i bitą śmietaną</div>
+          <div class="menu-item"><strong>Caffè americano</strong> <span>14 / 16 zł</span></div>
+          <div class="menu-desc">Przedłużone wrzątkiem espresso (160 / 250 ml)</div>
+
+          <div class="menu-item"><strong>Kawa czarna z dripa</strong> <span>18 zł</span></div>
+          <div class="menu-desc">Parzona metodą przelewową (160 ml)</div>
+
+          <div class="menu-item"><strong>Cappuccino</strong> <span>15 / 17 zł</span></div>
+          <div class="menu-desc">Espresso z dodatkiem spienionego mleka (160 / 250 ml)</div>
+
+          <div class="menu-item"><strong>Latte macchiato</strong> <span>18 zł</span></div>
+          <div class="menu-desc">Espresso z dużą ilością mleka i mlecznej pianki (250 ml)</div>
         </div>
 
+        <!-- Kolumna prawa -->
         <div>
-          <div class="menu-category">Coś do zjedzenia</div>
-          
-          <div class="menu-item"><strong>Tost</strong> <span>20 zł</span></div>
-          <div class="menu-desc">Chleb pszenno-żytni z serem i szynką</div>
-          
-          <div class="menu-item"><strong>Jajecznica</strong> <span>26 zł</span></div>
-          <div class="menu-desc">Z trzech jajek, na szynce, z pieczywem i masłem</div>
+          <div class="menu-item"><strong>Latte macchiato smakowe</strong> <span>21 zł</span></div>
+          <div class="menu-desc">Waniliowe, karmelowe, migdałowe (250 ml)</div>
 
-          <div class="menu-item"><strong>Zestaw śniadaniowy</strong> <span>34 zł</span></div>
-          <div class="menu-desc">Jajko sadzone, frankfurterki, wędlina, sery</div>
+          <div class="menu-item"><strong>Kawa biała</strong> <span>15 / 17 zł</span></div>
+          <div class="menu-desc">Klasyczna kawa czarna z dodatkiem mleka (160 / 250 ml)</div>
 
-          <div class="menu-category" style="margin-top: 30px;">Zimne Napoje</div>
-          <div class="menu-item"><strong>Piwa rzemieślnicze</strong> <span>od 15 zł</span></div>
+          <div class="menu-item"><strong>Kawa po wiedeńsku</strong> <span>19 zł</span></div>
+          <div class="menu-desc">Kawa czarna z bitą śmietaną i polewą czekoladową (140 ml)</div>
+
+          <div class="menu-item"><strong>Caffè Mocha</strong> <span>20 zł</span></div>
+          <div class="menu-desc">Połączenie kawy i gorącej czekolady z bitą śmietaną (140 ml)</div>
+
+          <div class="menu-item"><strong>Frappé</strong> <span>20 zł</span></div>
+          <div class="menu-desc">Zimna kawa z kawową pianką (+2 zł smakowe) (200 ml)</div>
+
+          <div class="menu-item"><strong>Shake kawowy</strong> <span>21 zł</span></div>
+          <div class="menu-desc">Zimna kawa zmiksowana z lodami waniliowymi (200 ml)</div>
+
+          <div class="menu-item"><strong>Kawa mrożona</strong> <span>22 zł</span></div>
+          <div class="menu-desc">Zimna kawa z mlekiem, lodami i bitą śmietaną (200 ml)</div>
+
+          <div class="menu-category" style="margin-top: 25px;">Herbaty</div>
+          <div class="menu-item"><strong>Herbaty liściaste</strong> <span>18 zł</span></div>
+          <div class="menu-desc">Dolewka w cenie. Różne rodzaje.</div>
+          <div class="menu-item"><strong>Herbaty japońskie</strong> <span>19 zł</span></div>
+          <div class="menu-desc">Genmaicha, Sencha (Matcha 20 zł)</div>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="page">
+  <!-- STRONA 3: MENU CZĘŚĆ 2 (JEDZENIE I NAPOJE) -->
+  <div class="page dark-mode">
     <div class="header">
-      <span>Wizualizacje</span>
+      <span>Podgląd Menu (2/2)</span>
       <span>Strona 03</span>
     </div>
     <div class="content">
-      <h1>Estetyka i Detale</h1>
-      <p>Wykorzystamy profesjonalne zdjęcia oddające Wasz wystrój. Zbudujemy układ, w którym goście od razu poczują zapach mielonej kawy i ciepło Waszego miejsca.</p>
+      <div class="menu-grid">
+        <!-- Kolumna lewa -->
+        <div>
+          <div class="menu-category">Śniadanie i nie tylko</div>
+          
+          <div class="menu-item"><strong>Tost</strong> <span>20 zł</span></div>
+          <div class="menu-desc">Chleb pszenno-żytni z serem żółtym, szynką lub mozzarellą, pomidorem i pastą</div>
+          
+          <div class="menu-item"><strong>Grillowana kanapka</strong> <span>20 zł</span></div>
+          <div class="menu-desc">Bułka graham z sałatą, pomidorem, mozzarellą lub szynką, z pastą</div>
+
+          <div class="menu-item"><strong>Jajecznica</strong> <span>26 zł</span></div>
+          <div class="menu-desc">Z 3 jajek, na szynce, ze szczypiorkiem. Podana z pieczywem i masłem</div>
+
+          <div class="menu-item"><strong>Zestaw śniadaniowy</strong> <span>34 zł</span></div>
+          <div class="menu-desc">Jajko sadzone, frankfurterki, wędlina, ser żółty, pomidorki, pieczywo</div>
+
+          <div class="menu-item"><strong>Zupa krem</strong> <span>18 zł</span></div>
+          <div class="menu-desc">Krem ze świeżych warzyw podany z grzankami</div>
+
+          <div class="menu-item"><strong>Frittata</strong> <span>28 zł</span></div>
+          <div class="menu-desc">Omlet jajeczny z warzywami</div>
+
+          <div class="menu-item"><strong>Owsianka</strong> <span>20 zł</span></div>
+          <div class="menu-desc">Na mleku, z miodem, masłem orzechowym, owocami i orzeszkami (+3 zł roślinne)</div>
+
+          <div class="menu-category" style="margin-top: 25px;">Soki i Koktajle</div>
+          <div class="menu-item"><strong>Soki świeżo wyciskane</strong> <span>20 zł</span></div>
+          <div class="menu-item"><strong>Zielone koktajle warzywne</strong> <span>21 zł</span></div>
+          <div class="menu-item"><strong>Smoothie owocowe</strong> <span>20 zł</span></div>
+          <div class="menu-item"><strong>Shake mleczny/owocowy</strong> <span>21 zł</span></div>
+        </div>
+
+        <!-- Kolumna prawa -->
+        <div>
+          <div class="menu-category">Piwa Regionalne</div>
+          <div class="menu-item"><strong>Piwa rzemieślnicze</strong> <span>od 15 zł</span></div>
+          <div class="menu-desc">Racibórz, Pinta, Gloger, Birbant i inne (0.5L)</div>
+          
+          <div class="menu-item"><strong>Cydr polski</strong> <span>15 zł</span></div>
+          <div class="menu-desc">Lekki, musujący cydr jabłkowy</div>
+
+          <div class="menu-item"><strong>Piwa importowane</strong> <span>od 14 zł</span></div>
+          <div class="menu-desc">Primátor, Krakonoš, Opat, Gambrinus (0.5L)</div>
+
+          <div class="menu-category" style="margin-top: 25px;">Wina (0.1L / 0.7L)</div>
+          <div class="menu-item"><strong>Chardonnay</strong> <span>18 / 80 zł</span></div>
+          <div class="menu-desc">Białe, wytrawne o aromacie melona i brzoskwini</div>
+
+          <div class="menu-item"><strong>Zinfandel</strong> <span>19 / 90 zł</span></div>
+          <div class="menu-desc">Różowe, półwytrawne o aromacie truskawek i melona</div>
+
+          <div class="menu-item"><strong>Merlot / Sangiovese</strong> <span>20 / 95 zł</span></div>
+          <div class="menu-desc">Rubinowoczerwone, półwytrawne z nutą cytrusów</div>
+
+          <div class="menu-item"><strong>Grzaniec galicyjski</strong> <span>20 zł</span></div>
+          <div class="menu-desc">Czerwone, słodkie i aromatyczne grzane wino</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STRONA 4: GALERIA -->
+  <div class="page">
+    <div class="header">
+      <span>Wizualizacje</span>
+      <span>Strona 04</span>
+    </div>
+    <div class="content" style="justify-content: center;">
+      <h1 style="color: var(--text-main);">Klimat i Detale</h1>
+      <p style="color: var(--text-main);">
+        Wykorzystamy profesjonalne zdjęcia oddające Wasz wystrój. Zbudujemy prosty i elegancki układ, w którym goście od razu poczują zapach mielonej kawy.
+      </p>
 
       <div class="gallery-grid">
         <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=600&q=80" class="gallery-img" alt="Klimat kawiarni">
@@ -262,15 +363,18 @@
     </div>
   </div>
 
+  <!-- STRONA 5: KONTAKT -->
   <div class="page">
     <div class="header">
       <span>Kontakt</span>
-      <span>Strona 04</span>
+      <span>Strona 05</span>
     </div>
-    <div class="content">
+    <div class="content" style="justify-content: center;">
       <div class="footer-box">
-        <h3>Bądźcie widoczni</h3>
-        <p style="margin: 0 auto;">Pokażcie pełen potencjał Magla w internecie. Dobra strona to inwestycja, która ułatwia życie Wam i Waszym gościom.</p>
+        <h3>Pokażcie pełen potencjał</h3>
+        <p style="margin: 0 auto; max-width: 400px;">
+          Dobra strona internetowa to inwestycja. Zwiększa widoczność w wyszukiwarce i buduje zaufanie nowych klientów, zanim jeszcze przekroczą próg kawiarni.
+        </p>
       </div>
 
       <div class="details-grid">
