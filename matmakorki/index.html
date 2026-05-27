@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Korepetycje z Matematyki – Dawid</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── RESET & TOKENS ─────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:      #0d1f3c;
+      --navy-mid:  #1a3460;
+      --navy-light:#2a4a82;
+      --gold:      #e8b84b;
+      --gold-pale: #f5dfa0;
+      --cream:     #f9f6f0;
+      --white:     #ffffff;
+      --text:      #1e2d45;
+      --muted:     #6b7fa3;
+      --border:    #dde4f0;
+
+      --font-head: 'Lora', Georgia, serif;
+      --font-body: 'DM Sans', 'Segoe UI', sans-serif;
+
+      --r-sm: 8px;
+      --r-md: 16px;
+      --r-lg: 28px;
+
+      --shadow-card: 0 4px 24px rgba(13,31,60,.10);
+      --shadow-lift: 0 8px 40px rgba(13,31,60,.18);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      color: var(--text);
+      background: var(--cream);
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+
+    /* ─── UTILS ──────────────────────────────────────────────── */
+    .container { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+    .tag {
+      display: inline-block;
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      background: rgba(232,184,75,.12);
+      padding: 5px 14px;
+      border-radius: 100px;
+      margin-bottom: 16px;
+    }
+    h2.section-title {
+      font-family: var(--font-head);
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+    .section-sub {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 540px;
+    }
+    .section-head { margin-bottom: 52px; }
+
+    /* ─── NAV ────────────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(13,31,60,.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      padding: 14px 0;
+      animation: fadeDown .5s ease both;
+    }
+    @keyframes fadeDown { from { opacity:0; transform:translateY(-14px); } to { opacity:1; transform:none; } }
+
+    nav .inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: var(--font-head);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--white);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--gold); }
+    .nav-links { display: flex; gap: 28px; list-style: none; }
+    .nav-links a {
+      color: rgba(255,255,255,.75);
+      text-decoration: none;
+      font-size: .9rem;
+      font-weight: 500;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-cta {
+      background: var(--gold);
+      color: var(--navy) !important;
+      padding: 8px 20px;
+      border-radius: 100px;
+      font-weight: 600 !important;
+      transition: background .2s, transform .15s !important;
+    }
+    .nav-cta:hover { background: var(--gold-pale) !important; transform: translateY(-1px); }
+
+    /* ─── HERO ───────────────────────────────────────────────── */
+    #hero {
+      min-height: 100vh;
+      background: var(--navy);
+      display: flex;
+      align-items: center;
+      padding: 120px 0 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Geometric background decoration */
+    #hero::before {
+      content: '';
+      position: absolute;
+      top: -120px; right: -120px;
+      width: 560px; height: 560px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(42,74,130,.6) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    #hero::after {
+      content: '';
+      position: absolute;
+      bottom: -80px; left: -80px;
+      width: 400px; height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(232,184,75,.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* Grid dots */
+    .hero-dots {
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,.06) 1px, transparent 1px);
+      background-size: 36px 36px;
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 60px;
+      align-items: center;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(232,184,75,.12);
+      border: 1px solid rgba(232,184,75,.3);
+      color: var(--gold);
+      font-size: .8rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border-radius: 100px;
+      margin-bottom: 28px;
+      animation: fadeUp .6s .1s ease both;
+    }
+    .hero-badge::before { content: '✦'; font-size: .65rem; }
+
+    #hero h1 {
+      font-family: var(--font-head);
+      font-size: clamp(2.2rem, 5.5vw, 3.8rem);
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.13;
+      margin-bottom: 22px;
+      animation: fadeUp .6s .2s ease both;
+    }
+    #hero h1 em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    .hero-desc {
+      font-size: 1.1rem;
+      color: rgba(255,255,255,.65);
+      max-width: 480px;
+      margin-bottom: 40px;
+      animation: fadeUp .6s .3s ease both;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      animation: fadeUp .6s .4s ease both;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--gold);
+      color: var(--navy);
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 14px 30px;
+      border-radius: 100px;
+      text-decoration: none;
+      transition: background .2s, transform .15s, box-shadow .2s;
+      box-shadow: 0 4px 20px rgba(232,184,75,.35);
+    }
+    .btn-primary:hover {
+      background: var(--gold-pale);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(232,184,75,.45);
+    }
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: rgba(255,255,255,.8);
+      font-weight: 500;
+      font-size: 1rem;
+      padding: 14px 28px;
+      border-radius: 100px;
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,.2);
+      transition: border-color .2s, color .2s, transform .15s;
+    }
+    .btn-secondary:hover {
+      border-color: rgba(255,255,255,.5);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    /* hero stat cards */
+    .hero-stats {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      animation: fadeUp .6s .5s ease both;
+    }
+    .stat-card {
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: var(--r-md);
+      padding: 20px 24px;
+      min-width: 180px;
+      backdrop-filter: blur(6px);
+      text-align: center;
+    }
+    .stat-card .num {
+      font-family: var(--font-head);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--gold);
+      line-height: 1;
+      display: block;
+      margin-bottom: 4px;
+    }
+    .stat-card .lbl {
+      font-size: .82rem;
+      color: rgba(255,255,255,.55);
+      letter-spacing: .04em;
+    }
+
+    @keyframes fadeUp { from { opacity:0; transform:translateY(22px); } to { opacity:1; transform:none; } }
+
+    /* ─── ABOUT ──────────────────────────────────────────────── */
+    #about {
+      padding: 100px 0;
+      background: var(--white);
+    }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+    .about-visual {
+      position: relative;
+    }
+    .about-card-main {
+      background: var(--navy);
+      border-radius: var(--r-lg);
+      padding: 48px 40px;
+      color: var(--white);
+      position: relative;
+      overflow: hidden;
+    }
+    .about-card-main::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 220px; height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(232,184,75,.15) 0%, transparent 70%);
+    }
+    .about-card-main .initial {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-head);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 20px;
+    }
+    .about-card-main h3 {
+      font-family: var(--font-head);
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .about-card-main .role {
+      color: var(--gold);
+      font-size: .9rem;
+      font-weight: 500;
+      margin-bottom: 18px;
+    }
+    .about-card-main p {
+      font-size: .92rem;
+      color: rgba(255,255,255,.7);
+      line-height: 1.7;
+    }
+
+    .about-badge-float {
+      position: absolute;
+      bottom: -20px; right: -20px;
+      background: var(--gold);
+      color: var(--navy);
+      font-weight: 700;
+      font-size: .85rem;
+      padding: 12px 18px;
+      border-radius: var(--r-md);
+      box-shadow: var(--shadow-lift);
+      line-height: 1.3;
+      text-align: center;
+    }
+
+    .about-text .intro-quote {
+      font-family: var(--font-head);
+      font-size: 1.35rem;
+      font-style: italic;
+      color: var(--navy);
+      line-height: 1.45;
+      margin-bottom: 24px;
+      padding-left: 20px;
+      border-left: 3px solid var(--gold);
+    }
+    .about-text p {
+      font-size: 1rem;
+      color: #4a5a75;
+      line-height: 1.75;
+      margin-bottom: 20px;
+    }
+
+    .feature-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 28px;
+    }
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: .95rem;
+      color: var(--text);
+    }
+    .feature-icon {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: rgba(232,184,75,.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: .85rem;
+      margin-top: 1px;
+    }
+
+    /* ─── PRICING ────────────────────────────────────────────── */
+    #pricing {
+      padding: 100px 0;
+      background: var(--cream);
+    }
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+    }
+    .pricing-card {
+      background: var(--white);
+      border-radius: var(--r-lg);
+      padding: 44px 36px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-card);
+      position: relative;
+      transition: transform .25s, box-shadow .25s;
+    }
+    .pricing-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lift);
+    }
+    .pricing-card.featured {
+      background: var(--navy);
+      border-color: transparent;
+      color: var(--white);
+    }
+    .pricing-card.featured .pc-label { color: rgba(255,255,255,.55); }
+    .pricing-card.featured .pc-desc { color: rgba(255,255,255,.65); }
+    .pricing-card.featured .pc-feature { color: rgba(255,255,255,.8); border-color: rgba(255,255,255,.1); }
+    .pricing-card.featured .pc-feature::before { background: rgba(232,184,75,.2); }
+
+    .pc-badge {
+      position: absolute;
+      top: -14px; right: 24px;
+      background: var(--gold);
+      color: var(--navy);
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 100px;
+    }
+    .pc-icon {
+      font-size: 2rem;
+      margin-bottom: 16px;
+    }
+    .pc-label {
+      font-size: .8rem;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .pc-title {
+      font-family: var(--font-head);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: inherit;
+      margin-bottom: 20px;
+    }
+    .pricing-card.featured .pc-title { color: var(--white); }
+    .pc-price {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+      margin-bottom: 8px;
+    }
+    .pc-amount {
+      font-family: var(--font-head);
+      font-size: 3.2rem;
+      font-weight: 700;
+      color: var(--gold);
+      line-height: 1;
+    }
+    .pc-unit {
+      font-size: .9rem;
+      color: var(--muted);
+    }
+    .pricing-card.featured .pc-unit { color: rgba(255,255,255,.5); }
+    .pc-desc {
+      font-size: .9rem;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+    .pc-features {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      border-top: 1px solid var(--border);
+    }
+    .pricing-card.featured .pc-features { border-color: rgba(255,255,255,.1); }
+    .pc-feature {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 0;
+      font-size: .92rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .pricing-card.featured .pc-feature { border-color: rgba(255,255,255,.1); }
+    .pc-feature::before {
+      content: '✓';
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: rgba(232,184,75,.12);
+      color: var(--gold);
+      font-size: .78rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* ─── KNOWLEDGE SAMPLE ───────────────────────────────────── */
+    #zadania {
+      padding: 100px 0;
+      background: var(--white);
+    }
+    .tasks-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+    .task-card {
+      border-radius: var(--r-lg);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-card);
+      transition: transform .25s, box-shadow .25s;
+    }
+    .task-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lift);
+    }
+    .task-header {
+      padding: 20px 28px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .task-card.junior .task-header { background: #eef3fb; }
+    .task-card.senior .task-header { background: var(--navy); }
+
+    .task-level-badge {
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 100px;
+    }
+    .task-card.junior .task-level-badge {
+      background: rgba(26,52,96,.12);
+      color: var(--navy-mid);
+    }
+    .task-card.senior .task-level-badge {
+      background: rgba(232,184,75,.2);
+      color: var(--gold);
+    }
+    .task-header-title {
+      font-weight: 600;
+      font-size: .95rem;
+    }
+    .task-card.junior .task-header-title { color: var(--navy); }
+    .task-card.senior .task-header-title { color: rgba(255,255,255,.85); }
+
+    .task-body { padding: 28px; background: var(--white); }
+    .task-question {
+      font-family: var(--font-head);
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--navy);
+      line-height: 1.5;
+      margin-bottom: 20px;
+      padding: 18px 20px;
+      background: var(--cream);
+      border-radius: var(--r-sm);
+      border-left: 3px solid var(--gold);
+    }
+    .task-answer-block {
+      background: #f0f6ff;
+      border-radius: var(--r-md);
+      padding: 20px 22px;
+    }
+    .task-answer-label {
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--navy-light);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .task-answer-label::before { content: '💡'; }
+    .task-answer {
+      font-size: .95rem;
+      color: #3a4f70;
+      line-height: 1.7;
+    }
+    .task-answer strong { color: var(--navy); }
+    .task-result {
+      display: inline-block;
+      margin-top: 12px;
+      font-size: .88rem;
+      font-weight: 700;
+      color: var(--white);
+      background: var(--navy);
+      padding: 6px 16px;
+      border-radius: 100px;
+    }
+
+    /* ─── CONTACT ────────────────────────────────────────────── */
+    #kontakt {
+      padding: 100px 0;
+      background: var(--navy);
+      position: relative;
+      overflow: hidden;
+    }
+    #kontakt::before {
+      content: '';
+      position: absolute;
+      top: -200px; right: -200px;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(42,74,130,.5) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    #kontakt::after {
+      content: '';
+      position: absolute;
+      bottom: -150px; left: -100px;
+      width: 400px; height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(232,184,75,.07) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .contact-inner {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+    .contact-text h2 {
+      font-family: var(--font-head);
+      font-size: clamp(1.9rem, 4vw, 2.9rem);
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.2;
+      margin-bottom: 18px;
+    }
+    .contact-text h2 em {
+      font-style: italic;
+      color: var(--gold);
+    }
+    .contact-text p {
+      color: rgba(255,255,255,.6);
+      font-size: 1rem;
+      line-height: 1.7;
+      margin-bottom: 36px;
+      max-width: 420px;
+    }
+    .contact-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .contact-chip {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.1);
+      color: rgba(255,255,255,.75);
+      font-size: .85rem;
+      padding: 8px 16px;
+      border-radius: 100px;
+    }
+
+    .contact-card {
+      background: var(--white);
+      border-radius: var(--r-lg);
+      padding: 44px 40px;
+      box-shadow: var(--shadow-lift);
+    }
+    .contact-card .label {
+      font-size: .8rem;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .phone-display {
+      font-family: var(--font-head);
+      font-size: 2.1rem;
+      font-weight: 700;
+      color: var(--navy);
+      letter-spacing: .02em;
+      margin-bottom: 6px;
+    }
+    .contact-card .sub {
+      font-size: .87rem;
+      color: var(--muted);
+      margin-bottom: 32px;
+    }
+
+    .contact-divider {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 28px 0;
+      color: var(--muted);
+      font-size: .85rem;
+    }
+    .contact-divider::before,
+    .contact-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .btn-call {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      background: var(--navy);
+      color: var(--white);
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 16px;
+      border-radius: var(--r-md);
+      text-decoration: none;
+      transition: background .2s, transform .15s;
+      margin-bottom: 14px;
+    }
+    .btn-call:hover { background: var(--navy-light); transform: translateY(-2px); }
+    .btn-call-alt {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      background: #25D366;
+      color: var(--white);
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 16px;
+      border-radius: var(--r-md);
+      text-decoration: none;
+      transition: background .2s, transform .15s;
+    }
+    .btn-call-alt:hover { background: #1fba57; transform: translateY(-2px); }
+
+    .contact-note {
+      text-align: center;
+      margin-top: 16px;
+      font-size: .82rem;
+      color: var(--muted);
+    }
+
+    /* ─── FOOTER ─────────────────────────────────────────────── */
+    footer {
+      background: #07121f;
+      padding: 28px 0;
+      text-align: center;
+    }
+    footer p {
+      font-size: .83rem;
+      color: rgba(255,255,255,.3);
+    }
+    footer a {
+      color: rgba(255,255,255,.45);
+      text-decoration: none;
+    }
+
+    /* ─── RESPONSIVE ─────────────────────────────────────────── */
+    @media (max-width: 860px) {
+      .hero-inner      { grid-template-columns: 1fr; }
+      .hero-stats      { flex-direction: row; flex-wrap: wrap; justify-content: flex-start; }
+      .about-grid      { grid-template-columns: 1fr; }
+      .pricing-grid    { grid-template-columns: 1fr; }
+      .tasks-grid      { grid-template-columns: 1fr; }
+      .contact-inner   { grid-template-columns: 1fr; gap: 44px; }
+      .nav-links       { display: none; }
+    }
+
+    /* ─── SCROLL-REVEAL ──────────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="container inner">
+      <a href="#hero" class="nav-logo">Dawid<span>.</span>Matematyka</a>
+      <ul class="nav-links">
+        <li><a href="#about">O mnie</a></li>
+        <li><a href="#pricing">Cennik</a></li>
+        <li><a href="#zadania">Przykłady</a></li>
+        <li><a href="#kontakt" class="nav-cta">Zadzwoń teraz</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-dots"></div>
+    <div class="container">
+      <div class="hero-inner">
+        <div class="hero-content">
+          <div class="hero-badge">Korepetycje z matematyki · Online & Stacjonarnie</div>
+          <h1>
+            Matematyka,<br>którą Twoje dziecko<br>
+            <em>naprawdę zrozumie.</em>
+          </h1>
+          <p class="hero-desc">
+            Koniec ze stresem przed sprawdzianami. Tłumaczę prosto, cierpliwie
+            i tak, żeby uczeń nie tylko zapamiętał – ale naprawdę pojął.
+          </p>
+          <div class="hero-actions">
+            <a href="#kontakt" class="btn-primary">Umów lekcję próbną →</a>
+            <a href="#about" class="btn-secondary">Poznaj mnie</a>
+          </div>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-card">
+            <span class="num">kl. 1–8</span>
+            <span class="lbl">Szkoła podstawowa</span>
+          </div>
+          <div class="stat-card">
+            <span class="num">Online</span>
+            <span class="lbl">Oraz Polkowice & Głogów</span>
+          </div>
+          <div class="stat-card">
+            <span class="num">100%</span>
+            <span class="lbl">Indywidualne podejście</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-visual reveal">
+          <div class="about-card-main">
+            <div class="initial">D</div>
+            <h3>Dawid</h3>
+            <div class="role">Korepetytor Matematyki · Student</div>
+            <p>
+              Matematykę traktuję jak język – można się go nauczyć, gdy ktoś
+              cierpliwie pokazuje słowa i zasady. Każdą lekcję dostosowuję do
+              tempa i stylu myślenia konkretnego ucznia.
+            </p>
+          </div>
+          <div class="about-badge-float">
+            📍 Polkowice<br>& Głogów
+          </div>
+        </div>
+
+        <div class="about-text reveal">
+          <div class="tag">O mnie</div>
+          <h2 class="section-title">Matematyka z ludzką twarzą</h2>
+          <p class="intro-quote">
+            „Każde dziecko jest zdolne do matematyki. Potrzebuje tylko
+            kogoś, kto wytłumaczy ją we właściwy sposób."
+          </p>
+          <p>
+            Mam na imię Dawid. Jestem studentem z pasją do matematyki
+            i jeszcze większą pasją do tłumaczenia jej innym. Prowadzę
+            zajęcia zarówno <strong>online</strong>, jak i stacjonarnie
+            na terenie <strong>Polkowic i Głogowa</strong>.
+          </p>
+          <p>
+            Nie wierzę w zakuwanie wzorów. Wierzę w zrozumienie. Zanim
+            uczeń przejdzie do zadań, upewniam się, że pojął ideę stojącą
+            za każdym zagadnieniem – bo tylko to daje trwałe wyniki.
+          </p>
+
+          <div class="feature-list">
+            <div class="feature-item">
+              <div class="feature-icon">🎯</div>
+              <span>Program dopasowany do konkretnego ucznia i klasy</span>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">🗣️</div>
+              <span>Proste, obrazowe wyjaśnienia – bez zbędnego żargonu</span>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">💬</div>
+              <span>Bezpieczna atmosfera – żadne pytanie nie jest głupie</span>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">📱</div>
+              <span>Lekcje online lub na miejscu w Polkowicach / Głogowie</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section id="pricing">
+    <div class="container">
+      <div class="section-head reveal">
+        <div class="tag">Cennik</div>
+        <h2 class="section-title">Przejrzyste ceny,<br>bez ukrytych opłat</h2>
+        <p class="section-sub">Każda lekcja to pełna godzina zegarowa. Pierwszy kontakt i wstępna rozmowa – zawsze bezpłatnie.</p>
+      </div>
+
+      <div class="pricing-grid">
+        <div class="pricing-card reveal">
+          <div class="pc-icon">🔢</div>
+          <div class="pc-label">Klasy 1–4</div>
+          <div class="pc-title">Szkoła podstawowa<br>poziom I</div>
+          <div class="pc-price">
+            <span class="pc-amount">35</span>
+            <span class="pc-unit">zł / godz.</span>
+          </div>
+          <p class="pc-desc">Działania, ułamki, geometria – budujemy fundament</p>
+          <div class="pc-features">
+            <div class="pc-feature">Dodawanie, odejmowanie, mnożenie, dzielenie</div>
+            <div class="pc-feature">Ułamki zwykłe i dziesiętne</div>
+            <div class="pc-feature">Podstawy geometrii płaskiej</div>
+            <div class="pc-feature">Zadania tekstowe i logiczne</div>
+            <div class="pc-feature">Przygotowanie do sprawdzianów</div>
+          </div>
+        </div>
+
+        <div class="pricing-card featured reveal">
+          <div class="pc-badge">Najpopularniejsze</div>
+          <div class="pc-icon">📐</div>
+          <div class="pc-label">Klasy 5–8</div>
+          <div class="pc-title">Szkoła podstawowa<br>poziom II</div>
+          <div class="pc-price">
+            <span class="pc-amount">45</span>
+            <span class="pc-unit">zł / godz.</span>
+          </div>
+          <p class="pc-desc">Algebra, równania, funkcje – przed egzaminem ósmoklasisty</p>
+          <div class="pc-features">
+            <div class="pc-feature">Równania i nierówności</div>
+            <div class="pc-feature">Procenty, proporcje, skala</div>
+            <div class="pc-feature">Układy równań</div>
+            <div class="pc-feature">Geometria przestrzenna i twierdzenie Pitagorasa</div>
+            <div class="pc-feature">Intensywne przygotowanie do egzaminu</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- KNOWLEDGE SAMPLE -->
+  <section id="zadania">
+    <div class="container">
+      <div class="section-head reveal">
+        <div class="tag">Próbka wiedzy</div>
+        <h2 class="section-title">Tak tłumaczę matematykę</h2>
+        <p class="section-sub">Dwa przykładowe zadania – jedno dla każdego poziomu. Oceń sam, czy potrafię wyjaśniać obrazowo.</p>
+      </div>
+
+      <div class="tasks-grid">
+
+        <!-- JUNIOR TASK -->
+        <div class="task-card junior reveal">
+          <div class="task-header">
+            <span class="task-level-badge">Klasy 1–4</span>
+            <span class="task-header-title">Zadanie z ułamkami</span>
+          </div>
+          <div class="task-body">
+            <div class="task-question">
+              Mama upiekła pizzę i podzieliła ją na 8 równych kawałków.
+              Ania zjadła 3 kawałki, a Kasia 2 kawałki. Jaką część pizzy
+              zjadły razem? Ile kawałków zostało?
+            </div>
+            <div class="task-answer-block">
+              <div class="task-answer-label">Jak to tłumaczę uczniowi</div>
+              <div class="task-answer">
+                Wyobraź sobie, że pizza to koło podzielone na <strong>8 równych trójkątów</strong>.
+                Każdy trójkąt to <strong>⅛ (jedna ósma)</strong> całej pizzy.<br><br>
+                Ania wzięła 3 trójkąty → <strong>3/8</strong><br>
+                Kasia wzięła 2 trójkąty → <strong>2/8</strong><br><br>
+                Razem: 3 + 2 = <strong>5 kawałków</strong>, czyli <strong>5/8 pizzy</strong>.
+                Zostało 8 − 5 = <strong>3 kawałki</strong>.
+                <br>
+                <span class="task-result">✓ Odpowiedź: 5/8 pizzy, zostały 3 kawałki</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SENIOR TASK -->
+        <div class="task-card senior reveal">
+          <div class="task-header">
+            <span class="task-level-badge">Klasy 5–8</span>
+            <span class="task-header-title">Zadanie z procentami</span>
+          </div>
+          <div class="task-body">
+            <div class="task-question">
+              W sklepie kurtka kosztuje 200 zł. W środę jest na nią
+              rabat 20%, a w czwartek sklep robi dodatkową obniżkę
+              o kolejne 10% od ceny środowej. Ile zapłacisz w czwartek?
+              Czy to taniej niż jeden rabat 30%?
+            </div>
+            <div class="task-answer-block">
+              <div class="task-answer-label">Jak to tłumaczę uczniowi</div>
+              <div class="task-answer">
+                Procent to po prostu <strong>część ze stu</strong>. 20% z 200 zł
+                to 20 części ze 100, czyli 2 × 20 = <strong>40 zł rabatu</strong>.
+                Po środzie płacisz: 200 − 40 = <strong>160 zł</strong>.<br><br>
+                Czwartek: 10% z <strong>160 zł</strong> = 16 zł. Płacisz: 160 − 16 = <strong>144 zł</strong>.<br><br>
+                Jeden rabat 30%: 30% z 200 zł = 60 zł → zapłaciłbyś 140 zł.
+                <strong>Jeden rabat 30% jest korzystniejszy!</strong> – sklep
+                liczy dwa razy od coraz mniejszej kwoty, a nie od oryginału.
+                <span class="task-result">✓ Czwartek: 144 zł vs 30% rabat: 140 zł</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="kontakt">
+    <div class="container">
+      <div class="contact-inner">
+        <div class="contact-text reveal">
+          <div class="tag">Kontakt</div>
+          <h2>Zrób pierwszy krok.<br><em>Razem to ogarniem.</em></h2>
+          <p>
+            Napisz lub zadzwoń – omówimy potrzeby Twojego dziecka,
+            wybierzemy termin i przeprowadzimy bezpłatną lekcję
+            zapoznawczą. Bez zobowiązań.
+          </p>
+          <div class="contact-chips">
+            <div class="contact-chip">📍 Polkowice</div>
+            <div class="contact-chip">📍 Głogów</div>
+            <div class="contact-chip">💻 Online (cała Polska)</div>
+            <div class="contact-chip">⏰ Pon–Sob, elastyczne godziny</div>
+          </div>
+        </div>
+
+        <div class="contact-card reveal">
+          <div class="label">Zadzwoń lub napisz na WhatsApp</div>
+          <div class="phone-display">792 198 691</div>
+          <p class="sub">Dawid – korepetytor matematyki</p>
+
+          <a href="tel:792198691" class="btn-call">
+            📞 Zadzwoń teraz
+          </a>
+          <a href="https://wa.me/48792198691" class="btn-call-alt" target="_blank" rel="noopener">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            Napisz na WhatsApp
+          </a>
+          <p class="contact-note">Zazwyczaj odpisuję w ciągu kilku godzin 🙂</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <p>© 2025 Dawid – Korepetycje z Matematyki · Polkowice & Głogów &amp; Online</p>
+    </div>
+  </footer>
+
+  <script>
+    // Scroll reveal
+    const revealEls = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          // stagger siblings
+          const siblings = [...e.target.parentElement.querySelectorAll('.reveal')];
+          const idx = siblings.indexOf(e.target);
+          e.target.style.transitionDelay = (idx * 0.1) + 's';
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    revealEls.forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
