@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>5 Sekund | Wersja Turniejowa 18+</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', sans-serif; user-select: none; }
+        body { background-color: #0a050d; color: #fff; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+        #app { width: 100%; max-width: 500px; height: 100%; display: flex; flex-direction: column; background: radial-gradient(circle at top, #1a0b2e 0%, #0a050d 100%); position: relative; padding: 20px; overflow-y: auto; }
+        
+        h1, h2 { text-align: center; color: #ff2a5f; margin-bottom: 20px; }
+        .hidden { display: none !important; }
+        
+        /* EKRAN STARTOWY */
+        .setup-group { margin-bottom: 20px; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; }
+        .setup-group label { display: block; margin-bottom: 10px; font-weight: bold; color: #a78bfa; }
+        .input-row { display: flex; gap: 10px; margin-bottom: 10px; }
+        input[type="text"], input[type="number"] { flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #7928ca; background: #000; color: #fff; font-size: 1rem; outline: none; }
+        input[type="range"] { width: 100%; accent-color: #ff2a5f; }
+        .val-display { text-align: center; font-size: 1.2rem; font-weight: bold; margin-top: 10px; color: #fff; }
+        
+        .btn { width: 100%; padding: 15px; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: bold; text-transform: uppercase; cursor: pointer; transition: 0.2s; color: #fff; margin-bottom: 10px; }
+        .btn:active { transform: scale(0.95); }
+        .btn-primary { background: linear-gradient(135deg, #7928ca, #ff2a5f); }
+        .btn-secondary { background: #374151; }
+        .btn-player { background: #059669; font-size: 0.9rem; padding: 10px; }
+        
+        #player-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+        .player-tag { background: #ff2a5f; padding: 5px 12px; border-radius: 20px; font-size: 0.9rem; font-weight: bold; }
+
+        /* GRA */
+        #timer-text { font-size: 6rem; font-weight: 900; text-align: center; color: #ff2a5f; text-shadow: 0 0 20px rgba(255, 42, 95, 0.5); margin: 20px 0; }
+        .progress-bg { width: 100%; height: 10px; background: #22123b; border-radius: 5px; overflow: hidden; margin-bottom: 30px; }
+        #progress-bar { width: 100%; height: 100%; background: linear-gradient(90deg, #ff2a5f, #7928ca); transform-origin: left; }
+        
+        #question-box { flex: 1; display: flex; justify-content: center; align-items: center; text-align: center; min-height: 150px; font-size: 1.8rem; font-weight: 600; padding: 20px; background: rgba(255,255,255,0.03); border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
+        
+        .score-board { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .score-item { background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px; text-align: center; border: 1px solid #7928ca; }
+        .score-item.active { border-color: #ff2a5f; background: rgba(255, 42, 95, 0.2); }
+        .score-name { font-size: 0.9rem; color: #a78bfa; }
+        .score-pts { font-size: 1.5rem; font-weight: bold; }
+
+        #award-section { display: none; background: #111; padding: 15px; border-radius: 10px; border: 1px solid #333; margin-bottom: 20px; }
+        #award-section h3 { text-align: center; font-size: 1rem; color: #a78bfa; margin-bottom: 10px; }
+        .award-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+        /* WYNIKI */
+        #winner-text { font-size: 3rem; text-align: center; color: #10b981; margin: 40px 0; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <div id="screen-setup">
+        <h1>Ustawienia Gry</h1>
+        
+        <div class="setup-group">
+            <label>Dodaj graczy (min. 2)</label>
+            <div class="input-row">
+                <input type="text" id="player-input" placeholder="Imię gracza...">
+                <button class="btn btn-secondary" style="width: auto; margin: 0;" onclick="addPlayer()">Dodaj</button>
+            </div>
+            <div id="player-list"></div>
+        </div>
+
+        <div class="setup-group">
+            <label>Czas na odpowiedź: <span id="time-val">5</span> sek</label>
+            <input type="range" id="time-setting" min="5" max="10" value="5" oninput="updateSettings()">
+        </div>
+
+        <div class="setup-group">
+            <label>Gramy do: <span id="pts-val">10</span> punktów</label>
+            <input type="range" id="pts-setting" min="3" max="20" value="10" oninput="updateSettings()">
+        </div>
+
+        <button class="btn btn-primary" onclick="initGame()">Rozpocznij Grę</button>
+    </div>
+
+    <div id="screen-game" class="hidden">
+        <div class="score-board" id="in-game-scores"></div>
+        
+        <div id="timer-text">5</div>
+        <div class="progress-bg"><div id="progress-bar"></div></div>
+        
+        <div id="question-box">Kliknij losuj, aby wylosować pierwsze pytanie.</div>
+        
+        <div id="award-section">
+            <h3>Kto odpowiedział poprawnie?</h3>
+            <div class="award-grid" id="award-buttons"></div>
+            <button class="btn btn-secondary" style="margin-top:10px;" onclick="nobodyScored()">Nikt (Brak punktu)</button>
+        </div>
+
+        <button class="btn btn-primary" id="btn-draw" onclick="drawQuestion()">Losuj pytanie</button>
+        <button class="btn btn-secondary hidden" id="btn-start" onclick="startTimer()">Start Czasu</button>
+    </div>
+
+    <div id="screen-winner" class="hidden">
+        <h2>Koniec Gry!</h2>
+        <div id="winner-text">Zwycięzca</div>
+        <button class="btn btn-primary" onclick="location.reload()">Zagraj ponownie</button>
+    </div>
+</div>
+
+<script>
+    // BAZA DOKŁADNIE 100 PYTAŃ 18+
+    const questions = [
+        "Wymień 3 pozycje seksualne, które chcesz wypróbować.",
+        "Wymień 3 miejsca poza łóżkiem na szybki numer.",
+        "Wymień 3 najgorsze teksty na podryw, jakie znasz.",
+        "Wymień 3 rzeczy, które podniecają Cię w partnerze.",
+        "Wymień 3 wady posiadania kochanka.",
+        "Wymień 3 powody, dla których udaje się orgazm.",
+        "Wymień 3 części ciała, które lubisz mieć dotykane.",
+        "Wymień 3 aplikacje randkowe.",
+        "Wymień 3 powody, by uprawiać seks na pierwszej randce.",
+        "Wymień 3 rzeczy, które powinny być w sypialni każdego faceta.",
+        "Wymień 3 powody, dla których ludzie oglądają porno.",
+        "Wymień 3 gadżety erotyczne, o których słyszałeś.",
+        "Wymień 3 powody, żeby zerwać z kimś przez SMS.",
+        "Wymień 3 znane osoby, z którymi pójdziesz do łóżka.",
+        "Wymień 3 rzeczy, które robisz tuż po udanym seksie.",
+        "Wymień 3 miejsca w samochodzie dobre na zbliżenie.",
+        "Wymień 3 sygnały, że ktoś chce z Tobą pójść do łóżka.",
+        "Wymień 3 rzeczy, które można robić z kostkami lodu w sypialni.",
+        "Wymień 3 rodzaje bielizny erotycznej.",
+        "Wymień 3 błędy, które faceci robią podczas gry wstępnej.",
+        "Wymień 3 powody, by uprawiać seks w miejscu publicznym.",
+        "Wymień 3 rzeczy, które zawsze masz pod ręką przy łóżku.",
+        "Wymień 3 powody, by kochać się rano.",
+        "Wymień 3 rzeczy, których nigdy nie zrobisz w łóżku.",
+        "Wymień 3 najdziwniejsze miejsca, w których byłeś nago.",
+        "Wymień 3 fantazje erotyczne, które są popularne.",
+        "Wymień 3 powody, dla których kobiety kochają bad boyów.",
+        "Wymień 3 teksty, które mówisz w trakcie zbliżenia.",
+        "Wymień 3 powody do zazdrości o partnera.",
+        "Wymień 3 rzeczy, które natychmiast psują nastrój w łóżku.",
+        "Wymień 3 piosenki idealne do uprawiania seksu.",
+        "Wymień 3 powody, dla których ludzie zdradzają.",
+        "Wymień 3 rzeczy, które robisz podczas rozbierania partnera.",
+        "Wymień 3 miejsca, gdzie można schować prezerwatywę.",
+        "Wymień 3 zalety spania bez ubrań.",
+        "Wymień 3 błędy, które kobiety robią w łóżku.",
+        "Wymień 3 sytuacje, w których pomyślałeś o kimś nago.",
+        "Wymień 3 sposoby na podkręcenie atmosfery w związku.",
+        "Wymień 3 zawody, które kojarzą się z erotyką.",
+        "Wymień 3 rzeczy, które można robić z bitą śmietaną.",
+        "Wymień 3 miejsca w Polkowicach dobre na randkę.",
+        "Wymień 3 powody, żeby spróbować trójkąta.",
+        "Wymień 3 sygnały, że randka będzie miała ciąg dalszy.",
+        "Wymień 3 rzeczy, które ukrywasz w swojej historii przeglądarki.",
+        "Wymień 3 najseksowniejsze cechy charakteru.",
+        "Wymień 3 powody, by kochać się pod prysznicem.",
+        "Wymień 3 powody, dla których warto mieć przyjaciela do łóżka.",
+        "Wymień 3 rzeczy, które mówisz, gdy ktoś nakryje Cię nago.",
+        "Wymień 3 wymówki, gdy nie masz ochoty na seks.",
+        "Wymień 3 najgłupsze miejsca na tatuaż erotyczny.",
+        "Wymień 3 powody, dla których rozmiar ma znaczenie.",
+        "Wymień 3 powody, dla których rozmiar NIE ma znaczenia.",
+        "Wymień 3 rzeczy, które zabierasz na weekend w hotelu.",
+        "Wymień 3 cechy idealnego kochanka.",
+        "Wymień 3 powody, by wysłać komuś pikantne zdjęcie.",
+        "Wymień 3 reakcje na nieudany pierwszy raz.",
+        "Wymień 3 rzeczy, które kojarzą Ci się z filmem 50 twarzy Greya.",
+        "Wymień 3 miejsca, w których całowanie daje największą przyjemność.",
+        "Wymień 3 powody, dla których warto uprawiać seks w lesie.",
+        "Wymień 3 rzeczy, które kupisz w sex shopie na pierwszą wizytę.",
+        "Wymień 3 sposoby na zrobienie dobrego wrażenia na rano.",
+        "Wymień 3 rzeczy, które myślisz, gdy widzisz atrakcyjną osobę.",
+        "Wymień 3 kłamstwa, które mówi się przed pójściem do łóżka.",
+        "Wymień 3 sposoby na opóźnienie finału.",
+        "Wymień 3 powody, by kochać się na plaży.",
+        "Wymień 3 błędy podczas robienia masażu erotycznego.",
+        "Wymień 3 rzeczy, które robisz, gdy partner za długo śpi.",
+        "Wymień 3 powody, by uprawiać seks w namiocie.",
+        "Wymień 3 fantazje związane z mundurem.",
+        "Wymień 3 rzeczy, które przeszkadzają Ci u partnera podczas snu.",
+        "Wymień 3 powody, dla których seks na zgodę jest najlepszy.",
+        "Wymień 3 rzeczy, które kojarzą się z wieczorem kawalerskim.",
+        "Wymień 3 najdziwniejsze prośby w łóżku, o jakich słyszałeś.",
+        "Wymień 3 rzeczy, które kojarzą się z udaną imprezą.",
+        "Wymień 3 powody, by urwać się z kiepskiej randki.",
+        "Wymień 3 korzyści z bycia singlem.",
+        "Wymień 3 rzeczy, które robisz, gdy zostajesz sam w domu.",
+        "Wymień 3 powody, by pójść do klubu ze striptizem.",
+        "Wymień 3 najseksowniejsze elementy kobiecego ubioru.",
+        "Wymień 3 najseksowniejsze elementy męskiego ubioru.",
+        "Wymień 3 rzeczy, których nie wypada robić po alkoholu.",
+        "Wymień 3 powody, by uprawiać seks bez zobowiązań.",
+        "Wymień 3 najdziwniejsze prezenty od eks.",
+        "Wymień 3 sposoby na szybkie rozładowanie napięcia.",
+        "Wymień 3 rzeczy, które myślisz, gdy pęknie prezerwatywa.",
+        "Wymień 3 powody, by oglądać erotykę razem z partnerem.",
+        "Wymień 3 najgorsze miejsca na randkę w ciemno.",
+        "Wymień 3 powody, dla których warto uprawiać seks w windzie.",
+        "Wymień 3 zapachy, które działają na Ciebie jak afrodyzjak.",
+        "Wymień 3 rzeczy, które kojarzą się z nocą poślubną.",
+        "Wymień 3 powody, żeby nie wracać do swojego eks.",
+        "Wymień 3 rzeczy, które robisz przed wyjściem do klubu.",
+        "Wymień 3 najgłupsze powody do zazdrości.",
+        "Wymień 3 cechy, które dyskwalifikują drugą osobę na starcie.",
+        "Wymień 3 powody, by zerwać po miesiącu.",
+        "Wymień 3 najdziwniejsze komplementy po seksie.",
+        "Wymień 3 rzeczy, które kojarzą się z namiętnością.",
+        "Wymień 3 powody, dla których warto całować się z opaską na oczach.",
+        "Wymień 3 rzeczy, które robisz podczas szybkiego numeru.",
+        "Wymień 3 powody, dla których ta gra ujawni Wasze sekrety."const dodatkowePytania = [
+    "Wymień 3 rzeczy, które zrobiłbyś za milion złotych, ale wstydzisz się przyznać.",
+    "Wymień 3 powody, by przeszukać szafkę nocną u znajomego w domu.",
+    "Wymień 3 najdziwniejsze rzeczy, jakie kiedykolwiek znalazłeś pod łóżkiem.",
+    "Wymień 3 sytuacje, w których udawałeś kogoś bogatszego niż jesteś.",
+    "Wymień 3 najgorsze momenty na puszczenie bąka w towarzystwie.",
+    "Wymień 3 rzeczy, które robisz, gdy partner wychodzi z domu na cały weekend.",
+    "Wymień 3 najgłupsze rzeczy, jakie zrobiłeś pod wpływem alkoholu na wakacjach.",
+    "Wymień 3 powody, by zerwać zaręczyny tydzień przed ślubem.",
+    "Wymień 3 cechy wyglądu, które natychmiast skreślają drugą osobę.",
+    "Wymień 3 rzeczy, które trzymasz pod materacem lub głęboko w szafie.",
+    "Wymień 3 powody, by ukrywać swój związek przed znajomymi.",
+    "Wymień 3 sytuacje, w których podglądałeś kogoś przez przypadek.",
+    "Wymień 3 najgorsze nawyki higieniczne u potencjalnego partnera.",
+    "Wymień 3 rzeczy, które kupiłeś pod wpływem impulsu i wstydzisz się ich.",
+    "Wymień 3 powody, dla których warto mieć układ bez zobowiązań.",
+    "Wymień 3 sytuacje, w których skłamałeś lekarzowi prosto w oczy.",
+    "Wymień 3 rzeczy, które myślisz, gdy widzisz swojego eks z nową osobą.",
+    "Wymień 3 powody, by założyć fikcyjne konto na aplikacji randkowej.",
+    "Wymień 3 najgorsze teksty, jakie usłyszałeś rano po imprezie.",
+    "Wymień 3 rzeczy, które robisz, gdy zatrzaśniesz się nago poza domem.",
+    "Wymień 3 powody, dla których rozmiar portfela partnera ma znaczenie.",
+    "Wymień 3 fetish-rzeczy, które uważasz za totalnie obrzydliwe.",
+    "Wymień 3 sytuacje, w których żałowałeś, że nie zostałeś singlem.",
+    "Wymień 3 powody, by sprawdzać telefon partnera, gdy ten bierze prysznic.",
+    "Wymień 3 najdziwniejsze miejsca, z których zostałeś kiedyś wyrzucony.",
+    "Wymień 3 rzeczy, które zrobiłbyś, gdybyś na jeden dzień zmienił płeć.",
+    "Wymień 3 kłamstwa, które mówisz szefowi, żeby dostać wolne na kaca.",
+    "Wymień 3 najgorsze wpadki łóżkowe, o jakich tylko słyszałeś.",
+    "Wymień 3 powody, dla których warto zatańczyć na stole na imprezie.",
+    "Wymień 3 rzeczy, których nigdy nie powiesz swojej drugiej połówce.",
+    "Wymień 3 sytuacje, kiedy udawałeś orgazm, żeby po prostu pójść spać.",
+    "Wymień 3 najdziwniejsze zachowania Twojego eks, które Cię denerwowały.",
+    "Wymień 3 powody, by pójść na plażę nudystów.",
+    "Wymień 3 rzeczy, które myślisz, gdy widzisz swoich rodziców okazujących czułość.",
+    "Wymień 3 powody, by zatańczyć erotycznie dla swojej paczki znajomych.",
+    "Wymień 3 rzeczy, które zrobiłeś w pracy, a za które grozi dyscyplinarka.",
+    "Wymień 3 najgłupsze tatuaże, jakie widziałeś u ludzi na plaży.",
+    "Wymień 3 powody, by nie zapraszać partnera na imprezę firmową.",
+    "Wymień 3 rzeczy, które zmieniłbyś w ciele osoby siedzącej po Twojej prawej.",
+    "Wymień 3 powody, by umówić się z kimś tylko dla darmowej kolacji.",
+    "Wymień 3 sytuacje, w których uciekałeś przez okno lub tylne drzwi.",
+    "Wymień 3 najseksowniejsze zawody damskie według facetów.",
+    "Wymień 3 najseksowniejsze zawody męskie według kobiet.",
+    "Wymień 3 rzeczy, które robisz, gdy prezerwatywa zostanie w środku.",
+    "Wymień 3 powody, by uprawiać seks na masce cudzego samochodu.",
+    "Wymień 3 najgłupsze rzeczy, na które wydałeś pieniądze po pijaku.",
+    "Wymień 3 sytuacje, w których czułeś zazdrość o przyjaciela.",
+    "Wymień 3 rzeczy, o które najczęściej pytasz na pierwszej randce.",
+    "Wymień 3 powody, dla których miłość od pierwszego wejrzenia to bzdura.",
+    "Wymień 3 rzeczy, które robisz, gdy ktoś obcy zacznie Cię masować.",
+    "Wymień 3 najgorsze miejsca na pierwszy pocałunek.",
+    "Wymień 3 sytuacje, w których pomyślałeś o zdradzie, ale odpuściśłeś.",
+    "Wymień 3 rzeczy, które nosisz w portfelu na czarną godzinę.",
+    "Wymień 3 powody, by kochać się przy zapalonym świetle i lustrze.",
+    "Wymień 3 rzeczy, które denerwują Cię podczas gry wstępnej.",
+    "Wymień 3 powody, by spakować walizki i wyjechać bez słowa.",
+    "Wymień 3 najdziwniejsze rzeczy, jakie piłeś na imprezach.",
+    "Wymień 3 powody, by oglądać porno z fabułą.",
+    "Wymień 3 rzeczy, które robisz, gdy ktoś proponuje Ci trójkąt.",
+    "Wymień 3 sytuacje, w których udawałeś, że nie znasz osoby stojącej obok.",
+    "Wymień 3 najseksowniejsze akcenty lub języki obce.",
+    "Wymień 3 powody, by spróbować BDSM.",
+    "Wymień 3 rzeczy, które myślisz, gdy widzisz nagie zdjęcia w internecie.",
+    "Wymień 3 najgorsze cechy charakteru u faceta.",
+    "Wymień 3 najgorsze cechy charakteru u dziewczyny.",
+    "Wymień 3 powody, dla których warto sfilmować swoje łóżkowe wyczyny.",
+    "Wymień 3 rzeczy, które robisz, gdy partner zapomni o Waszej rocznicy.",
+    "Wymień 3 sytuacje, w których płakałeś ze śmiechu podczas zbliżenia.",
+    "Wymień 3 najgłupsze teksty, jakie usłyszałeś od eks na pożegnanie.",
+    "Wymień 3 rzeczy, które kupisz w aptece, żeby rozbawić kasjera.",
+    "Wymień 3 powody, by kochać się w przymierzalni w galerii handlowej.",
+    "Wymień 3 rzeczy, które robisz, gdy zapomnisz imienia osoby, z którą jesteś w łóżku.",
+    "Wymień 3 najdziwniejsze sny erotyczne, jakie pamiętasz.",
+    "Wymień 3 powody, dla których powinieneś dostać zakaz wchodzenia do klubów.",
+    "Wymień 3 rzeczy, które robisz nago przed lustrem, gdy jesteś sam.",
+    "Wymień 3 sytuacje, w których żałowałeś, że nie pocałowałeś kogoś.",
+    "Wymień 3 najgorsze rady randkowe, jakie dostałeś od znajomych.",
+    "Wymień 3 powody, by kochać się na dachu budynku.",
+    "Wymień 3 rzeczy, które myślisz, gdy partner proponuje coś nowego w łóżku.",
+    "Wymień 3 najseksowniejsze części ciała u osoby naprzeciwko Ciebie.",
+    "Wymień 3 powody, dla których randkowanie w tych czasach to dramat.",
+    "Wymień 3 rzeczy, które robisz, gdy usłyszysz sąsiadów za ścianą.",
+    "Wymień 3 najdziwniejsze rekwizyty użyte w sypialni, o jakich słyszałeś.",
+    "Wymień 3 powody, by pójść na randkę z kimś o 15 lat starszym.",
+    "Wymień 3 rzeczy, które ukrywasz na swoim profilu społecznościowym.",
+    "Wymień 3 sytuacje, kiedy czułeś, że ktoś bardzo chce Cię zaciągnąć do łóżka.",
+    "Wymień 3 najgłupsze wymówki, żeby nie użyć prezerwatywy.",
+    "Wymień 3 powody, dla których warto kochać się na tylnym siedzeniu autobusu.",
+    "Wymień 3 rzeczy, które robisz, gdy rano obudzisz się obok paszteta.",
+    "Wymień 3 najgorsze piosenki, które mogłyby lecieć w tle podczas seksu.",
+    "Wymień 3 powody, by przetestować masaż z happy endem.",
+    "Wymień 3 rzeczy, o które kłócą się pary z długim stażem.",
+    "Wymień 3 sytuacje, w których czułeś totalne zażenowanie zachowaniem partnera.",
+    "Wymień 3 najseksowniejsze stroje na Halloween.",
+    "Wymień 3 powody, by zrobić komuś malinkę w widocznym miejscu.",
+    "Wymień 3 rzeczy, które robisz, gdy randka okazuje się totalną nudą.",
+    "Wymień 3 najdziwniejsze miejsca, w których uprawiałeś autostop erotyczny.",
+    "Wymień 3 powody, dla których ta gra zniszczy dzisiaj jakiś związek.",
+    "Wymień 3 rzeczy, o których pomyślisz, gdy zobaczysz ten kod za rok.",
+    "Wymień 3 powody, dla których natychmiast powinieneś wziąć się do właściwej roboty."
+];
+
+    ];
+
+    let players = [];
+    let targetScore = 10;
+    let baseTime = 5;
+    
+    let currentPool = [...questions];
+    let timerInterval = null;
+    let audioCtx = null;
+
+    function initAudio() {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+    }
+
+    function playBeep(freq, type, duration, vol) {
+        if (!audioCtx) return;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+    }
+
+    function playTick() { playBeep(800, 'sine', 0.1, 0.5); }
+    function playBuzzer() { playBeep(150, 'sawtooth', 0.8, 1); }
+
+    function updateSettings() {
+        baseTime = parseInt(document.getElementById('time-setting').value);
+        targetScore = parseInt(document.getElementById('pts-setting').value);
+        document.getElementById('time-val').innerText = baseTime;
+        document.getElementById('pts-val').innerText = targetScore;
+    }
+
+    function addPlayer() {
+        const input = document.getElementById('player-input');
+        const name = input.value.trim();
+        if (name && !players.find(p => p.name === name)) {
+            players.push({ name: name, score: 0 });
+            input.value = '';
+            renderPlayerList();
+        }
+    }
+
+    function renderPlayerList() {
+        const list = document.getElementById('player-list');
+        list.innerHTML = '';
+        players.forEach(p => {
+            const span = document.createElement('span');
+            span.className = 'player-tag';
+            span.innerText = p.name;
+            list.appendChild(span);
+        });
+    }
+
+    function initGame() {
+        if (players.length < 2) {
+            alert("Dodaj minimum 2 graczy!");
+            return;
+        }
+        initAudio();
+        document.getElementById('screen-setup').classList.add('hidden');
+        document.getElementById('screen-game').classList.remove('hidden');
+        updateScoreBoard();
+        document.getElementById('timer-text').innerText = baseTime;
+    }
+
+    function updateScoreBoard() {
+        const board = document.getElementById('in-game-scores');
+        const awardGrid = document.getElementById('award-buttons');
+        board.innerHTML = '';
+        awardGrid.innerHTML = '';
+
+        players.forEach((p, index) => {
+            board.innerHTML += `<div class="score-item"><div class="score-name">${p.name}</div><div class="score-pts">${p.score}</div></div>`;
+            awardGrid.innerHTML += `<button class="btn btn-player" onclick="awardPoint(${index})">${p.name}</button>`;
+        });
+    }
+
+    function drawQuestion() {
+        if (currentPool.length === 0) currentPool = [...questions];
+        
+        document.getElementById('award-section').style.display = 'none';
+        document.getElementById('btn-draw').classList.add('hidden');
+        document.getElementById('btn-start').classList.remove('hidden');
+        
+        const rIndex = Math.floor(Math.random() * currentPool.length);
+        const q = currentPool.splice(rIndex, 1)[0];
+        document.getElementById('question-box').innerText = q;
+        
+        document.getElementById('timer-text').innerText = baseTime;
+        const bar = document.getElementById('progress-bar');
+        bar.style.transition = 'none';
+        bar.style.transform = 'scaleX(1)';
+    }
+
+    function startTimer() {
+        document.getElementById('btn-start').classList.add('hidden');
+        initAudio();
+        
+        let timeLeft = baseTime;
+        document.getElementById('timer-text').innerText = timeLeft;
+        
+        const bar = document.getElementById('progress-bar');
+        bar.style.transform = 'scaleX(1)';
+        bar.offsetHeight; 
+        bar.style.transition = `transform ${baseTime}s linear`;
+        bar.style.transform = 'scaleX(0)';
+
+        clearInterval(timerInterval);
+        playTick();
+
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            if (timeLeft > 0) {
+                document.getElementById('timer-text').innerText = timeLeft;
+                playTick();
+            } else {
+                clearInterval(timerInterval);
+                document.getElementById('timer-text').innerText = "CZAS!";
+                playBuzzer();
+                showAwardSection();
+            }
+        }, 1000);
+    }
+
+    function showAwardSection() {
+        document.getElementById('award-section').style.display = 'block';
+    }
+
+    function awardPoint(playerIndex) {
+        players[playerIndex].score++;
+        updateScoreBoard();
+        checkWinCondition();
+    }
+
+    function nobodyScored() {
+        checkWinCondition();
+    }
+
+    function checkWinCondition() {
+        document.getElementById('award-section').style.display = 'none';
+        
+        const winner = players.find(p => p.score >= targetScore);
+        if (winner) {
+            document.getElementById('screen-game').classList.add('hidden');
+            document.getElementById('screen-winner').classList.remove('hidden');
+            document.getElementById('winner-text').innerText = winner.name + " Wygrywa!";
+        } else {
+            document.getElementById('btn-draw').classList.remove('hidden');
+        }
+    }
+</script>
+</body>
+</html>
