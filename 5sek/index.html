@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>5 Sekund | 18+</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', -apple-system, sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background-color: #0a050d;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #app-container {
+            width: 100%;
+            max-width: 450px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 30px 20px;
+            background: radial-gradient(circle at top, #1a0b2e 0%, #0a050d 100%);
+            position: relative;
+        }
+
+        /* Licznik czasu */
+        #timer-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        #timer-text {
+            font-size: 5rem;
+            font-weight: 800;
+            color: #ff2a5f;
+            text-shadow: 0 0 20px rgba(255, 42, 95, 0.5);
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+
+        #progress-bar-bg {
+            width: 100%;
+            height: 8px;
+            background-color: #22123b;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        #progress-bar {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, #ff2a5f, #7928ca);
+            transform-origin: left;
+            transition: transform 0.1s linear;
+        }
+
+        /* Główne okno pytania */
+        #question-box {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            margin: 40px 0;
+        }
+
+        #question-text {
+            font-size: 1.8rem;
+            font-weight: 600;
+            line-height: 1.4;
+            color: #f3f4f6;
+            min-height: 120px;
+        }
+
+        /* Przyciski i akcje */
+        #controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 14px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: transform 0.1s, opacity 0.2s;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        #btn-draw {
+            background: linear-gradient(135deg, #7928ca, #ff2a5f);
+            color: #white;
+            box-shadow: 0 8px 25px rgba(255, 42, 95, 0.3);
+        }
+
+        #btn-start-timer {
+            background-color: #ffffff;
+            color: #0a050d;
+            display: none;
+        }
+
+        /* Licznik pozostałych pytań */
+        #counter {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #6b7280;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="app-container">
+    <div id="timer-container">
+        <div id="timer-text">5</div>
+        <div id="progress-bar-bg">
+            <div id="progress-bar"></div>
+        </div>
+    </div>
+
+    <div id="question-box">
+        <div id="question-text">Kliknij przycisk poniżej, aby wylosować pierwsze pikantne pytanie...</div>
+    </div>
+
+    <div id="controls">
+        <button class="btn" id="btn-draw" onclick="drawQuestion()">Losuj pytanie</button>
+        <button class="btn" id="btn-start-timer" onclick="startTimer()">Odpliczaj czas</button>
+        <div id="counter">Pozostało pytań: <span id="questions-left">100</span>/100</div>
+    </div>
+</div>
+
+<script>
+    // Baza 100 pytań 18+
+    const questionsPool = [
+        "Wymień 3 pozycje seksualne, które chcesz wypróbować.",
+        "Wymień 3 miejsca poza łóżkiem na szybki numer.",
+        "Wymień 3 najgorsze teksty na podryw, jakie znasz.",
+        "Wymień 3 rzeczy, które podniecają Cię w partnerze.",
+        "Wymień 3 wady posiadania kochanka.",
+        "Wymień 3 powody, dla których udaje się orgazm.",
+        "Wymień 3 części ciała, które lubisz mieć dotykane.",
+        "Wymień 3 aplikacje randkowe.",
+        "Wymień 3 powody, by uprawiać seks na pierwszej randce.",
+        "Wymień 3 rzeczy, które powinny być w sypialni każdego faceta.",
+        "Wymień 3 powody, dla których ludzie oglądają porno.",
+        "Wymień 3 gadżety erotyczne, o których słyszałeś.",
+        "Wymień 3 powody, żeby zerwać z kimś przez SMS.",
+        "Wymień 3 znane osoby, z którymi pójdziesz do łóżka.",
+        "Wymień 3 rzeczy, które robisz tuż po udanym seksie.",
+        "Wymień 3 miejsca w samochodzie dobre na zbliżenie.",
+        "Wymień 3 sygnały, że ktoś chce z Tobą pójść do łóżka.",
+        "Wymień 3 rzeczy, które można robić z kostkami lodu w sypialni.",
+        "Wymień 3 rodzaje bielizny erotycznej.",
+        "Wymień 3 błędy, które faceci robią podczas gry wstępnej.",
+        "Wymień 3 powody, by uprawiać seks w miejscu publicznym.",
+        "Wymień 3 rzeczy, które zawsze masz pod ręką przy łóżku.",
+        "Wymień 3 powody, by kochać się rano.",
+        "Wymień 3 rzeczy, których nigdy nie zrobisz w łóżku.",
+        "Wymień 3 najdziwniejsze miejsca, w których byłeś nago.",
+        "Wymień 3 fantazje erotyczne, które są popularne.",
+        "Wymień 3 powody, dla których kobiety kochają bad boyów.",
+        "Wymień 3 teksty, które mówisz w trakcie zbliżenia.",
+        "Wymień 3 powody do zazdrości o partnera.",
+        "Wymień 3 rzeczy, które natychmiast psują nastrój w łóżku.",
+        "Wymień 3 piosenki idealne do uprawiania seksu.",
+        "Wymień 3 powody, dla których ludzie zdradzają.",
+        "Wymień 3 rzeczy, które robisz podczas rozbierania partnera.",
+        "Wymień 3 miejsca, gdzie można schować prezerwatywę.",
+        "Wymień 3 zalety spania bez ubrań.",
+        "Wymień 3 błędy, które kobiety robią w łóżku.",
+        "Wymień 3 sytuacje, w których pomyślałeś o kimś nago.",
+        "Wymień 3 sposoby na podkręcenie atmosfery w związku.",
+        "Wymień 3 zawody, które kojarzą się z erotyką.",
+        "Wymień 3 rzeczy, które można robić z bitą śmietaną.",
+        "Wymień 3 miejsca w Polkowicach dobre na randkę.",
+        "Wymień 3 powody, żeby spróbować trójkąta.",
+        "Wymień 3 sygnały, że randka będzie miała ciąg dalszy.",
+        "Wymień 3 rzeczy, które ukrywasz w swojej historii przeglądarki.",
+        "Wymień 3 najseksowniejsze cechy charakteru.",
+        "Wymień 3 powody, by kochać się pod prysznicem.",
+        "Wymień 3 powody, dla których warto mieć przyjaciela do łóżka.",
+        "Wymień 3 rzeczy, które mówisz, gdy ktoś nakryje Cię nago.",
+        "Wymień 3 wymówki, gdy nie masz ochoty na seks.",
+        "Wymień 3 najgłupsze miejsca na tatuaż erotyczny.",
+        "Wymień 3 powody, dla których rozmiar ma znaczenie.",
+        "Wymień 3 powody, dla których rozmiar NIE ma znaczenia.",
+        "Wymień 3 rzeczy, które zabierasz na weekend w hotelu.",
+        "Wymień 3 cechy idealnego kochanka.",
+        "Wymień 3 powody, by wysłać komuś pikantne zdjęcie.",
+        "Wymień 3 reakcje na nieudany pierwszy raz.",
+        "Wymień 3 rzeczy, które kojarzą Ci się z filmem 50 twarzy Greya.",
+        "Wymień 3 miejsca, w których całowanie daje największą przyjemność.",
+        "Wymień 3 powody, dla których warto uprawiać seks w lesie.",
+        "Wymień 3 rzeczy, które kupisz w sex shopie na pierwszą wizytę.",
+        "Wymień 3 sposoby na zrobienie dobrego wrażenia na rano.",
+        "Wymień 3 rzeczy, które myślisz, gdy widzisz atrakcyjną osobę.",
+        "Wymień 3 kłamstwa, które mówi się przed pójściem do łóżka.",
+        "Wymień 3 sposoby na opóźnienie finału.",
+        "Wymień 3 powody, by kochać się na plaży.",
+        "Wymień 3 błędy podczas robienia masażu erotycznego.",
+        "Wymień 3 rzeczy, które robisz, gdy partner za długo śpi.",
+        "Wymień 3 powody, by uprawiać seks w namiocie.",
+        "Wymień 3 fantazje związane z mundurem.",
+        "Wymień 3 rzeczy, które przeszkadzają Ci u partnera podczas snu.",
+        "Wymień 3 powody, dla których seks na zgodę jest najlepszy.",
+        "Wymień 3 rzeczy, które kojarzą się z wieczorem kawalerskim.",
+        "Wymień 3 najdziwniejsze prośby w łóżku, o jakich słyszałeś.",
+        "Wymień 3 rzeczy, które kojarzą się z udaną imprezą.",
+        "Wymień 3 powody, by urwać się z kiepskiej randki.",
+        "Wymień 3 korzyści z bycia singlem.",
+        "Wymień 3 rzeczy, które robisz, gdy zostajesz sam w domu.",
+        "Wymień 3 powody, by pójść do klubu ze striptizem.",
+        "Wymień 3 najseksowniejsze elementy kobiecego ubioru.",
+        "Wymień 3 najseksowniejsze elementy męskiego ubioru.",
+        "Wymień 3 rzeczy, których nie wypada robić po alkoholu.",
+        "Wymień 3 powody, by uprawiać seks bez zobowiązań.",
+        "Wymień 3 najdziwniejsze prezenty od eks.",
+        "Wymień 3 sposoby na szybkie rozładowanie napięcia.",
+        "Wymień 3 rzeczy, które myślisz, gdy pęknie prezerwatywa.",
+        "Wymień 3 powody, by oglądać erotykę razem z partnerem.",
+        "Wymień 3 najgorsze miejsca na randkę w ciemno.",
+        "Wymień 3 powody, dla których warto uprawiać seks w windzie.",
+        "Wymień 3 zapachy, które działają na Ciebie jak afrodyzjak.",
+        "Wymień 3 rzeczy, które kojarzą się z nocą poślubną.",
+        "Wymień 3 powody, żeby nie wracać do swojego eks.",
+        "Wymień 3 rzeczy, które robisz przed wyjściem do klubu.",
+        "Wymień 3 najgłupsze powody do zazdrości.",
+        "Wymień 3 cechy, które dyskwalifikują drugą osobę na starcie.",
+        "Wymień 3 powody, by zerwać po miesiącu.",
+        "Wymień 3 najdziwniejsze komplementy po seksie.",
+        "Wymień 3 rzeczy, które kojarzą się z namiętnością.",
+        "Wymień 3 powody, dla których warto całować się z opaską na oczach.",
+        "Wymień 3 rzeczy, które robisz podczas szybkiego numeru.",
+        "Wymień 3 powody, dla których ta gra ujawni Wasze sekrety."
+    ];
+
+    let currentQuestions = [...questionsPool];
+    let timerInterval = null;
+    let timeRemaining = 5;
+
+    function drawQuestion() {
+        if (currentQuestions.length === 0) {
+            currentQuestions = [...questionsPool];
+        }
+
+        clearInterval(timerInterval);
+        resetTimerUI();
+
+        const randomIndex = Math.floor(Math.random() * currentQuestions.length);
+        const question = currentQuestions.splice(randomIndex, 1)[0];
+
+        document.getElementById('question-text').innerText = question;
+        document.getElementById('questions-left').innerText = currentQuestions.length;
+        
+        document.getElementById('btn-start-timer').style.display = 'block';
+    }
+
+    function startTimer() {
+        clearInterval(timerInterval);
+        timeRemaining = 5;
+        document.getElementById('timer-text').innerText = timeRemaining;
+        
+        const progressBar = document.getElementById('progress-bar');
+        progressBar.style.transform = 'scaleX(1)';
+        progressBar.style.transition = 'none';
+
+        // Wymuszenie odświeżenia layoutu przed animacją
+        progressBar.offsetHeight; 
+        progressBar.style.transition = 'transform 5s linear';
+        progressBar.style.transform = 'scaleX(0)';
+
+        timerInterval = setInterval(() => {
+            timeRemaining--;
+            if (timeRemaining >= 0) {
+                document.getElementById('timer-text').innerText = timeRemaining;
+            }
+
+            if (timeRemaining === 0) {
+                clearInterval(timerInterval);
+                document.getElementById('timer-text').innerText = "KONIEC!";
+                // Opcjonalnie: możesz dodać tutaj dźwięk alarmu
+            }
+        }, 1000);
+    }
+
+    function resetTimerUI() {
+        document.getElementById('timer-text').innerText = "5";
+        const progressBar = document.getElementById('progress-bar');
+        progressBar.style.transition = 'none';
+        progressBar.style.transform = 'scaleX(1)';
+        document.getElementById('btn-start-timer').style.display = 'none';
+    }
+</script>
+</body>
+</html>
