@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>World Cup 2026 Simulator - Stable Core</title>
+    <title>World Cup 2026 Simulator - Flawless Physics</title>
     <style>
         :root {
             --bg-base: #060913;
@@ -69,7 +69,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 25px;
+            padding: 15px 20px;
             pointer-events: auto;
             width: 100%;
         }
@@ -86,7 +86,7 @@
             display: flex; justify-content: center; align-items: center;
             transition: 0.2s;
         }
-        .icon-btn:hover { background: rgba(255,255,255,0.1); }
+        .icon-btn:hover { background: rgba(255,255,255,0.15); }
 
         .score-pill {
             display: flex;
@@ -117,50 +117,40 @@
         }
         .btn-ranking:hover { border-color: var(--accent-cyan); color: var(--accent-cyan); }
 
+        /* Transparent Leaderboard Overlay */
         .ranking-panel {
             position: absolute;
-            top: 75px; right: 25px;
+            top: 70px; right: 20px;
             width: 240px;
-            background: rgba(6, 9, 19, 0.95);
-            border: 1px solid var(--border-color);
+            background: rgba(6, 9, 19, 0.4); /* Highly transparent */
+            border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 12px;
             padding: 15px;
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(16px); /* Heavy blur for readability */
+            -webkit-backdrop-filter: blur(16px);
             transition: all 0.3s ease;
             transform-origin: top right;
             pointer-events: auto;
-            z-index: 20;
+            z-index: 50;
         }
         .ranking-panel.hidden { transform: scale(0.9) translateY(-10px); opacity: 0; pointer-events: none; }
-        .lb-title { text-align: center; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 12px; letter-spacing: 2px; font-weight: bold; }
-        .lb-row { display: flex; align-items: center; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        .lb-title { text-align: center; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 12px; letter-spacing: 2px; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.5);}
+        .lb-row { display: flex; align-items: center; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .lb-row:last-child { border-bottom: none; }
-        .lb-rank { width: 20px; color: var(--accent-cyan); font-weight: bold; font-size: 0.8rem; }
+        .lb-rank { width: 20px; color: var(--accent-cyan); font-weight: bold; font-size: 0.8rem; text-shadow: 0 1px 2px rgba(0,0,0,0.8);}
         .lb-flag { width: 20px; height: 20px; border-radius: 50%; object-fit: cover; margin-right: 10px; border: 1px solid rgba(255,255,255,0.2); }
-        .lb-name { flex: 1; font-size: 0.8rem; font-weight: 500; }
-        .lb-score { font-weight: bold; color: var(--gold); font-size: 0.9rem; }
+        .lb-name { flex: 1; font-size: 0.8rem; font-weight: 600; text-shadow: 0 1px 3px rgba(0,0,0,0.8);}
+        .lb-score { font-weight: bold; color: var(--gold); font-size: 0.9rem; text-shadow: 0 1px 3px rgba(0,0,0,0.8);}
 
         .bottom-container {
             width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 0 15px 25px 15px;
+            padding: 0 15px 15px 15px;
             gap: 12px;
             pointer-events: auto;
-        }
-
-        .center-labels {
-            text-align: center;
-            margin-bottom: 5px;
-            pointer-events: none;
-        }
-        .flags-remain { font-size: 0.8rem; color: var(--text-muted); letter-spacing: 1px; font-weight: 600; margin-bottom: 2px; }
-        .flags-remain span { color: var(--accent-cyan); font-weight: bold; }
-        .who-wins { 
-            font-size: 2.2rem; font-weight: 900; letter-spacing: 2px; line-height: 1;
-            background: linear-gradient(90deg, #60a5fa, #c084fc);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            z-index: 20;
         }
 
         .main-controls-box {
@@ -181,44 +171,23 @@
 
         .select-group { display: flex; flex-direction: column; align-items: flex-start; justify-content: center;}
         .select-group span { font-size: 0.6rem; color: var(--text-muted); margin-bottom: 2px; text-transform: uppercase; letter-spacing: 1px;}
-        .select-group select { background: rgba(0,0,0,0.5); color: white; border: 1px solid var(--border-color); padding: 6px 10px; border-radius: 6px; font-weight: bold; outline: none; cursor: pointer; font-size: 0.9rem;}
+        .select-group select { background: rgba(0,0,0,0.5); color: white; border: 1px solid var(--border-color); padding: 8px 12px; border-radius: 6px; font-weight: bold; outline: none; cursor: pointer; font-size: 0.9rem;}
 
         .auto-toggle { display: flex; align-items: center; gap: 8px; font-size: 0.75rem; font-weight: bold; cursor: pointer; border-left: 1px solid var(--border-color); padding-left: 15px; margin-left: 5px;}
         .auto-toggle input { width: 16px; height: 16px; accent-color: var(--accent-cyan); cursor: pointer; }
 
         .btn-start {
-            flex: 1; padding: 12px; font-weight: 900; font-size: 0.95rem; border-radius: 8px; cursor: pointer; border: none; text-transform: uppercase; letter-spacing: 1px;
+            flex: 1; padding: 14px; font-weight: 900; font-size: 1rem; border-radius: 8px; cursor: pointer; border: none; text-transform: uppercase; letter-spacing: 1px;
             background: linear-gradient(90deg, #00e5ff, #0077ff); color: #fff; box-shadow: 0 0 15px rgba(0, 229, 255, 0.4); text-shadow: 0 1px 3px rgba(0,0,0,0.5); transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px;
         }
         .btn-start:active { transform: scale(0.97); }
 
         .btn-reset {
-            background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: white; padding: 12px 20px; border-radius: 8px; font-weight: bold; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.2s;
+            background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: white; padding: 14px 20px; border-radius: 8px; font-weight: bold; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.2s;
         }
         .btn-reset:hover { background: rgba(255,255,255,0.1); }
 
-        .info-row {
-            display: flex; justify-content: space-between; align-items: center;
-            background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 10px 20px; backdrop-filter: blur(15px);
-        }
-        .info-col { display: flex; flex-direction: column; align-items: center; text-align: center; flex: 1;}
-        .info-col .small { font-size: 0.55rem; color: var(--text-muted); letter-spacing: 1px; font-weight: 600; text-transform: uppercase;}
-        .info-col .highlight { font-size: 0.85rem; color: var(--accent-cyan); font-weight: 900; margin: 2px 0; letter-spacing: 1px;}
-        .info-col.mid { border-left: 1px solid var(--border-color); border-right: 1px solid var(--border-color); }
-        .info-col.mid .icon { color: var(--accent-cyan); font-size: 1.2rem; margin-bottom: 2px; text-shadow: 0 0 10px var(--accent-glow);}
-
-        .events-panel {
-            background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 10px 15px; backdrop-filter: blur(15px); display: flex; flex-direction: column; gap: 8px;
-        }
-        .events-header { display: flex; justify-content: space-between; font-size: 0.65rem; color: var(--text-muted); font-weight: bold; letter-spacing: 1px; }
-        .events-list { display: flex; justify-content: space-between; gap: 10px; overflow: hidden;}
-        .event-item { display: flex; flex-direction: column; font-size: 0.65rem; flex: 1; border-right: 1px solid rgba(255,255,255,0.05); padding-right: 10px; }
-        .event-item:last-child { border-right: none; padding-right: 0; }
-        .event-item .country { font-weight: bold; color: var(--success); margin-bottom: 2px;}
-        .event-item .status { font-weight: bold; color: white; }
-        .event-item .time { color: var(--text-muted); font-size: 0.55rem; margin-top: 2px;}
-
-        #notify-layer { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); z-index: 50; pointer-events: none; width: 100%; display: flex; flex-direction: column; align-items: center; }
+        #notify-layer { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); z-index: 40; pointer-events: none; width: 100%; display: flex; flex-direction: column; align-items: center; }
         .dramatic-text {
             font-size: 8vw; font-weight: 900; text-transform: uppercase; text-align: center;
             opacity: 0; transform: scale(0.5); transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -229,12 +198,13 @@
         .text-danger { background: -webkit-linear-gradient(#ffaaaa, #ff4757); -webkit-background-clip: text; filter: drop-shadow(0 0 30px rgba(255, 71, 87, 0.6)); }
         .text-gold { background: -webkit-linear-gradient(#fff, #ffd700); -webkit-background-clip: text; filter: drop-shadow(0 0 40px rgba(255, 215, 0, 0.6)); font-size: 10vw;}
 
+        /* Moved banner higher so it doesn't block the bottom of the wheel */
         .elim-banner {
             position: absolute; top: -100px; background: linear-gradient(90deg, transparent, rgba(255,71,87,0.9), transparent);
             width: 100vw; text-align: center; padding: 12px 0; font-size: 1.5rem; font-weight: 900; color: white;
             opacity: 0; transform: scaleY(0); transition: 0.3s; letter-spacing: 2px; text-shadow: 0 2px 10px rgba(0,0,0,0.8);
         }
-        .elim-banner.show { opacity: 1; transform: scaleY(1); top: 0; }
+        .elim-banner.show { opacity: 1; transform: scaleY(1); top: 15vh; }
 
         #loader {
             position: absolute; top:0; left:0; width:100%; height:100%; background: var(--bg-base); z-index: 200;
@@ -242,16 +212,13 @@
         }
 
         @media (max-width: 768px) {
+            .top-bar { padding: 10px 15px; }
+            .score-pill { padding: 8px 15px; gap: 15px; }
             .action-row { flex-wrap: wrap; justify-content: center; padding: 10px; }
-            .btn-start { min-width: 100%; order: 1; padding: 15px; }
+            .btn-start { min-width: 100%; order: 1; }
             .select-group, .auto-toggle, .btn-reset { order: 2; margin-top: 5px; }
-            .events-list { flex-wrap: wrap; justify-content: center; gap: 5px; }
-            .event-item { min-width: 30%; border-right: none; text-align: center; margin-bottom: 5px;}
-            .top-bar { padding: 15px; }
-        }
-        @media (max-height: 750px) {
-            .events-panel, .info-row { display: none; } 
-            .who-wins { font-size: 1.8rem; }
+            .ranking-panel { right: 15px; top: 65px; }
+            .elim-banner.show { top: 10vh; font-size: 1.2rem; }
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
@@ -259,7 +226,7 @@
 </head>
 <body>
 
-    <div id="loader">VERIFYING PHYSICS INTEGRITY...</div>
+    <div id="loader">LOADING RESOURCES...</div>
     <canvas id="bg-canvas"></canvas>
     <canvas id="physics-canvas"></canvas>
     <div id="flash-overlay"></div>
@@ -295,11 +262,6 @@
         </div>
 
         <div class="bottom-container">
-            <div class="center-labels" id="center-labels">
-                <div class="flags-remain"><span id="lbl-rem-num">48</span> FLAGS REMAIN</div>
-                <div class="who-wins">WHO WILL WIN?</div>
-            </div>
-
             <div class="main-controls-box">
                 <div class="action-row">
                     <div class="select-group">
@@ -313,30 +275,6 @@
                     <label class="auto-toggle"><input type="checkbox" id="chk-auto"> AUTO LIVE</label>
                     <button id="btn-action" class="btn-start">▶ START GAME</button>
                     <button id="btn-reset" class="btn-reset">↻ RESET</button>
-                </div>
-
-                <div class="info-row">
-                    <div class="info-col">
-                        <div class="small">FIRST TEAM TO</div>
-                        <div class="highlight" id="ft-pts">5 POINTS</div>
-                        <div class="small">WINS THE BATTLE</div>
-                    </div>
-                    <div class="info-col mid">
-                        <div class="icon">🏆</div>
-                        <div class="small">SURVIVE. ELIMINATE. WIN.</div>
-                    </div>
-                    <div class="info-col">
-                        <div class="small">MAY THE BEST</div>
-                        <div class="highlight">FLAG</div>
-                        <div class="small">WIN!</div>
-                    </div>
-                </div>
-
-                <div class="events-panel">
-                    <div class="events-header"><span>EVENTS</span><span>VIEW ALL ></span></div>
-                    <div class="events-list" id="events-list">
-                        <div class="event-item" style="opacity: 0.5;"><div class="country">Waiting...</div><div class="status">-</div><div class="time">--:--:--</div></div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -359,10 +297,9 @@
         ];
 
         let state = {
-            teams: [], images: {}, loaded: 0, events: [],
+            teams: [], images: {}, loaded: 0,
             round: 1, target: 5, auto: false, running: false,
             balls: [], arenaRot: 0, rotSpeed: 0.015,
-            zoom: 1, targetZoom: 1, timeScale: 1, targetTimeScale: 1,
             m10: false, m5: false, m3: false, m2: false
         };
 
@@ -429,7 +366,7 @@
 
         function loadStorage() {
             try {
-                const sv = localStorage.getItem('wc26_stable');
+                const sv = localStorage.getItem('wc26_master');
                 if(sv) {
                     const p = JSON.parse(sv);
                     state.teams = p.teams || TEAMS.map(t => ({...t, s: 0}));
@@ -437,18 +374,8 @@
                 } else initData();
             } catch(e) { initData(); }
         }
-        function saveStorage() { try { localStorage.setItem('wc26_stable', JSON.stringify({teams: state.teams, round: state.round})); } catch(e) {} }
-        function initData() { state.teams = TEAMS.map(t => ({...t, s: 0})); state.round = 1; state.events = []; saveStorage(); }
-
-        function logEvent(teamName) {
-            const now = new Date();
-            const timeStr = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0') + ':' + now.getSeconds().toString().padStart(2,'0');
-            const colors = ['#2ed573', '#ff4757', '#eccc68', '#70a1ff', '#ffffff'];
-            const color = colors[state.events.length % colors.length];
-            
-            state.events.unshift({ name: teamName, time: timeStr, col: color });
-            if(state.events.length > 5) state.events.pop();
-        }
+        function saveStorage() { try { localStorage.setItem('wc26_master', JSON.stringify({teams: state.teams, round: state.round})); } catch(e) {} }
+        function initData() { state.teams = TEAMS.map(t => ({...t, s: 0})); state.round = 1; saveStorage(); }
 
         function updateUI() {
             document.getElementById('val-round').innerText = state.round;
@@ -464,47 +391,41 @@
                     <div class="lb-score">${t.s}</div>
                 </div>
             `).join('');
-
-            const evList = document.getElementById('events-list');
-            if(state.events.length === 0) {
-                evList.innerHTML = `<div class="event-item" style="opacity: 0.3;"><div class="country" style="color:white;">Awaiting...</div><div class="status">-</div><div class="time">--:--:--</div></div>`;
-            } else {
-                evList.innerHTML = state.events.map(e => `
-                    <div class="event-item">
-                        <div class="country" style="color:${e.col};">${e.name}</div>
-                        <div class="status">ELIMINATED!</div>
-                        <div class="time">${e.time}</div>
-                    </div>
-                `).join('');
-            }
         }
 
+        // Twardy system ładowania z obcinaczem czasu (żeby nie wisiało na LOADING RESOURCES)
         function preload() {
-            TEAMS.forEach(t => {
+            const loadPromises = TEAMS.map(t => new Promise(resolve => {
                 const img = new Image(); img.crossOrigin = "anonymous";
-                const checkLoad = () => {
-                    state.loaded++;
-                    if(state.loaded === TEAMS.length) { document.getElementById('loader').style.display = 'none'; loadStorage(); updateUI(); setupMatter(); }
-                };
-                img.onload = () => { state.images[t.c] = img; checkLoad(); };
+                img.onload = () => { state.images[t.c] = img; resolve(); };
                 img.onerror = () => {
                     const c = document.createElement('canvas'); c.width = 80; c.height = 80; const ctx = c.getContext('2d');
                     ctx.fillStyle = `#1a1a2e`; ctx.fillRect(0,0,80,80);
                     ctx.fillStyle = '#fff'; ctx.font = 'bold 24px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-                    ctx.fillText(t.c.toUpperCase(), 40, 40); state.images[t.c] = c; checkLoad();
+                    ctx.fillText(t.c.toUpperCase(), 40, 40); state.images[t.c] = c; resolve();
                 };
                 img.src = `https://flagcdn.com/w80/${t.c}.png`;
+            }));
+
+            // Wymuszenie startu po maksymalnie 4 sekundach bez względu na wszystko
+            Promise.race([
+                Promise.all(loadPromises),
+                new Promise(resolve => setTimeout(resolve, 4000))
+            ]).then(() => {
+                document.getElementById('loader').style.display = 'none';
+                loadStorage(); updateUI(); setupMatter();
             });
         }
 
         const { Engine, Render, Bodies, Body, Composite, Events } = Matter;
-        let eng, rnd, arenaBody;
+        let eng, rnd;
         let cx, cy, rad;
+        let arenaSegments = [];
         const NUM_SEGMENTS = 100;
 
         function setupMatter() {
             const canvas = document.getElementById('physics-canvas');
-            eng = Engine.create({ positionIterations: 16, velocityIterations: 16 });
+            eng = Engine.create({ positionIterations: 24, velocityIterations: 24 });
             eng.gravity.y = 0.8;
             eng.gravity.x = 0;
             
@@ -514,7 +435,7 @@
 
             Events.on(rnd, 'beforeRender', () => {
                 const ctx = rnd.context; ctx.save();
-                ctx.translate(cx, cy); ctx.scale(state.zoom, state.zoom); ctx.translate(-cx, -cy);
+                ctx.translate(cx, cy); ctx.scale(1, 1); ctx.translate(-cx, -cy);
             });
 
             Events.on(rnd, 'afterRender', () => {
@@ -569,8 +490,12 @@
         }
 
         function resizeArena() {
-            const topSpace = 90; 
-            const bottomSpace = window.innerHeight > 800 ? 170 : 130; 
+            // Bezpieczne sprawdzanie rozmiaru UI, by arena NIGDY na nie nie naszła
+            const topBar = document.querySelector('.top-bar');
+            const bottomBox = document.querySelector('.bottom-container');
+            const topSpace = topBar ? topBar.offsetHeight + 10 : 80; 
+            const bottomSpace = bottomBox ? bottomBox.offsetHeight + 10 : 200; 
+            
             const availableH = window.innerHeight - topSpace - bottomSpace;
             
             cx = window.innerWidth / 2; 
@@ -578,34 +503,25 @@
             
             rad = Math.min(window.innerWidth * 0.9, availableH) * 0.45;
             if(rad > 350) rad = 350; 
-            if(rad < 150) rad = 150;
+            if(rad < 120) rad = 120;
             
             if(rnd) { rnd.canvas.width = window.innerWidth; rnd.canvas.height = window.innerHeight; }
 
-            if (arenaBody) Composite.remove(eng.world, arenaBody);
+            arenaSegments.forEach(s => Composite.remove(eng.world, s.body));
+            arenaSegments = [];
 
-            const parts = [];
-            parts.push(Bodies.circle(cx, cy, 10, { isSensor: true, render: { visible: false } })); 
-            
-            const thick = 40;
-            const len = (Math.PI * 2 * rad) / NUM_SEGMENTS * 1.05;
+            const thick = 50; 
+            const outerRad = rad + (thick / 2); // KRYTYCZNA POPRAWKA: Przesunięcie kolidera by wewnętrzna krawędź pasowała z wizualną (rad)
+            const len = (Math.PI*2*outerRad)/NUM_SEGMENTS * 1.05;
 
             for(let i=0; i<NUM_SEGMENTS; i++) {
                 const angle = (i/NUM_SEGMENTS) * Math.PI*2;
-                let norm = angle;
-                if (norm > Math.PI) norm -= Math.PI * 2;
-                
-                if (Math.abs(norm) > FIXED_GAP / 2) {
-                    const part = Bodies.rectangle(cx + Math.cos(angle)*rad, cy + Math.sin(angle)*rad, len, thick, { 
-                        angle: angle, render: { visible: false }
-                    });
-                    parts.push(part);
-                }
+                const body = Bodies.rectangle(cx + Math.cos(angle)*outerRad, cy + Math.sin(angle)*outerRad, len, thick, {
+                    isStatic: true, restitution: RESTITUTION_WALLS, friction: 0.0, label: 'wall', render: { visible: false }
+                });
+                arenaSegments.push({ body: body, baseAngle: angle });
+                Composite.add(eng.world, body);
             }
-
-            arenaBody = Body.create({ parts: parts, isStatic: true, restitution: RESTITUTION_WALLS, friction: 0.005 });
-            Body.setPosition(arenaBody, {x: cx, y: cy});
-            Composite.add(eng.world, arenaBody);
             
             if(!state.running && state.balls.length <= 1) spawn();
         }
@@ -633,7 +549,7 @@
                     let by = cy - 20 + Math.sin(angle) * ring.radius;
 
                     const b = Bodies.circle(bx, by, br, {
-                        restitution: RESTITUTION_BALLS, friction: 0.001, frictionAir: 0.001, density: 0.05, label: 'ball', render: { visible: false }
+                        restitution: RESTITUTION_BALLS, friction: 0.0, frictionAir: 0.0005, density: 0.05, label: 'ball', render: { visible: false }
                     });
                     b.tData = state.teams[teamIdx];
                     state.balls.push(b); Composite.add(eng.world, b);
@@ -641,10 +557,7 @@
                 }
             });
             
-            state.targetTimeScale = 1; state.timeScale = 1; state.targetZoom = 1; state.zoom = 1; 
             state.m10 = false; state.m5 = false; state.m3 = false; state.m2 = false;
-            state.events = []; 
-            
             document.getElementById('center-labels').style.opacity = '1';
             updateUI();
         }
@@ -656,35 +569,56 @@
             let delta = time - lastTime; lastTime = time;
             if(delta > 100) delta = 1000/60;
 
-            state.zoom += (state.targetZoom - state.zoom) * 0.05;
-            state.timeScale += (state.targetTimeScale - state.timeScale) * 0.05;
-
             if(!state.running) return;
 
-            Engine.update(eng, delta * state.timeScale);
+            Engine.update(eng, delta);
 
-            state.arenaRot += state.rotSpeed * state.timeScale;
-            Body.setAngle(arenaBody, state.arenaRot);
-            Body.setPosition(arenaBody, {x: cx, y: cy});
+            state.arenaRot += state.rotSpeed;
+            const omega = state.rotSpeed / (delta / 1000); 
+
+            const limit = FIXED_GAP / 2;
+            const hideLimit = limit + ((Math.PI * 2) / NUM_SEGMENTS * 0.5);
+
+            arenaSegments.forEach(seg => {
+                let norm = seg.baseAngle;
+                if (norm > Math.PI) norm -= Math.PI * 2;
+
+                if (Math.abs(norm) < hideLimit) {
+                    Body.setPosition(seg.body, {x: -2000, y: -2000}); 
+                } else {
+                    const a = seg.baseAngle + state.arenaRot;
+                    const outerRad = rad + 25; // 50 (thick) / 2
+                    const px = cx + Math.cos(a)*outerRad;
+                    const py = cy + Math.sin(a)*outerRad;
+                    Body.setPosition(seg.body, {x: px, y: py});
+                    Body.setAngle(seg.body, a);
+                    
+                    Body.setVelocity(seg.body, {
+                        x: -Math.sin(a) * outerRad * omega,
+                        y: Math.cos(a) * outerRad * omega
+                    });
+                }
+            });
 
             for(let i = state.balls.length-1; i>=0; i--) {
                 const b = state.balls[i];
                 const distCenter = Math.hypot(b.position.x - cx, b.position.y - cy);
                 
-                if(b.speed < 0.5) {
+                // MIKRO-IMPULS (Balans dla ostatnich piłek, załamuje powtarzające się pętle)
+                if(b.speed < 1.0) {
                     const nudgeAngle = Math.atan2(cy - b.position.y, cx - b.position.x);
-                    const nudgeForce = 0.000015 * b.mass;
+                    const nudgeForce = 0.00002 * b.mass;
                     Body.applyForce(b, b.position, {x: Math.cos(nudgeAngle)*nudgeForce, y: Math.sin(nudgeAngle)*nudgeForce});
                 }
                 
-                if(distCenter > rad + 60) {
+                // Eliminacja - działa bezbłędnie z brakiem dolnej ściany
+                if(distCenter > rad + 40) {
                     const t = b.tData;
                     Composite.remove(eng.world, b); state.balls.splice(i, 1);
                     document.body.classList.remove('shake-active'); void document.body.offsetWidth; document.body.classList.add('shake-active');
                     
                     sndEliminate(); 
                     showElim(`${t.n.toUpperCase()} ELIMINATED!`);
-                    logEvent(t.n);
                     
                     updateUI(); checkMilestones();
                 }
@@ -701,8 +635,8 @@
             const rem = state.balls.length;
             if(rem === 10 && !state.m10) { state.m10 = true; showText("FINAL 10", "text-accent", 2000); sndEvent(); }
             if(rem === 5 && !state.m5) { state.m5 = true; showText("FINAL 5", "text-danger", 2000); sndEvent(); }
-            if(rem === 3 && !state.m3) { state.m3 = true; showText("FINAL 3", "text-danger", 2000); sndEvent(); state.targetTimeScale = 0.6; }
-            if(rem === 2 && !state.m2) { state.m2 = true; showText("FINAL DUEL", "text-gold", 3000); sndEvent(); state.targetTimeScale = 0.4; state.targetZoom = 1.35; document.getElementById('center-labels').style.opacity = '0'; }
+            if(rem === 3 && !state.m3) { state.m3 = true; showText("FINAL 3", "text-danger", 2000); sndEvent(); }
+            if(rem === 2 && !state.m2) { state.m2 = true; showText("FINAL DUEL", "text-gold", 3000); sndEvent(); document.getElementById('center-labels').style.opacity = '0'; }
             if(rem === 1) handleWin();
         }
 
@@ -749,7 +683,7 @@
 
         document.getElementById('btn-action').onclick = () => { state.running ? pauseSim() : startSim(); };
         document.getElementById('btn-reset').onclick = () => { if(confirm("Reset match to Round 1?")) { pauseSim(); initData(); spawn(); document.getElementById('btn-action').innerHTML = "▶ START GAME"; } };
-        document.getElementById('sel-target').onchange = (e) => { state.target = parseInt(e.target.value); document.getElementById('ft-pts').innerText = `${state.target} POINTS`; };
+        document.getElementById('sel-target').onchange = (e) => { state.target = parseInt(e.target.value); };
         document.getElementById('chk-auto').onchange = (e) => { state.auto = e.target.checked; };
 
         let rOpen = false;
