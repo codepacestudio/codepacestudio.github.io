@@ -6,160 +6,142 @@
 <title>World Cup 2026 Mobile Flag Arena</title>
 <style>
 :root {
-  --bg: #f4f6f9; --bg2: #ffffff; --panel: rgba(255,255,255,0.92); --panel2: rgba(245,247,250,0.95);
-  --cyan: #0077b6; --blue: #023e8a; --red: #d90429; --green: #2a9d8f; --gold: #f4a261; --purple: #6a0dad;
-  --muted: #6c757d; --text: #1a1a1a; --border: rgba(0,0,0,0.1); --shadow: 0 12px 40px rgba(0,0,0,0.12);
+  --bg: #f4f6f9; --bg2: #ffffff;
+  --cyan: #0077b6; --blue: #023e8a; --red: #d90429; --green: #2a9d8f; --gold: #f4a261;
+  --muted: #6c757d; --text: #1a1a1a; --border: rgba(0,0,0,0.08);
 }
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; user-select: none; }
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: Inter, "Segoe UI", system-ui, sans-serif; -webkit-tap-highlight-color: transparent; user-select: none; }
 html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg); color: var(--text); }
-body { position: fixed; inset: 0; height: 100dvh; background: radial-gradient(circle at 50% 15%, rgba(0,119,182,0.08), transparent 40%), linear-gradient(180deg, #f4f6f9, #e9ecef); }
 
-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+#app {
+  display: flex;
+  flex-direction: row;
+  width: 100vw;
+  height: 100dvh;
+}
+
+#gameBox {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 50%, rgba(0,119,182,0.05), transparent 60%), #f4f6f9;
+}
+
+#uiBox {
+  width: 380px;
+  background: var(--bg2);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  z-index: 10;
+  box-shadow: -5px 0 20px rgba(0,0,0,0.04);
+}
+
+canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: block; }
 #bgCanvas { z-index: 1; }
 #gameCanvas { z-index: 2; }
-#trophyBg { position: absolute; inset: 0; z-index: 1; display: flex; align-items: center; justify-content: center; font-size: 55vh; opacity: 0.04; pointer-events: none; filter: grayscale(100%); }
 
 #loader { position: absolute; inset: 0; z-index: 200; background: var(--bg2); display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 16px; text-align: center; }
-.loaderBall { width: 82px; height: 82px; border: 5px solid rgba(0,0,0,0.08); border-top-color: var(--cyan); border-right-color: var(--red); border-bottom-color: var(--green); border-radius: 50%; animation: spin 1s linear infinite; box-shadow: 0 0 25px rgba(0,119,182,0.2); }
+.loaderBall { width: 82px; height: 82px; border: 5px solid var(--border); border-top-color: var(--cyan); border-right-color: var(--red); border-bottom-color: var(--green); border-radius: 50%; animation: spin 1s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
-.loaderTitle { font-weight: 1000; letter-spacing: 3px; text-transform: uppercase; color: var(--cyan); }
-.loaderSub { font-size: .72rem; color: var(--muted); font-weight: 900; letter-spacing: 2px; text-transform: uppercase; }
+.loaderTitle { font-weight: 1000; letter-spacing: 2px; text-transform: uppercase; color: var(--cyan); }
 
-#flash { position: absolute; inset: 0; background: radial-gradient(circle, rgba(244,162,97,0.4) 0%, rgba(217,4,41,0.2) 50%, transparent 100%); opacity: 0; z-index: 90; pointer-events: none; transition: .15s; }
-@keyframes shake { 0%, 100% { transform: translate(0); } 25% { transform: translate(-3px, 2px); } 50% { transform: translate(3px, -2px); } 75% { transform: translate(-2px, -1px); } }
-.shake { animation: shake .22s both; }
+.hudHeader { padding: 20px 20px 10px; text-align: center; border-bottom: 1px solid var(--border); }
+.headline { font-size: 1.6rem; font-weight: 1000; letter-spacing: 2px; text-transform: uppercase; background: linear-gradient(90deg, var(--cyan), var(--red)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 4px; }
+.flagsRemain { font-size: 0.8rem; color: var(--muted); font-weight: 800; text-transform: uppercase; }
+.flagsRemain span { color: var(--red); font-size: 1rem; }
 
-#ui { position: absolute; inset: 0; z-index: 10; pointer-events: none; display: flex; flex-direction: column; justify-content: space-between; padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom); }
-.glass { background: var(--panel); border: 1px solid var(--border); box-shadow: var(--shadow); backdrop-filter: blur(18px); color: var(--text); }
+.statsGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 15px 20px; background: rgba(0,0,0,0.02); border-bottom: 1px solid var(--border); }
+.statBox { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 10px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+.statLabel { font-size: 0.65rem; color: var(--muted); font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
+.statValue { font-size: 1.6rem; font-weight: 1000; color: var(--cyan); margin-top: 4px; }
+.statValue.small { font-size: 1rem; margin-top: 8px; color: var(--text); }
 
-#topHud { width: 100%; padding: 10px 10px 0; display: grid; grid-template-columns: 52px 1fr 132px; gap: 8px; align-items: start; pointer-events: auto; }
-.iconBtn, .textBtn { height: 50px; border: 1px solid var(--border); border-radius: 17px; background: var(--bg2); color: var(--text); font-weight: 1000; letter-spacing: 1.6px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); cursor: pointer; }
-.iconBtn { width: 52px; font-size: 1.2rem; }
-.textBtn { font-size: .72rem; text-transform: uppercase; padding: 0 12px; }
+.controls { padding: 15px 20px; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px; }
+.mainBtn { width: 100%; min-height: 54px; border: 0; border-radius: 14px; background: linear-gradient(90deg, var(--cyan), var(--blue)); color: white; font-size: 1rem; font-weight: 1000; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; box-shadow: 0 6px 15px rgba(0,119,182,0.25); transition: 0.2s; }
+.mainBtn.running { background: linear-gradient(90deg, var(--red), #ff6b6b); box-shadow: 0 6px 15px rgba(217,4,41,0.25); }
+.controlRow { display: flex; gap: 8px; }
+.selectBox { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 5px 10px; display: flex; flex-direction: column; justify-content: center; }
+.selectBox label { font-size: 0.55rem; font-weight: 900; color: var(--muted); text-transform: uppercase; }
+.selectBox select { background: transparent; border: 0; outline: 0; font-size: 0.95rem; font-weight: 1000; color: var(--text); }
+.autoToggle { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.8rem; font-weight: 900; color: var(--text); text-transform: uppercase; }
+.resetBtn { flex: 1; background: white; border: 1px solid var(--border); border-radius: 10px; color: var(--red); font-size: 0.8rem; font-weight: 900; text-transform: uppercase; cursor: pointer; }
 
-.scoreWrap { grid-column: 1/4; grid-row: 2; display: flex; flex-direction: column; align-items: center; }
-.scorePill { display: flex; align-items: center; justify-content: center; gap: 18px; border-radius: 22px; padding: 9px 22px; min-width: min(92vw, 470px); background: var(--panel2); }
-.scoreBox { text-align: center; min-width: 86px; }
-.scoreLabel { font-size: .64rem; color: var(--muted); font-weight: 1000; letter-spacing: 2px; text-transform: uppercase; }
-.scoreValue { font-size: 2rem; line-height: 1; font-weight: 1000; color: var(--cyan); margin-top: 4px; }
-.scoreDivider { width: 1px; height: 44px; background: var(--border); }
-.livePill { position: relative; top: -4px; border-radius: 0 0 22px 22px; padding: 7px 12px; display: flex; gap: 12px; justify-content: center; align-items: center; color: var(--muted); font-size: .63rem; font-weight: 1000; letter-spacing: 1.4px; text-transform: uppercase; background: rgba(0,0,0,0.04); border-top: 0; max-width: 92vw; border: 1px solid var(--border); }
-.livePill strong { color: var(--blue); }
-.livePill span { color: var(--purple); }
-
-#bottomHud { width: 100%; padding: 0 12px 14px; display: flex; flex-direction: column; align-items: center; pointer-events: auto; }
-#hero { width: 100%; text-align: center; margin-bottom: 8px; transition: .22s; pointer-events: none; }
-body.playing #hero { height: 0; margin: 0; opacity: 0; overflow: hidden; transform: translateY(12px); }
-.flagsRemain { font-size: .76rem; color: var(--muted); font-weight: 1000; letter-spacing: 2.6px; text-transform: uppercase; }
-.flagsRemain span { color: var(--red); font-size: 1.2rem; }
-.headline { font-size: clamp(1.9rem, 7.8vw, 4rem); font-weight: 1000; letter-spacing: 4px; line-height: .96; text-transform: uppercase; background: linear-gradient(90deg, var(--cyan), var(--purple), var(--red)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-
-#controls { width: 100%; max-width: 780px; border-radius: 24px; padding: 12px; }
-.controlRow { display: flex; gap: 10px; align-items: center; justify-content: center; flex-wrap: wrap; }
-.mainBtn { min-width: 100%; order: 1; min-height: 58px; border: 0; border-radius: 18px; background: linear-gradient(90deg, var(--cyan), var(--blue)); box-shadow: 0 8px 20px rgba(0,119,182,0.3); color: white; font-size: 1rem; font-weight: 1000; letter-spacing: 2.2px; text-transform: uppercase; cursor: pointer; }
-.mainBtn.running { background: linear-gradient(90deg, var(--red), #ff6b6b); box-shadow: 0 8px 20px rgba(217,4,41,0.3); }
-.selectBox { order: 2; min-height: 50px; min-width: 108px; border-radius: 16px; background: rgba(0,0,0,0.03); border: 1px solid var(--border); padding: 7px 11px; display: flex; flex-direction: column; justify-content: center; }
-.selectBox label { font-size: .56rem; font-weight: 1000; letter-spacing: 1.8px; color: var(--muted); text-transform: uppercase; }
-.selectBox select { background: transparent; color: var(--text); border: 0; outline: 0; font-size: 1.12rem; font-weight: 1000; }
-.autoToggle { order: 2; min-height: 50px; display: flex; align-items: center; gap: 9px; font-weight: 1000; letter-spacing: 1.25px; white-space: nowrap; color: var(--text); }
-.autoToggle input { width: 20px; height: 20px; accent-color: var(--cyan); }
-.resetBtn { order: 2; flex: 1; min-height: 50px; border-radius: 16px; border: 1px solid var(--border); background: var(--bg2); color: var(--red); font-size: .86rem; font-weight: 1000; letter-spacing: 1.3px; padding: 0 16px; cursor: pointer; }
-
-.sidePanel { position: absolute; top: 142px; left: 4vw; right: 4vw; width: 92vw; max-height: 50dvh; overflow: auto; border-radius: 22px; padding: 17px; z-index: 60; pointer-events: auto; transition: .22s; }
-.sidePanel.hidden { opacity: 0; transform: translateY(-8px) scale(.96); pointer-events: none; }
-.panelTitle { text-align: center; font-size: .72rem; font-weight: 1000; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
-.row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.rankingHeader { padding: 15px 20px 10px; font-size: 0.75rem; font-weight: 1000; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; }
+.rankingList { flex: 1; overflow-y: auto; padding: 0 20px 20px; }
+.rankingList::-webkit-scrollbar { width: 6px; }
+.rankingList::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 10px; }
+.row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
 .row:last-child { border-bottom: 0; }
-.rankNum { width: 24px; color: var(--muted); font-weight: 1000; }
-.flagIcon { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border); }
-.rowName { flex: 1; font-size: .86rem; font-weight: 850; color: var(--text); }
-.rowScore { font-size: 1.05rem; font-weight: 1000; color: var(--cyan); }
+.rankNum { width: 20px; color: var(--muted); font-weight: 1000; text-align: center; font-size: 0.9rem; }
+.flagIcon { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+.rowName { flex: 1; font-size: 0.9rem; font-weight: 800; }
+.rowScore { font-size: 1.1rem; font-weight: 1000; color: var(--cyan); }
 
 #toastLayer { position: absolute; left: 50%; top: 40%; transform: translate(-50%, -50%); z-index: 70; width: 100%; text-align: center; pointer-events: none; }
-.bigText { max-width: 96vw; margin: 0 auto; font-size: clamp(2.15rem, 8vw, 5.6rem); line-height: 1.04; font-weight: 1000; text-transform: uppercase; letter-spacing: 3px; opacity: 0; transform: scale(.65); transition: .34s cubic-bezier(.18,.89,.32,1.28); text-shadow: 0 10px 30px rgba(0,0,0,.2); }
+.bigText { max-width: 90vw; margin: 0 auto; font-size: clamp(2.5rem, 6vw, 5rem); line-height: 1.1; font-weight: 1000; text-transform: uppercase; letter-spacing: 3px; opacity: 0; transform: scale(.65); transition: .3s cubic-bezier(.18,.89,.32,1.28); text-shadow: 0 10px 30px rgba(0,0,0,.15); }
 .bigText.show { opacity: 1; transform: scale(1); }
 .goldText { color: var(--gold); }
-.redText { color: var(--red); }
 .cyanText { color: var(--cyan); }
-.elimBanner { position: absolute; top: -110px; left: 0; width: 100vw; padding: 12px 0; background: linear-gradient(90deg, transparent, rgba(217,4,41,0.9), rgba(244,162,97,0.9), transparent); color: white; font-size: clamp(1rem, 4.2vw, 1.85rem); font-weight: 1000; letter-spacing: 3px; text-transform: uppercase; opacity: 0; transition: .22s; text-shadow: 0 4px 10px rgba(0,0,0,.5); }
-.elimBanner.show { top: 15dvh; opacity: 1; }
+.redText { color: var(--red); }
 
-@media (min-width: 769px) {
-  #topHud { grid-template-columns: 58px 1fr 150px; padding: 14px 18px 0; }
-  .scoreWrap { grid-column: 2; grid-row: 1; }
-  .scorePill { min-width: 470px; padding: 10px 30px; gap: 28px; }
-  .livePill { font-size: .68rem; }
-  .iconBtn { width: 58px; }
-  .textBtn { font-size: .78rem; }
-  .mainBtn { min-width: 0; order: 3; flex: 1; }
-  .selectBox, .autoToggle, .resetBtn { order: 1; }
-  .resetBtn { flex: 0 0 auto; }
-  .controlRow { flex-wrap: nowrap; }
-  .sidePanel { top: 96px; right: 18px; left: auto; width: 330px; max-height: 58dvh; }
-  .sidePanel.left { right: auto; left: 18px; }
-  .headline { font-size: clamp(2.6rem, 5.2vw, 4.4rem); }
-}
-@media (max-height: 720px) {
-  .headline { font-size: clamp(1.55rem, 6.8vw, 3rem); }
-  #hero { margin-bottom: 5px; }
-  .mainBtn { min-height: 52px; }
-  .selectBox, .autoToggle, .resetBtn { min-height: 46px; }
-  #controls { padding: 10px; }
-  .scoreValue { font-size: 1.82rem; }
-  .scorePill { padding: 8px 18px; }
-  .livePill { font-size: .58rem; }
+.elimBanner { position: absolute; top: -150px; left: 0; width: 100%; padding: 15px 0; background: linear-gradient(90deg, transparent, rgba(217,4,41,0.95), transparent); color: white; font-size: clamp(1.2rem, 3vw, 1.8rem); font-weight: 1000; letter-spacing: 3px; text-transform: uppercase; opacity: 0; transition: .25s; text-shadow: 0 4px 10px rgba(0,0,0,.3); }
+.elimBanner.show { top: 15vh; opacity: 1; }
+
+@media (max-width: 850px) {
+  #app { flex-direction: column; }
+  #uiBox { width: 100%; flex: 1; border-left: none; border-top: 1px solid var(--border); box-shadow: 0 -5px 20px rgba(0,0,0,0.05); }
+  #gameBox { height: 50vh; flex: none; }
+  .statsGrid { padding: 10px; }
+  .controls { padding: 10px; }
+  .rankingList { padding: 0 10px 10px; }
 }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
-<div id="loader"><div class="loaderBall"></div><div class="loaderTitle">World Cup 2026</div><div class="loaderSub">Initializing Arena</div></div>
+<div id="loader"><div class="loaderBall"></div><div class="loaderTitle">World Cup 2026</div></div>
 
-<div id="trophyBg">🏆</div>
-<canvas id="bgCanvas"></canvas>
-<canvas id="gameCanvas"></canvas>
-<div id="flash"></div>
+<div id="app">
+  <div id="gameBox">
+    <canvas id="bgCanvas"></canvas>
+    <canvas id="gameCanvas"></canvas>
+    <div id="toastLayer">
+      <div id="elimBanner" class="elimBanner"></div>
+      <div id="bigText" class="bigText"></div>
+    </div>
+  </div>
 
-<div id="toastLayer">
-  <div id="elimBanner" class="elimBanner"></div>
-  <div id="bigText" class="bigText"></div>
-</div>
-
-<div id="ui">
-  <div id="topHud">
-    <button class="iconBtn" id="statsBtn">📊</button>
-    <div class="scoreWrap">
-      <div class="scorePill glass">
-        <div class="scoreBox"><div class="scoreLabel">Round</div><div class="scoreValue" id="roundVal">1</div></div>
-        <div class="scoreDivider"></div>
-        <div class="scoreBox"><div class="scoreLabel">Remaining</div><div class="scoreValue" id="remainVal">48</div></div>
+  <div id="uiBox">
+    <div class="hudHeader">
+      <div class="headline">World Cup 2026</div>
+      <div class="flagsRemain"><span id="remainHero">48</span> teams remain</div>
+    </div>
+    
+    <div class="statsGrid">
+      <div class="statBox">
+        <div class="statLabel">Round</div>
+        <div class="statValue" id="roundVal">1</div>
       </div>
-      <div class="livePill glass"><div>Match time: <strong id="timerVal">00:00</strong></div><div>Leader: <span id="leaderVal">NONE</span></div></div>
+      <div class="statBox">
+        <div class="statLabel">Leader</div>
+        <div class="statValue small" id="leaderVal">NONE</div>
+      </div>
+      <div class="statBox">
+        <div class="statLabel">Remaining</div>
+        <div class="statValue" id="remainVal">48</div>
+      </div>
+      <div class="statBox">
+        <div class="statLabel">Match Time</div>
+        <div class="statValue small" id="timerVal">00:00</div>
+      </div>
     </div>
-    <button class="textBtn" id="rankingBtn">Ranking</button>
-  </div>
 
-  <div id="rankingPanel" class="sidePanel glass hidden">
-    <div class="panelTitle">World Cup Leaders</div>
-    <div id="rankingList"></div>
-  </div>
-
-  <div id="statsPanel" class="sidePanel glass hidden left">
-    <div class="panelTitle">Global Statistics</div>
-    <div id="statsList"></div>
-    <div class="panelTitle" style="margin-top: 16px">Elimination Feed</div>
-    <div id="feedList"></div>
-  </div>
-
-  <div id="bottomHud">
-    <div id="hero">
-      <div class="flagsRemain"><span id="remainHero">48</span> flags remain</div>
-      <div class="headline">Who will win?</div>
-    </div>
-    <div id="controls" class="glass">
+    <div class="controls">
+      <button id="mainBtn" class="mainBtn">Start Match</button>
       <div class="controlRow">
         <div class="selectBox">
-          <label for="targetSelect">First to</label>
+          <label>First to</label>
           <select id="targetSelect">
             <option value="3">3</option>
             <option value="5" selected>5</option>
@@ -167,11 +149,13 @@ body.playing #hero { height: 0; margin: 0; opacity: 0; overflow: hidden; transfo
             <option value="10">10</option>
           </select>
         </div>
-        <label class="autoToggle"><input type="checkbox" id="autoCheck"> Auto live</label>
-        <button id="mainBtn" class="mainBtn">Start Match</button>
+        <label class="autoToggle"><input type="checkbox" id="autoCheck"> Auto</label>
         <button id="resetBtn" class="resetBtn">Reset</button>
       </div>
     </div>
+
+    <div class="rankingHeader">Tournament Leaderboard</div>
+    <div id="rankingList" class="rankingList"></div>
   </div>
 </div>
 
@@ -182,10 +166,20 @@ const TEAM_DATA = [
 
 const BASE_TEAMS = TEAM_DATA.map(([n, c]) => ({ n, c, s: 0 }));
 const $ = id => document.getElementById(id);
-const CFG = { gap: Math.PI * 0.135, wallRest: 0.98, ballRest: 0.99, maxSpeed: 6.5, gravity: 0.035, damping: 0.9995, subSteps: 8, rotBase: 0.012, rotDuel: 0.018 };
+
+const CFG = { 
+  gap: Math.PI * 0.135, 
+  wallRest: 0.98, 
+  ballRest: 0.99, 
+  maxSpeed: 7.0, 
+  gravity: 0.04, 
+  damping: 0.999, 
+  subSteps: 8, 
+  rotBase: 0.012, 
+  rotDuel: 0.018 
+};
 
 let state = { teams: JSON.parse(JSON.stringify(BASE_TEAMS)), images: {}, round: 1, target: 5, auto: false, running: false, balls: [], rot: 0, rotSpeed: CFG.rotBase, timeMs: 0, feed: [], m: {} };
-let stats = { cups: 0, rounds: 0, fastest: 999999, slowest: 0, wins: {} };
 let canvas = $("gameCanvas"), ctx = canvas.getContext("2d"), bg = $("bgCanvas"), bgx = bg.getContext("2d");
 let cx = 0, cy = 0, rad = 200, last = performance.now(), lastUi = 0;
 let ballCache = {};
@@ -195,20 +189,15 @@ function fmt(ms) { let t = Math.floor(ms / 1000); return String(Math.floor(t / 6
 
 function load() {
   try {
-    let s = JSON.parse(localStorage.getItem("wc26_light_v1") || "{}");
+    let s = JSON.parse(localStorage.getItem("wc26_flex_v1") || "{}");
     if (Array.isArray(s.teams) && s.teams.length === 48) { state.teams = s.teams; state.round = s.round || 1; state.target = s.target || 5; }
-    let st = JSON.parse(localStorage.getItem("wc26_light_stats_v1") || "{}");
-    stats = { cups: st.cups || 0, rounds: st.rounds || 0, fastest: st.fastest || 999999, slowest: st.slowest || 0, wins: st.wins || {} };
   } catch (e) {}
   $("targetSelect").value = String(state.target);
   $("autoCheck").checked = state.auto;
 }
 
 function save() {
-  try {
-    localStorage.setItem("wc26_light_v1", JSON.stringify({ teams: state.teams, round: state.round, target: state.target }));
-    localStorage.setItem("wc26_light_stats_v1", JSON.stringify(stats));
-  } catch (e) {}
+  try { localStorage.setItem("wc26_flex_v1", JSON.stringify({ teams: state.teams, round: state.round, target: state.target })); } catch (e) {}
 }
 
 function updateUI() {
@@ -218,12 +207,7 @@ function updateUI() {
   $("remainHero").textContent = state.balls.length || 48;
   $("leaderVal").textContent = sorted[0].s > 0 ? sorted[0].n.toUpperCase() : "NONE";
   
-  $("rankingList").innerHTML = sorted.slice(0, 12).map((t, i) => `<div class="row"><div class="rankNum">${i + 1}</div><img class="flagIcon" src="https://flagcdn.com/w40/${t.c}.png" onerror="this.style.display='none'"><div class="rowName">${t.n}</div><div class="rowScore">${t.s}</div></div>`).join("");
-  
-  let most = Object.keys(stats.wins).sort((a, b) => stats.wins[b] - stats.wins[a])[0];
-  $("statsList").innerHTML = `<div class="row"><div class="rowName">Completed Cups</div><div class="rowScore">${stats.cups}</div></div><div class="row"><div class="rowName">Total Rounds</div><div class="rowScore">${stats.rounds}</div></div><div class="row"><div class="rowName">Fastest Round</div><div class="rowScore">${stats.fastest === 999999 ? "--" : fmt(stats.fastest)}</div></div><div class="row"><div class="rowName">Longest Round</div><div class="rowScore">${stats.slowest ? fmt(stats.slowest) : "--"}</div></div><div class="row"><div class="rowName">Most Championships</div><div class="rowScore">${most ? most + " (" + stats.wins[most] + ")" : "--"}</div></div>`;
-  
-  $("feedList").innerHTML = state.feed.slice(0, 10).map(x => `<div class="row"><div class="rankNum" style="color:var(--red)">#${x.place}</div><div class="rowName">${x.name}</div></div>`).join("") || `<div style="text-align:center;color:var(--muted);font-weight:900;font-size:.82rem">No eliminations yet</div>`;
+  $("rankingList").innerHTML = sorted.map((t, i) => `<div class="row"><div class="rankNum">${i + 1}</div><img class="flagIcon" src="https://flagcdn.com/w40/${t.c}.png" onerror="this.style.display='none'"><div class="rowName">${t.n}</div><div class="rowScore">${t.s}</div></div>`).join("");
 }
 
 function fallback(code) {
@@ -262,46 +246,44 @@ function preload() {
 }
 
 function resizeAll() {
+  let rect = $("gameBox").getBoundingClientRect();
   let dpr = devicePixelRatio || 1;
-  canvas.width = Math.floor(innerWidth * dpr);
-  canvas.height = Math.floor(innerHeight * dpr);
-  bg.width = Math.floor(innerWidth * dpr);
-  bg.height = Math.floor(innerHeight * dpr);
+  canvas.width = Math.floor(rect.width * dpr);
+  canvas.height = Math.floor(rect.height * dpr);
+  bg.width = Math.floor(rect.width * dpr);
+  bg.height = Math.floor(rect.height * dpr);
   ctx.scale(dpr, dpr);
   bgx.scale(dpr, dpr);
-  layoutArena();
-  drawBg();
+  layoutArena(rect);
+  drawBg(rect);
 }
 
-function layoutArena() {
-  let top = $("topHud").getBoundingClientRect().bottom + 10;
-  let bottom = $("bottomHud").getBoundingClientRect().top - 10;
-  let h = Math.max(160, bottom - top);
-  cx = innerWidth / 2;
-  cy = top + h / 2;
-  let side = innerWidth * (innerWidth < 700 ? .445 : .43), height = h * .47;
-  rad = Math.floor(Math.max(108, Math.min(side, height, innerWidth < 400 ? 318 : 400)));
+function layoutArena(rect) {
+  if (!rect) rect = $("gameBox").getBoundingClientRect();
+  cx = rect.width / 2;
+  cy = rect.height / 2;
+  rad = Math.floor(Math.min(rect.width, rect.height) * 0.42);
+  if (rad < 80) rad = 80;
 }
 window.addEventListener("resize", () => setTimeout(resizeAll, 120));
 
-function drawBg() {
-  bgx.clearRect(0, 0, innerWidth, innerHeight);
-  let t = performance.now() * .0002;
-  
-  // World Cup 2026 aesthetics back orbs
-  let colors = ["rgba(42, 157, 143, 0.08)", "rgba(217, 4, 41, 0.06)", "rgba(106, 13, 173, 0.07)"];
+function drawBg(rect) {
+  if (!rect) rect = $("gameBox").getBoundingClientRect();
+  bgx.clearRect(0, 0, rect.width, rect.height);
+  let t = performance.now() * .0005;
   for(let i=0; i<3; i++) {
-    bgx.fillStyle = colors[i];
     bgx.beginPath();
-    let ox = cx + Math.sin(t + i*2) * rad * 0.9;
-    let oy = cy + Math.cos(t + i*3) * rad * 0.9;
-    bgx.arc(ox, oy, rad * 0.8, 0, Math.PI * 2);
-    bgx.fill();
+    bgx.arc(cx, cy, rad + i*35 + Math.sin(t + i)*5, 0, Math.PI * 2);
+    bgx.strokeStyle = `rgba(0, 119, 182, ${0.06 - i*0.015})`;
+    bgx.lineWidth = 2;
+    bgx.stroke();
   }
 }
 
 function spawn(keepPlaying = false) {
-  if (!keepPlaying) document.body.classList.remove("playing");
+  if (!keepPlaying) {
+    state.rot = 0;
+  }
   layoutArena();
   state.balls = [];
   state.feed = [];
@@ -309,14 +291,16 @@ function spawn(keepPlaying = false) {
   state.timeMs = 0;
   state.rotSpeed = CFG.rotBase;
   lastUi = 0;
-  let br = Math.max(7.4, Math.min(14.5, rad / 18.2));
-  let rings = [[1, 0], [7, br * 2.55], [14, br * 5.25], [26, br * 7.95]], idx = 0;
+  
+  let br = Math.max(10, Math.min(22, rad / 12.5));
+  let rings = [[1, 0], [7, br * 2.8], [14, br * 5.6], [26, br * 8.4]], idx = 0;
+  
   for (let rr = 0; rr < rings.length; rr++) {
     for (let i = 0; i < rings[rr][0] && idx < state.teams.length; i++, idx++) {
       let a = i / rings[rr][0] * Math.PI * 2 + rr * .09 + (Math.random() - .5) * .24;
       state.balls.push({
-        x: cx + Math.cos(a) * rings[rr][1] + (Math.random() - .5) * br * .8,
-        y: cy - 8 + Math.sin(a) * rings[rr][1] + (Math.random() - .5) * br * .8,
+        x: cx + Math.cos(a) * rings[rr][1] + (Math.random() - .5) * br * .5,
+        y: cy - 8 + Math.sin(a) * rings[rr][1] + (Math.random() - .5) * br * .5,
         vx: (Math.random() - .5) * 5.2,
         vy: (Math.random() - .5) * 5.2,
         r: br,
@@ -360,6 +344,7 @@ function wallBounce(b) {
   let local = Math.atan2(dy, dx) - state.rot;
   local = Math.atan2(Math.sin(local), Math.cos(local));
   let inGap = Math.abs(local) < (CFG.gap * 0.5) - (b.r / rad);
+  
   if (inGap && dist > rad) {
     eliminateBall(b);
     return;
@@ -422,13 +407,8 @@ function eliminateBall(b) {
   let place = state.balls.filter(x => !x.dead).length;
   state.feed.unshift({ place, name: b.team.n });
   state.balls = state.balls.filter(x => !x.dead);
-  let flash = $("flash");
-  flash.style.opacity = "1";
-  document.body.offsetWidth;
-  document.body.classList.add("shake");
+  
   banner(b.team.n.toUpperCase() + " ELIMINATED!");
-  setTimeout(() => flash.style.opacity = "0", 150);
-  setTimeout(() => document.body.classList.remove("shake"), 220);
   updateUI();
   milestones();
 }
@@ -453,13 +433,16 @@ function getBallCanvas(r) {
 }
 
 function draw() {
-  ctx.clearRect(0, 0, innerWidth, innerHeight);
+  let rect = $("gameBox").getBoundingClientRect();
+  ctx.clearRect(0, 0, rect.width, rect.height);
+  
   let gh = CFG.gap / 2, start = state.rot + gh, end = state.rot + Math.PI * 2 - gh;
   ctx.beginPath();
   ctx.arc(cx, cy, rad, start, end);
-  ctx.strokeStyle = "rgba(106, 13, 173, 0.9)"; // Purple World Cup Accent
+  ctx.strokeStyle = "rgba(0, 119, 182, 0.9)";
   ctx.lineWidth = 5;
   ctx.stroke();
+  
   for (let b of state.balls) {
     let im = state.images[b.team.c], r = b.r;
     ctx.save();
@@ -523,18 +506,15 @@ function roundWin() {
   btnState();
   let w = state.balls[0].team, idx = state.teams.findIndex(t => t.c === w.c);
   if (idx < 0) return;
+  
   state.teams[idx].s++;
-  stats.rounds++;
-  if (state.timeMs < stats.fastest) stats.fastest = state.timeMs;
-  if (state.timeMs > stats.slowest) stats.slowest = state.timeMs;
   let champ = state.teams[idx].s >= state.target;
   save();
   updateUI();
+  
   if (champ) {
-    stats.cups++;
-    stats.wins[w.n] = (stats.wins[w.n] || 0) + 1;
     save();
-    if (typeof confetti === "function") confetti({ particleCount: 650, spread: 280, startVelocity: 45, origin: { y: .48 }, zIndex: 1000, colors: ["#0077b6", "#d90429", "#2a9d8f", "#f4a261", "#6a0dad"] });
+    if (typeof confetti === "function") confetti({ particleCount: 650, spread: 280, startVelocity: 45, origin: { y: .48 }, zIndex: 1000, colors: ["#0077b6", "#d90429", "#2a9d8f", "#f4a261"] });
     big(`${w.n.toUpperCase()}<br>WORLD CHAMPIONS!`, "goldText", 7200);
     setTimeout(() => { state.teams = cloneTeams(); state.round = 1; save(); spawn(); autoNext(); }, 7800);
   } else {
@@ -551,7 +531,6 @@ function btnState() {
 }
 
 function start() {
-  document.body.classList.add("playing");
   layoutArena();
   if (state.timeMs === 0 || state.balls.length <= 1) spawn(true);
   state.running = true;
@@ -561,7 +540,7 @@ function start() {
 
 function pause() {
   state.running = false;
-  $("mainBtn").textContent = "► Resume Game";
+  $("mainBtn").textContent = "Resume Game";
   btnState();
 }
 
@@ -574,7 +553,6 @@ $("mainBtn").onclick = () => state.running ? pause() : start();
 $("resetBtn").onclick = () => {
   if (confirm("Reset championship to Round 1?")) {
     pause();
-    document.body.classList.remove("playing");
     state.teams = cloneTeams();
     state.round = 1;
     save();
@@ -586,8 +564,6 @@ $("resetBtn").onclick = () => {
 };
 $("targetSelect").onchange = e => { state.target = parseInt(e.target.value, 10) || 5; save(); updateUI(); };
 $("autoCheck").onchange = e => { state.auto = e.target.checked; save(); };
-$("rankingBtn").onclick = () => { $("statsPanel").classList.add("hidden"); $("rankingPanel").classList.toggle("hidden"); };
-$("statsBtn").onclick = () => { $("rankingPanel").classList.add("hidden"); $("statsPanel").classList.toggle("hidden"); };
 
 window.onload = preload;
 </script>
