@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>World Cup 2026 Simulator - Flawless Core</title>
+    <title>World Cup 2026 Simulator - Broadcast Edition</title>
     <style>
         :root {
-            --bg-base: #060913;
-            --panel-bg: rgba(13, 20, 40, 0.7);
-            --border-color: rgba(255, 255, 255, 0.1);
+            --bg-base: #060a1a;
+            --panel-bg: rgba(11, 17, 36, 0.85);
+            --border-color: rgba(0, 229, 255, 0.2);
             --accent-cyan: #00e5ff;
-            --accent-glow: rgba(0, 229, 255, 0.5);
+            --accent-purple: #b026ff;
+            --accent-glow: rgba(0, 229, 255, 0.6);
             --text-main: #ffffff;
             --text-muted: #8892b0;
             --danger: #ff4757;
@@ -42,7 +43,7 @@
             top: 0; left: 0;
             width: 100%; height: 100%;
         }
-        #bg-canvas { z-index: 1; opacity: 0.8; }
+        #bg-canvas { z-index: 1; }
         #physics-canvas { z-index: 2; }
 
         @keyframes shake {
@@ -65,6 +66,7 @@
             justify-content: space-between;
         }
 
+        /* --- TOP BAR --- */
         .top-bar {
             display: flex;
             justify-content: space-between;
@@ -72,6 +74,12 @@
             padding: 15px 20px;
             pointer-events: auto;
             width: 100%;
+            z-index: 30;
+        }
+
+        .left-actions, .right-actions {
+            display: flex;
+            gap: 10px;
         }
 
         .icon-btn {
@@ -79,157 +87,206 @@
             border: 1px solid var(--border-color);
             color: white;
             width: 44px; height: 44px;
-            border-radius: 10px;
+            border-radius: 12px;
             font-size: 1.2rem;
             cursor: pointer;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
             display: flex; justify-content: center; align-items: center;
             transition: 0.2s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
-        .icon-btn:hover { background: rgba(255,255,255,0.15); }
+        .icon-btn:hover { background: rgba(0, 229, 255, 0.1); border-color: var(--accent-cyan); }
 
         .score-pill {
             display: flex;
             background: var(--panel-bg);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
+            border-radius: 14px;
             padding: 8px 30px;
             backdrop-filter: blur(15px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.6);
             gap: 30px;
         }
         .score-half { display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .score-half .label { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 1px; font-weight: 600; text-transform: uppercase;}
-        .score-half .value { font-size: 1.8rem; font-weight: 900; color: var(--accent-cyan); line-height: 1.1; text-shadow: 0 0 10px var(--accent-glow); }
-        .divider { width: 1px; background: var(--border-color); margin: 4px 0; }
+        .score-half .label { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 1px; font-weight: 700; text-transform: uppercase;}
+        .score-half .value { font-size: 1.8rem; font-weight: 900; color: var(--accent-cyan); line-height: 1.1; text-shadow: 0 0 15px var(--accent-glow); }
+        .divider { width: 1px; background: rgba(255,255,255,0.1); margin: 4px 0; }
 
-        .btn-ranking {
+        .text-btn {
             background: var(--panel-bg);
             border: 1px solid var(--border-color);
             color: white;
-            padding: 10px 15px;
-            border-radius: 10px;
-            font-weight: bold;
+            padding: 0 16px;
+            height: 44px;
+            border-radius: 12px;
+            font-weight: 800;
             font-size: 0.75rem;
             cursor: pointer;
             backdrop-filter: blur(15px);
             display: flex; align-items: center; gap: 8px; letter-spacing: 1px;
             transition: 0.2s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
-        .btn-ranking:hover { border-color: var(--accent-cyan); color: var(--accent-cyan); }
+        .text-btn:hover { border-color: var(--accent-cyan); color: var(--accent-cyan); box-shadow: 0 0 15px var(--accent-glow);}
 
-        .ranking-panel {
+        /* --- OVERLAYS & PANELS --- */
+        .live-overlay {
             position: absolute;
-            top: 70px; right: 20px;
-            width: 240px;
-            background: rgba(6, 9, 19, 0.7); 
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 15px;
-            backdrop-filter: blur(20px); 
-            -webkit-backdrop-filter: blur(20px);
-            transition: all 0.3s ease;
+            top: 80px; left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 6px 20px;
+            display: flex;
+            gap: 20px;
+            backdrop-filter: blur(10px);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            z-index: 20;
+        }
+        .live-stat { display: flex; align-items: center; gap: 8px; color: var(--text-muted); }
+        .live-val { color: var(--accent-cyan); font-weight: 900; }
+        .live-val.timer { color: white; }
+
+        .side-panel {
+            position: absolute;
+            top: 80px; right: 20px;
+            width: 280px;
+            background: rgba(6, 10, 24, 0.95);
+            border: 1px solid var(--accent-cyan);
+            border-radius: 16px;
+            padding: 20px;
+            backdrop-filter: blur(25px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.9);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             transform-origin: top right;
             pointer-events: auto;
-            z-index: 50;
+            max-height: 60vh;
+            overflow-y: auto;
+            z-index: 40;
+            display: flex; flex-direction: column; gap: 10px;
         }
-        .ranking-panel.hidden { transform: scale(0.9) translateY(-10px); opacity: 0; pointer-events: none; }
-        .lb-title { text-align: center; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 12px; letter-spacing: 2px; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.8);}
-        .lb-row { display: flex; align-items: center; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .side-panel.hidden { transform: scale(0.9) translateY(-10px); opacity: 0; pointer-events: none; }
+        .side-panel.left { right: auto; left: 20px; transform-origin: top left; }
+        
+        .panel-title { text-align: center; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px; letter-spacing: 2px; font-weight: 800; text-transform: uppercase;}
+        
+        /* Ranking rows */
+        .lb-row { display: flex; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .lb-row:last-child { border-bottom: none; }
-        .lb-rank { width: 20px; color: var(--accent-cyan); font-weight: bold; font-size: 0.8rem; text-shadow: 0 1px 2px rgba(0,0,0,0.8);}
-        .lb-flag { width: 20px; height: 20px; border-radius: 50%; object-fit: cover; margin-right: 10px; border: 1px solid rgba(255,255,255,0.2); }
-        .lb-name { flex: 1; font-size: 0.8rem; font-weight: 600; text-shadow: 0 1px 3px rgba(0,0,0,0.8);}
-        .lb-score { font-weight: bold; color: var(--gold); font-size: 0.9rem; text-shadow: 0 1px 3px rgba(0,0,0,0.8);}
+        .lb-rank { width: 25px; color: var(--accent-cyan); font-weight: 900; font-size: 0.9rem; }
+        .lb-flag { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; margin-right: 12px; border: 1px solid rgba(255,255,255,0.2); }
+        .lb-name { flex: 1; font-size: 0.9rem; font-weight: 700; text-shadow: 0 1px 3px rgba(0,0,0,0.8);}
+        .lb-score { font-weight: 900; color: var(--gold); font-size: 1.1rem; }
 
+        /* Stats rows */
+        .stat-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.8rem;}
+        .stat-label { color: var(--text-muted); font-weight: 600; }
+        .stat-val { color: var(--accent-cyan); font-weight: 900; }
+
+        /* --- BOTTOM AREA --- */
         .bottom-container {
             width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 0 15px 15px 15px;
-            gap: 12px;
+            padding: 0 15px 25px 15px;
             pointer-events: auto;
-            z-index: 20;
+            z-index: 30;
         }
 
-        .main-controls-box {
-            width: 100%; max-width: 800px;
-            display: flex; flex-direction: column; gap: 12px;
+        .center-hero {
+            text-align: center;
+            margin-bottom: 20px;
+            pointer-events: none;
+            display: flex; flex-direction: column; align-items: center;
+        }
+        .flags-remain { font-size: 0.9rem; color: var(--text-muted); letter-spacing: 2px; font-weight: 700; margin-bottom: 5px; text-shadow: 0 2px 5px rgba(0,0,0,0.8);}
+        .flags-remain span { color: var(--accent-cyan); font-weight: 900; font-size: 1.1rem;}
+        .who-wins { 
+            font-size: 3.5rem; font-weight: 900; letter-spacing: 3px; line-height: 1;
+            background: linear-gradient(135deg, #00e5ff 0%, #b026ff 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 15px rgba(176, 38, 255, 0.4));
+        }
+
+        .controls-panel {
+            width: 100%; max-width: 700px;
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 15px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.8);
+            display: flex; flex-direction: column; gap: 15px;
         }
 
         .action-row {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            background: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 12px 15px;
-            backdrop-filter: blur(15px);
+            display: flex; gap: 15px; align-items: center;
         }
 
-        .select-group { display: flex; flex-direction: column; align-items: flex-start; justify-content: center;}
-        .select-group span { font-size: 0.6rem; color: var(--text-muted); margin-bottom: 2px; text-transform: uppercase; letter-spacing: 1px;}
-        .select-group select { background: rgba(0,0,0,0.5); color: white; border: 1px solid var(--border-color); padding: 8px 12px; border-radius: 6px; font-weight: bold; outline: none; cursor: pointer; font-size: 0.9rem;}
-
-        .auto-toggle { display: flex; align-items: center; gap: 8px; font-size: 0.75rem; font-weight: bold; cursor: pointer; border-left: 1px solid var(--border-color); padding-left: 15px; margin-left: 5px;}
-        .auto-toggle input { width: 16px; height: 16px; accent-color: var(--accent-cyan); cursor: pointer; }
+        .select-group { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; background: rgba(0,0,0,0.3); padding: 8px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05);}
+        .select-group span { font-size: 0.55rem; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px;}
+        .select-group select { background: transparent; color: white; border: none; font-weight: 900; outline: none; cursor: pointer; font-size: 1rem; padding-right: 10px;}
+        
+        .auto-toggle { display: flex; align-items: center; gap: 10px; font-size: 0.8rem; font-weight: 800; cursor: pointer; letter-spacing: 1px;}
+        .auto-toggle input { width: 18px; height: 18px; accent-color: var(--accent-cyan); cursor: pointer; }
 
         .btn-start {
-            flex: 1; padding: 14px; font-weight: 900; font-size: 1rem; border-radius: 8px; cursor: pointer; border: none; text-transform: uppercase; letter-spacing: 1px;
-            background: linear-gradient(90deg, #00e5ff, #0077ff); color: #fff; box-shadow: 0 0 15px rgba(0, 229, 255, 0.4); text-shadow: 0 1px 3px rgba(0,0,0,0.5); transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px;
+            flex: 1; padding: 16px; font-weight: 900; font-size: 1.1rem; border-radius: 12px; cursor: pointer; border: none; text-transform: uppercase; letter-spacing: 2px;
+            background: linear-gradient(90deg, #00e5ff, #0077ff); color: #fff; box-shadow: 0 0 20px var(--accent-glow); text-shadow: 0 2px 4px rgba(0,0,0,0.5); transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 10px;
         }
         .btn-start:active { transform: scale(0.97); }
 
         .btn-reset {
-            background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: white; padding: 14px 20px; border-radius: 8px; font-weight: bold; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.2s;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 0 20px; height: 55px; border-radius: 12px; font-weight: 800; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; letter-spacing: 1px;
         }
-        .btn-reset:hover { background: rgba(255,255,255,0.1); }
+        .btn-reset:hover { background: rgba(255,255,255,0.1); border-color: var(--accent-cyan);}
 
-        #notify-layer { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); z-index: 40; pointer-events: none; width: 100%; display: flex; flex-direction: column; align-items: center; }
+        /* --- DRAMATIC CENTER TEXT --- */
+        #notify-layer { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); z-index: 50; pointer-events: none; width: 100%; display: flex; flex-direction: column; align-items: center; }
         .dramatic-text {
             font-size: 8vw; font-weight: 900; text-transform: uppercase; text-align: center;
             opacity: 0; transform: scale(0.5); transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            text-shadow: 0 10px 30px rgba(0,0,0,0.9); background: -webkit-linear-gradient(#fff, #bbb); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1.1;
+            text-shadow: 0 15px 40px rgba(0,0,0,0.9); background: -webkit-linear-gradient(#fff, #bbb); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1.1;
         }
         .dramatic-text.show { opacity: 1; transform: scale(1); }
-        .text-accent { background: -webkit-linear-gradient(#fff, #00e5ff); -webkit-background-clip: text; filter: drop-shadow(0 0 20px var(--accent-glow)); }
-        .text-danger { background: -webkit-linear-gradient(#ffaaaa, #ff4757); -webkit-background-clip: text; filter: drop-shadow(0 0 30px rgba(255, 71, 87, 0.6)); }
-        .text-gold { background: -webkit-linear-gradient(#fff, #ffd700); -webkit-background-clip: text; filter: drop-shadow(0 0 40px rgba(255, 215, 0, 0.6)); font-size: 10vw;}
+        .text-accent { background: -webkit-linear-gradient(#fff, #00e5ff); -webkit-background-clip: text; filter: drop-shadow(0 0 30px var(--accent-glow)); }
+        .text-danger { background: -webkit-linear-gradient(#ffaaaa, #ff4757); -webkit-background-clip: text; filter: drop-shadow(0 0 40px rgba(255, 71, 87, 0.6)); }
+        .text-gold { background: -webkit-linear-gradient(#fff, #ffd700); -webkit-background-clip: text; filter: drop-shadow(0 0 50px rgba(255, 215, 0, 0.7)); font-size: 10vw;}
 
         .elim-banner {
             position: absolute; top: -100px; background: linear-gradient(90deg, transparent, rgba(255,71,87,0.9), transparent);
-            width: 100vw; text-align: center; padding: 12px 0; font-size: 1.5rem; font-weight: 900; color: white;
-            opacity: 0; transform: scaleY(0); transition: 0.3s; letter-spacing: 2px; text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+            width: 100vw; text-align: center; padding: 15px 0; font-size: 1.8rem; font-weight: 900; color: white;
+            opacity: 0; transform: scaleY(0); transition: 0.3s; letter-spacing: 3px; text-shadow: 0 4px 15px rgba(0,0,0,0.9);
         }
-        .elim-banner.show { opacity: 1; transform: scaleY(1); top: 15vh; }
+        .elim-banner.show { opacity: 1; transform: scaleY(1); top: 12vh; }
 
+        /* Loader */
         #loader {
             position: absolute; top:0; left:0; width:100%; height:100%; background: var(--bg-base); z-index: 200;
-            display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--accent-cyan); font-weight: 900; font-size: 1.2rem; letter-spacing: 2px;
-        }
-
-        .center-labels {
-            text-align: center;
-            margin-bottom: 5px;
-            pointer-events: none;
-        }
-        .flags-remain { font-size: 0.8rem; color: var(--text-muted); letter-spacing: 1px; font-weight: 600; margin-bottom: 2px; }
-        .flags-remain span { color: var(--accent-cyan); font-weight: bold; }
-        .who-wins { 
-            font-size: 2.2rem; font-weight: 900; letter-spacing: 2px; line-height: 1;
-            background: linear-gradient(90deg, #60a5fa, #c084fc);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--accent-cyan); font-weight: 900; font-size: 1.5rem; letter-spacing: 3px;
         }
 
         @media (max-width: 768px) {
-            .top-bar { padding: 10px 15px; }
-            .score-pill { padding: 8px 15px; gap: 15px; }
-            .action-row { flex-wrap: wrap; justify-content: center; padding: 10px; }
-            .btn-start { min-width: 100%; order: 1; padding: 15px; }
-            .select-group, .auto-toggle, .btn-reset { order: 2; margin-top: 5px; }
-            .ranking-panel { right: 15px; top: 65px; }
-            .elim-banner.show { top: 10vh; font-size: 1.2rem; }
+            .top-bar { padding: 10px; flex-wrap: wrap; justify-content: center; gap: 10px;}
+            .left-actions, .right-actions { position: absolute; top: 10px; }
+            .left-actions { left: 10px; } .right-actions { right: 10px; }
+            .score-pill { margin-top: 45px; }
+            .live-overlay { top: 110px; font-size: 0.65rem; padding: 5px 15px;}
+            .who-wins { font-size: 2.2rem; }
+            .action-row { flex-wrap: wrap; justify-content: center; }
+            .btn-start { min-width: 100%; order: 1; }
+            .select-group, .auto-toggle, .btn-reset { order: 2; height: 45px;}
+            .side-panel { width: 90vw; top: 140px; right: 5vw; left: 5vw; max-height: 50vh;}
+            .elim-banner.show { top: 16vh; font-size: 1.2rem; }
+        }
+        @media (max-height: 800px) {
+            .who-wins { font-size: 2rem; }
+            .center-hero { margin-bottom: 10px; }
+            .controls-panel { padding: 10px; gap: 10px;}
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
@@ -237,7 +294,7 @@
 </head>
 <body>
 
-    <div id="loader">LOADING RESOURCES...</div>
+    <div id="loader">INITIALIZING BROADCAST...</div>
     <canvas id="bg-canvas"></canvas>
     <canvas id="physics-canvas"></canvas>
     <div id="flash-overlay"></div>
@@ -249,7 +306,10 @@
 
     <div id="ui-layer">
         <div class="top-bar">
-            <button class="icon-btn">☰</button>
+            <div class="left-actions">
+                <button class="icon-btn" id="btn-stats"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11V3H8v6H2v12h20V11h-6Zm-6-6h4v14h-4V5Zm-6 6h4v8H4v-8Zm16 8h-4v-6h4v6Z"/></svg></button>
+            </div>
+            
             <div class="score-pill">
                 <div class="score-half">
                     <div class="label">ROUND</div>
@@ -261,24 +321,42 @@
                     <div class="value" id="val-rem">48</div>
                 </div>
             </div>
-            <button id="btn-ranking" class="btn-ranking">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M4 22H20C21.1 22 22 21.1 22 20V4C22 2.9 21.1 2 20 2H4C2.9 2 2 2.9 2 4V20C2 21.1 2.9 22 4 22ZM7 14H9V18H7V14ZM11 10H13V18H11V10ZM15 6H17V18H15V6Z"/></svg> 
-                RANKING
-            </button>
+
+            <div class="right-actions">
+                <button id="btn-ranking" class="text-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg> 
+                    RANKING
+                </button>
+            </div>
         </div>
 
-        <div class="ranking-panel hidden" id="ranking-panel">
-            <div class="lb-title">TOP 5</div>
+        <div class="live-overlay" id="live-overlay">
+            <div class="live-stat">MATCH TIME: <span class="live-val timer" id="live-timer">00:00</span></div>
+            <div class="live-stat" style="border-left:1px solid rgba(255,255,255,0.2); padding-left:15px;">LEADER: <span class="live-val" id="live-leader">NONE</span></div>
+        </div>
+
+        <div class="side-panel hidden" id="ranking-panel">
+            <div class="panel-title">WORLD CUP LEADERS</div>
             <div id="lb-content"></div>
         </div>
 
+        <div class="side-panel left hidden" id="stats-panel">
+            <div class="panel-title">GLOBAL STATISTICS</div>
+            <div class="stat-row"><span class="stat-label">Total Matches</span><span class="stat-val" id="stat-matches">0</span></div>
+            <div class="stat-row"><span class="stat-label">Total Rounds</span><span class="stat-val" id="stat-rounds">0</span></div>
+            <div class="stat-row"><span class="stat-label">Fastest Win</span><span class="stat-val" id="stat-fast">--</span></div>
+            <div class="stat-row"><span class="stat-label">Longest Match</span><span class="stat-val" id="stat-slow">--</span></div>
+            <div class="panel-title" style="margin-top: 15px;">MOST WINS</div>
+            <div id="stat-most-wins" style="font-size:0.8rem; text-align:center; color:white; font-weight:bold;">No data</div>
+        </div>
+
         <div class="bottom-container">
-            <div class="center-labels" id="center-labels">
+            <div class="center-hero">
                 <div class="flags-remain"><span id="lbl-rem-num">48</span> FLAGS REMAIN</div>
                 <div class="who-wins">WHO WILL WIN?</div>
             </div>
 
-            <div class="main-controls-box">
+            <div class="controls-panel">
                 <div class="action-row">
                     <div class="select-group">
                         <span>BEST OF</span>
@@ -286,10 +364,11 @@
                             <option value="3">3</option>
                             <option value="5" selected>5</option>
                             <option value="7">7</option>
+                            <option value="10">10</option>
                         </select>
                     </div>
                     <label class="auto-toggle"><input type="checkbox" id="chk-auto"> AUTO LIVE</label>
-                    <button id="btn-action" class="btn-start">▶ START GAME</button>
+                    <button id="btn-action" class="btn-start">▶ START MATCH</button>
                     <button id="btn-reset" class="btn-reset">↻ RESET</button>
                 </div>
             </div>
@@ -316,7 +395,12 @@
             teams: [], images: {}, loaded: 0,
             round: 1, target: 5, auto: false, running: false,
             balls: [], arenaRot: 0, rotSpeed: 0.015,
-            m10: false, m5: false, m3: false, m2: false
+            m10: false, m5: false, m3: false, m2: false,
+            matchTimeMs: 0
+        };
+
+        let stats = {
+            matches: 0, rounds: 0, fastest: 999999, slowest: 0, wins: {}
         };
 
         const FIXED_GAP = Math.PI * 0.12; 
@@ -346,13 +430,13 @@
 
         function sndHit(velocity) {
             const now = performance.now();
-            if(!actx || velocity < 2.0 || now - lastHitTime < 40) return;
+            if(!actx || velocity < 2.0 || now - lastHitTime < 30) return;
             lastHitTime = now;
             playTone(150 + Math.random()*50, 'triangle', 0.1, Math.min(velocity * 0.01, 0.1));
         }
 
         function sndEliminate() { playTone(250, 'sawtooth', 0.3, 0.15, 50); setTimeout(()=>playTone(150, 'square', 0.3, 0.15, 30), 80); }
-        function sndEvent() { playTone(900, 'sine', 1.0, 0.15, 200); }
+        function sndEvent() { playTone(800, 'sine', 1.0, 0.15, 200); }
         function sndWin() { [440, 554, 659, 880].forEach((f, i) => setTimeout(()=>playTone(f, 'square', 0.4, 0.1), i*100)); }
         function sndChampion() {
             [440, 554, 659, 880, 1108, 1318].forEach((f, i) => setTimeout(()=>playTone(f, 'sine', 0.8, 0.15), i*150));
@@ -364,14 +448,24 @@
         let particles = [];
         function initBg() {
             bgCanvas.width = window.innerWidth; bgCanvas.height = window.innerHeight;
-            particles = Array.from({length: 80}, () => ({
+            particles = Array.from({length: 100}, () => ({
                 x: Math.random() * bgCanvas.width, y: Math.random() * bgCanvas.height,
                 s: Math.random() * 1.5 + 0.5, v: Math.random() * 0.3 + 0.1
             }));
         }
         function drawBg() {
             bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
-            bgCtx.fillStyle = 'rgba(0, 229, 255, 0.5)';
+            
+            // Subtle animated gradient background
+            const time = Date.now() * 0.0005;
+            const grad = bgCtx.createLinearGradient(0, 0, bgCanvas.width, bgCanvas.height);
+            grad.addColorStop(0, `rgba(6, 10, 26, 1)`);
+            grad.addColorStop(0.5, `rgba(13, 20, 48, ${0.8 + Math.sin(time)*0.1})`);
+            grad.addColorStop(1, `rgba(6, 10, 26, 1)`);
+            bgCtx.fillStyle = grad;
+            bgCtx.fillRect(0,0, bgCanvas.width, bgCanvas.height);
+
+            bgCtx.fillStyle = 'rgba(0, 229, 255, 0.6)';
             particles.forEach(p => {
                 bgCtx.beginPath(); bgCtx.arc(p.x, p.y, p.s, 0, Math.PI*2); bgCtx.fill();
                 p.y -= p.v; if(p.y < 0) { p.y = bgCanvas.height; p.x = Math.random() * bgCanvas.width; }
@@ -380,26 +474,48 @@
         }
         initBg(); drawBg(); window.addEventListener('resize', initBg);
 
+        function formatTime(ms) {
+            const totalSec = Math.floor(ms / 1000);
+            const m = Math.floor(totalSec / 60).toString().padStart(2, '0');
+            const s = (totalSec % 60).toString().padStart(2, '0');
+            return `${m}:${s}`;
+        }
+
         function loadStorage() {
             try {
-                const sv = localStorage.getItem('wc26_master_v3');
+                const sv = localStorage.getItem('wc26_prod_v1');
                 if(sv) {
                     const p = JSON.parse(sv);
                     state.teams = p.teams || TEAMS.map(t => ({...t, s: 0}));
                     state.round = p.round || 1;
                 } else initData();
+
+                const st = localStorage.getItem('wc26_stats_v1');
+                if(st) stats = JSON.parse(st);
+
             } catch(e) { initData(); }
         }
-        function saveStorage() { try { localStorage.setItem('wc26_master_v3', JSON.stringify({teams: state.teams, round: state.round})); } catch(e) {} }
+        function saveStorage() { 
+            try { 
+                localStorage.setItem('wc26_prod_v1', JSON.stringify({teams: state.teams, round: state.round})); 
+                localStorage.setItem('wc26_stats_v1', JSON.stringify(stats)); 
+            } catch(e) {} 
+        }
         function initData() { state.teams = TEAMS.map(t => ({...t, s: 0})); state.round = 1; saveStorage(); }
 
         function updateUI() {
             document.getElementById('val-round').innerText = state.round;
             document.getElementById('val-rem').innerText = state.balls.length;
             document.getElementById('lbl-rem-num').innerText = state.balls.length;
+            document.getElementById('live-timer').innerText = formatTime(state.matchTimeMs);
             
-            const sort = [...state.teams].sort((a,b) => b.s - a.s || a.n.localeCompare(b.n)).slice(0, 5);
-            document.getElementById('lb-content').innerHTML = sort.map((t, i) => `
+            const sort = [...state.teams].sort((a,b) => b.s - a.s || a.n.localeCompare(b.n));
+            
+            // Leader
+            document.getElementById('live-leader').innerText = sort[0].s > 0 ? sort[0].n.toUpperCase() : "NONE";
+
+            // Ranking Panel
+            document.getElementById('lb-content').innerHTML = sort.slice(0, 10).map((t, i) => `
                 <div class="lb-row">
                     <div class="lb-rank">${i+1}</div>
                     <img src="https://flagcdn.com/w40/${t.c}.png" class="lb-flag" crossorigin="anonymous">
@@ -407,11 +523,19 @@
                     <div class="lb-score">${t.s}</div>
                 </div>
             `).join('');
+
+            // Stats Panel
+            document.getElementById('stat-matches').innerText = stats.matches;
+            document.getElementById('stat-rounds').innerText = stats.rounds;
+            document.getElementById('stat-fast').innerText = stats.fastest === 999999 ? "--" : formatTime(stats.fastest);
+            document.getElementById('stat-slow').innerText = stats.slowest === 0 ? "--" : formatTime(stats.slowest);
+            
+            const bestCountry = Object.keys(stats.wins).sort((a,b) => stats.wins[b] - stats.wins[a])[0];
+            document.getElementById('stat-most-wins').innerText = bestCountry ? `${bestCountry} (${stats.wins[bestCountry]} Wins)` : "No data";
         }
 
         function preload() {
             let isLoaded = false;
-            
             const finalizeLoad = () => {
                 if (isLoaded) return;
                 isLoaded = true;
@@ -432,7 +556,7 @@
             }));
 
             Promise.all(loadPromises).then(finalizeLoad).catch(finalizeLoad);
-            setTimeout(finalizeLoad, 3000); 
+            setTimeout(finalizeLoad, 3000); // 3s max limit for fast boot
         }
 
         const { Engine, Render, Bodies, Body, Composite, Events } = Matter;
@@ -443,7 +567,7 @@
 
         function setupMatter() {
             const canvas = document.getElementById('physics-canvas');
-            eng = Engine.create({ positionIterations: 24, velocityIterations: 24 });
+            eng = Engine.create({ positionIterations: 32, velocityIterations: 32 }); // Max precision for containment
             eng.gravity.y = 0.8;
             eng.gravity.x = 0;
             
@@ -453,18 +577,28 @@
 
             Events.on(rnd, 'beforeRender', () => {
                 const ctx = rnd.context; ctx.save();
-                ctx.translate(cx, cy); ctx.scale(1, 1); ctx.translate(-cx, -cy); 
             });
 
             Events.on(rnd, 'afterRender', () => {
                 const ctx = rnd.context;
+                
+                // Draw Arena Neon Rings
                 const gapHalf = FIXED_GAP / 2;
+                
+                // Outer glow
                 ctx.beginPath();
                 ctx.arc(cx, cy, rad, state.arenaRot + gapHalf, state.arenaRot + Math.PI*2 - gapHalf);
-                ctx.strokeStyle = '#00e5ff'; ctx.lineWidth = 10;
-                ctx.shadowBlur = 25; ctx.shadowColor = '#00e5ff';
+                ctx.strokeStyle = 'rgba(0, 229, 255, 0.2)'; ctx.lineWidth = 18;
+                ctx.shadowBlur = 40; ctx.shadowColor = '#00e5ff';
                 ctx.stroke(); ctx.shadowBlur = 0;
 
+                // Inner sharp line
+                ctx.beginPath();
+                ctx.arc(cx, cy, rad, state.arenaRot + gapHalf, state.arenaRot + Math.PI*2 - gapHalf);
+                ctx.strokeStyle = '#00e5ff'; ctx.lineWidth = 6;
+                ctx.stroke();
+
+                // Draw Balls
                 state.balls.forEach(b => {
                     const img = state.images[b.tData.c];
                     if(img) {
@@ -476,7 +610,7 @@
                         const grad = ctx.createRadialGradient(-r*0.3, -r*0.3, r*0.1, 0, 0, r);
                         grad.addColorStop(0, 'rgba(255,255,255,0.4)'); grad.addColorStop(1, 'rgba(0,0,0,0.6)');
                         ctx.fillStyle = grad; ctx.fill();
-                        ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(255,255,255,0.3)'; ctx.stroke();
+                        ctx.lineWidth = 1.5; ctx.strokeStyle = 'rgba(255,255,255,0.4)'; ctx.stroke();
                         ctx.restore();
                     }
                 });
@@ -508,34 +642,32 @@
         }
 
         function resizeArena() {
-            const topBar = document.querySelector('.top-bar');
-            const bottomBox = document.querySelector('.bottom-container');
-            const topSpace = topBar ? topBar.offsetHeight + 10 : 80; 
-            const bottomSpace = bottomBox ? bottomBox.offsetHeight + 10 : 200; 
-            
-            const availableH = window.innerHeight - topSpace - bottomSpace;
-            const availableW = window.innerWidth - 40; 
+            const uiTop = 130; 
+            const uiBot = 220; 
+            const availableH = window.innerHeight - uiTop - uiBot;
+            const availableW = window.innerWidth - 60; 
             
             cx = window.innerWidth / 2; 
-            cy = topSpace + (availableH / 2);
+            cy = uiTop + (availableH / 2);
             
             rad = Math.min(availableW / 2, availableH / 2);
-            if(rad > 350) rad = 350; 
-            if(rad < 120) rad = 120;
+            if(rad > 380) rad = 380; 
+            if(rad < 130) rad = 130;
             
             if(rnd) { rnd.canvas.width = window.innerWidth; rnd.canvas.height = window.innerHeight; }
 
             arenaSegments.forEach(s => Composite.remove(eng.world, s.body));
             arenaSegments = [];
 
-            const thick = 50; 
-            const outerRad = rad + 30; 
+            // IRONCLAD BOUNDARY SETUP
+            const thick = 200; // Massive thickness to prevent any chance of tunneling
+            const outerRad = rad + (thick / 2) + 3; // Shift outward so inner edge aligns with 'rad' line (+3px offset for visual line thickness)
             const len = (Math.PI*2*outerRad)/NUM_SEGMENTS * 1.05;
 
             for(let i=0; i<NUM_SEGMENTS; i++) {
                 const angle = (i/NUM_SEGMENTS) * Math.PI*2;
                 const body = Bodies.rectangle(cx + Math.cos(angle)*outerRad, cy + Math.sin(angle)*outerRad, len, thick, {
-                    isStatic: true, restitution: RESTITUTION_WALLS, friction: 0.0, label: 'wall', render: { visible: false }
+                    isStatic: true, restitution: RESTITUTION_WALLS, friction: 0.005, label: 'wall', render: { visible: false }
                 });
                 arenaSegments.push({ body: body, baseAngle: angle });
                 Composite.add(eng.world, body);
@@ -567,7 +699,7 @@
                     let by = cy - 20 + Math.sin(angle) * ring.radius;
 
                     const b = Bodies.circle(bx, by, br, {
-                        restitution: RESTITUTION_BALLS, friction: 0.0, frictionAir: 0.0005, density: 0.05, label: 'ball', render: { visible: false }
+                        restitution: RESTITUTION_BALLS, friction: 0.001, frictionAir: 0.001, density: 0.05, label: 'ball', render: { visible: false }
                     });
                     b.tData = state.teams[teamIdx];
                     state.balls.push(b); Composite.add(eng.world, b);
@@ -576,6 +708,7 @@
             });
             
             state.m10 = false; state.m5 = false; state.m3 = false; state.m2 = false;
+            state.matchTimeMs = 0;
             document.getElementById('center-labels').style.opacity = '1';
             updateUI();
         }
@@ -586,18 +719,28 @@
             requestAnimationFrame(customPhysicsLoop);
             let delta = time - lastTime; lastTime = time;
             
+            // Hard safety for tab backgrounding
             if (delta <= 0 || isNaN(delta)) delta = 16.66;
             if (delta > 100) delta = 16.66; 
 
             if(!state.running) return;
+
+            state.matchTimeMs += delta;
+            
+            // UI Timer update throttle to save CPU
+            if(Math.floor(state.matchTimeMs) % 10 === 0) {
+                document.getElementById('live-timer').innerText = formatTime(state.matchTimeMs);
+            }
 
             Engine.update(eng, delta);
 
             state.arenaRot += state.rotSpeed;
             const omega = state.rotSpeed * 60; 
 
+            // IRONCLAD BOUNDARY ENFORCEMENT
             const limit = FIXED_GAP / 2;
-            const hideLimit = limit + ((Math.PI * 2) / NUM_SEGMENTS * 0.5);
+            const segmentAngle = (Math.PI * 2) / NUM_SEGMENTS;
+            const hideLimit = limit + (segmentAngle * 0.5);
 
             arenaSegments.forEach(seg => {
                 let norm = seg.baseAngle;
@@ -607,7 +750,7 @@
                     Body.setPosition(seg.body, {x: -2000, y: -2000}); 
                 } else {
                     const a = seg.baseAngle + state.arenaRot;
-                    const outerRad = rad + 30; 
+                    const outerRad = rad + 100; // 200 (thick) / 2
                     const px = cx + Math.cos(a)*outerRad;
                     const py = cy + Math.sin(a)*outerRad;
                     Body.setPosition(seg.body, {x: px, y: py});
@@ -620,25 +763,53 @@
                 }
             });
 
+            // Mathematical check to force balls inside if engine fails
+            const holeLimitSafety = limit + 0.1;
+            
             for(let i = state.balls.length-1; i>=0; i--) {
                 const b = state.balls[i];
-                const distCenter = Math.hypot(b.position.x - cx, b.position.y - cy);
+                const dx = b.position.x - cx;
+                const dy = b.position.y - cy;
+                const distCenter = Math.hypot(dx, dy);
                 
                 if(b.speed < 1.0) {
-                    const nudgeAngle = Math.atan2(cy - b.position.y, cx - b.position.x);
-                    const nudgeForce = 0.00002 * b.mass;
-                    Body.applyForce(b, b.position, {x: Math.cos(nudgeAngle)*nudgeForce, y: Math.sin(nudgeAngle)*nudgeForce});
+                    const nudgeForce = 0.000015 * b.mass;
+                    Body.applyForce(b, b.position, {x: -(dx/distCenter)*nudgeForce, y: -(dy/distCenter)*nudgeForce});
                 }
                 
-                if(distCenter > rad + 40) {
-                    const t = b.tData;
-                    Composite.remove(eng.world, b); state.balls.splice(i, 1);
-                    document.body.classList.remove('shake-active'); void document.body.offsetWidth; document.body.classList.add('shake-active');
+                // Hard Boundary Validation
+                const maxAllowedDist = rad - b.circleRadius + 3; // +3px tolerance
+                if (distCenter > maxAllowedDist) {
+                    let angle = Math.atan2(dy, dx) - state.arenaRot;
+                    angle = Math.atan2(Math.sin(angle), Math.cos(angle)); // Normalize to -PI to PI
                     
-                    sndEliminate(); 
-                    showElim(`${t.n.toUpperCase()} ELIMINATED!`);
-                    
-                    updateUI(); checkMilestones();
+                    if (Math.abs(angle) > holeLimitSafety) {
+                        // Force back inside
+                        const fixX = cx + (dx / distCenter) * maxAllowedDist;
+                        const fixY = cy + (dy / distCenter) * maxAllowedDist;
+                        Body.setPosition(b, { x: fixX, y: fixY });
+                        
+                        // Reflect velocity mathematically
+                        const normX = -dx / distCenter;
+                        const normY = -dy / distCenter;
+                        const dot = b.velocity.x * normX + b.velocity.y * normY;
+                        if (dot < 0) {
+                            Body.setVelocity(b, {
+                                x: b.velocity.x - (1 + RESTITUTION_WALLS) * dot * normX,
+                                y: b.velocity.y - (1 + RESTITUTION_WALLS) * dot * normY
+                            });
+                        }
+                    } else if (distCenter > rad + 80) {
+                        // Valid elimination through the hole
+                        const t = b.tData;
+                        Composite.remove(eng.world, b); state.balls.splice(i, 1);
+                        document.body.classList.remove('shake-active'); void document.body.offsetWidth; document.body.classList.add('shake-active');
+                        
+                        sndEliminate(); 
+                        showElim(`${t.n.toUpperCase()} ELIMINATED!`);
+                        
+                        updateUI(); checkMilestones();
+                    }
                 }
             }
         }
@@ -662,17 +833,27 @@
             state.running = false;
             const w = state.balls[0].tData;
             const idx = state.teams.findIndex(t => t.c === w.c);
-            state.teams[idx].s++; saveStorage(); updateUI();
+            state.teams[idx].s++; 
+            
+            stats.rounds++;
+            if(state.matchTimeMs < stats.fastest) stats.fastest = state.matchTimeMs;
+            if(state.matchTimeMs > stats.slowest) stats.slowest = state.matchTimeMs;
 
             const isChamp = state.teams[idx].s >= state.target;
 
             document.getElementById('flash-overlay').style.opacity = '1';
             setTimeout(() => document.getElementById('flash-overlay').style.opacity = '0', 200);
 
+            saveStorage(); updateUI();
+
             if(isChamp) {
+                stats.matches++;
+                stats.wins[w.n] = (stats.wins[w.n] || 0) + 1;
+                saveStorage(); updateUI();
+
                 sndChampion();
-                confetti({ particleCount: 600, spread: 250, origin: { y: 0.5 }, zIndex: 1000, colors: ['#ffd700', '#00e5ff', '#ffffff'] });
-                showText(`👑 ${w.n.toUpperCase()} WINS! 👑<br><img src="https://flagcdn.com/w160/${w.c}.png" style="margin-top:30px; border-radius:50%; width:140px; height:140px; object-fit:cover; box-shadow:0 0 60px var(--gold); border: 4px solid var(--gold);">`, 'text-gold', 7000);
+                confetti({ particleCount: 800, spread: 300, origin: { y: 0.5 }, zIndex: 1000, colors: ['#ffd700', '#00e5ff', '#b026ff', '#ffffff'] });
+                showText(`👑 ${w.n.toUpperCase()} WINS! 👑<br><img src="https://flagcdn.com/w160/${w.c}.png" style="margin-top:30px; border-radius:50%; width:160px; height:160px; object-fit:cover; box-shadow:0 0 60px var(--gold); border: 5px solid var(--gold);">`, 'text-gold', 7000);
                 setTimeout(() => { initData(); updateUI(); autoCheck(); }, 8000);
             } else {
                 sndWin();
@@ -704,10 +885,15 @@
         document.getElementById('sel-target').onchange = (e) => { state.target = parseInt(e.target.value); };
         document.getElementById('chk-auto').onchange = (e) => { state.auto = e.target.checked; };
 
-        let rOpen = false;
         document.getElementById('btn-ranking').onclick = () => {
-            rOpen = !rOpen;
-            document.getElementById('ranking-panel').classList.toggle('hidden', !rOpen);
+            document.getElementById('stats-panel').classList.add('hidden');
+            document.getElementById('ranking-panel').classList.toggle('hidden');
+        };
+
+        document.getElementById('btn-stats').onclick = () => {
+            document.getElementById('ranking-panel').classList.add('hidden');
+            document.getElementById('stats-panel').classList.toggle('hidden');
+            updateUI();
         };
 
         preload();
