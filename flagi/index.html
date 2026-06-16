@@ -3,792 +3,657 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>World Cup 2026 Survivor Ball Simulator</title>
+    <title>World Cup 2026 Survivor - Pro Live Edition</title>
     <style>
         :root {
-            --bg: #0f172a;
-            --panel: #1e293b;
-            --text: #f8fafc;
-            --accent: #3b82f6;
-            --danger: #ef4444;
-            --success: #22c55e;
-            --gold: #fbbf24;
+            --bg-dark: #050510;
+            --accent: #00f0ff;
+            --accent-glow: rgba(0, 240, 255, 0.5);
+            --danger: #ff003c;
+            --danger-glow: rgba(255, 0, 60, 0.5);
+            --gold: #ffd700;
+            --gold-glow: rgba(255, 215, 0, 0.5);
+            --glass-bg: rgba(15, 15, 25, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Segoe UI', system-ui, sans-serif;
             user-select: none;
         }
 
         body {
-            background-color: var(--bg);
-            color: var(--text);
-            display: flex;
-            height: 100vh;
+            background-color: var(--bg-dark);
+            color: white;
             overflow: hidden;
-            flex-direction: row;
-        }
-
-        #game-container {
-            flex: 1;
-            position: relative;
+            width: 100vw;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
         }
 
-        canvas {
-            display: block;
+        /* Shake Animation */
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
         }
 
-        #ui-panel {
-            width: 350px;
-            background-color: var(--panel);
-            border-left: 2px solid #334155;
+        .shake-active {
+            animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        /* Layers */
+        #bg-canvas {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1;
+        }
+
+        #game-layer {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #ui-layer {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 10;
+            pointer-events: none;
             display: flex;
             flex-direction: column;
+            justify-content: space-between;
             padding: 20px;
-            z-index: 10;
         }
 
-        h1 {
-            font-size: 1.2rem;
+        /* Glassmorphism UI */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 15px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            pointer-events: auto;
+        }
+
+        /* Header Area */
+        .header-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .stats-box {
+            display: flex;
+            gap: 20px;
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stat-val {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--accent);
+            text-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255,255,255,0.6);
+        }
+
+        /* Top 5 Leaderboard */
+        .leaderboard {
+            min-width: 200px;
+        }
+
+        .lb-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 10px;
             text-align: center;
-            margin-bottom: 20px;
-            color: var(--gold);
+            letter-spacing: 2px;
+        }
+
+        .lb-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            background: rgba(0,0,0,0.3);
+            padding: 5px 10px;
+            border-radius: 8px;
+        }
+
+        .lb-rank { width: 20px; font-weight: bold; color: var(--accent); }
+        .lb-flag { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; margin-right: 10px; border: 1px solid var(--glass-border); }
+        .lb-name { flex: 1; font-weight: 600; font-size: 0.9rem; }
+        .lb-score { font-weight: 900; color: var(--gold); }
+
+        /* Controls Area */
+        .controls-area {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 15px;
+        }
+
+        button {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .stat-box {
-            background-color: #334155;
-            padding: 10px;
-            border-radius: 8px;
-            text-align: center;
-        }
-
-        .stat-label {
-            font-size: 0.8rem;
-            color: #94a3b8;
-        }
-
-        .stat-value {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--accent);
-        }
-
-        .controls {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 10px;
-        }
-
-        button {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s;
-            background-color: #475569;
-            color: white;
-            text-transform: uppercase;
-        }
-
-        button:hover { background-color: #64748b; }
-        button.primary { background-color: var(--accent); }
-        button.primary:hover { background-color: #2563eb; }
-        button.danger { background-color: var(--danger); }
-        button.danger:hover { background-color: #dc2626; }
-
-        .settings-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #334155;
-            padding: 10px;
-            border-radius: 6px;
-            font-size: 0.9rem;
-        }
+        button:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); }
+        button.btn-start { background: rgba(0, 240, 255, 0.2); border-color: var(--accent); color: var(--accent); }
+        button.btn-start:hover { background: var(--accent); color: black; box-shadow: 0 0 20px var(--accent-glow); }
 
         select {
-            background: #1e293b;
+            background: rgba(0,0,0,0.5);
             color: white;
-            border: 1px solid #475569;
-            padding: 5px;
-            border-radius: 4px;
-        }
-
-        .leaderboard-container {
-            flex: 1;
-            overflow-y: auto;
-            background-color: #0f172a;
-            border-radius: 8px;
+            border: 1px solid var(--glass-border);
             padding: 10px;
+            border-radius: 8px;
+            outline: none;
         }
 
-        .leaderboard-title {
-            font-size: 1rem;
-            margin-bottom: 10px;
-            text-align: center;
-            color: #cbd5e1;
-            position: sticky;
-            top: 0;
-            background: #0f172a;
-            padding-bottom: 5px;
-            border-bottom: 1px solid #334155;
-        }
-
-        .team-row {
-            display: flex;
-            align-items: center;
-            padding: 8px;
-            border-bottom: 1px solid #1e293b;
-            font-size: 0.9rem;
-        }
-
-        .team-rank { width: 30px; font-weight: bold; color: #94a3b8; }
-        .team-flag { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; margin-right: 10px; border: 1px solid #475569;}
-        .team-name { flex: 1; font-weight: 500; }
-        .team-score { font-weight: bold; color: var(--gold); }
-
-        /* Overlays and Notifications */
-        #notification-layer {
+        /* Dramatic Headers & Notifications */
+        #notify-layer {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 50;
             pointer-events: none;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            z-index: 50;
+            width: 100%;
         }
 
-        .message {
-            font-size: 4vw;
+        .dramatic-text {
+            font-size: 8vw;
             font-weight: 900;
             text-transform: uppercase;
             text-align: center;
-            text-shadow: 0 0 20px rgba(0,0,0,0.8), 0 0 40px rgba(0,0,0,0.8);
             opacity: 0;
-            transform: scale(0.5);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            padding: 20px;
-            border-radius: 15px;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(5px);
+            transform: scale(0.2) translateY(50px);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-shadow: 0 10px 30px rgba(0,0,0,0.9);
+            filter: drop-shadow(0 0 20px rgba(0,0,0,0.5));
+            background: -webkit-linear-gradient(#fff, #aaa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .message.show {
+        .dramatic-text.show {
             opacity: 1;
-            transform: scale(1);
+            transform: scale(1) translateY(0);
         }
 
-        .msg-eliminated { color: var(--danger); text-shadow: 0 0 15px var(--danger); }
-        .msg-win { color: var(--gold); text-shadow: 0 0 20px var(--gold); font-size: 5vw; }
-        .msg-champion { color: #fff; text-shadow: 0 0 30px var(--gold), 0 0 60px var(--gold); font-size: 6vw; }
-        .msg-point { color: var(--success); font-size: 3vw; margin-top: 10px; }
+        .text-danger { background: -webkit-linear-gradient(#ff5577, #ff003c); -webkit-background-clip: text; filter: drop-shadow(0 0 30px var(--danger-glow)); }
+        .text-gold { background: -webkit-linear-gradient(#ffeeaa, #ffd700); -webkit-background-clip: text; filter: drop-shadow(0 0 40px var(--gold-glow)); font-size: 10vw;}
 
-        #flash-overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: white;
-            opacity: 0;
-            pointer-events: none;
-            z-index: 100;
-            transition: opacity 0.5s;
-        }
-
-        #loading-screen {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg);
-            z-index: 200;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: white;
+        .elim-banner {
+            background: linear-gradient(90deg, transparent, rgba(255,0,60,0.8), transparent);
+            width: 100vw;
+            text-align: center;
+            padding: 15px 0;
             font-size: 2rem;
+            font-weight: 800;
+            color: white;
+            opacity: 0;
+            transform: scaleY(0);
+            transition: 0.3s;
         }
 
-        .spinner {
-            border: 6px solid #334155;
-            border-top: 6px solid var(--accent);
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
+        .elim-banner.show { opacity: 1; transform: scaleY(1); }
+
+        #flash {
+            position: absolute; top:0; left:0; width:100%; height:100%;
+            background: white; opacity: 0; z-index: 100; pointer-events: none;
+            transition: opacity 0.2s;
         }
 
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        @media (max-width: 800px) {
-            body { flex-direction: column; }
-            #ui-panel { width: 100%; height: 40vh; border-left: none; border-top: 2px solid #334155; padding: 10px; }
-            #game-container { height: 60vh; flex: none; }
-            .stats-grid { margin-bottom: 10px; }
-            .message { font-size: 8vw; }
-            .msg-win { font-size: 10vw; }
-            .msg-champion { font-size: 12vw; }
+        /* Loading */
+        #loader {
+            position: absolute; top:0; left:0; width:100%; height:100%;
+            background: var(--bg-dark); z-index: 200;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
+        .spinner { width: 60px; height: 60px; border: 4px solid rgba(0,240,255,0.2); border-top: 4px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* Custom scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+        @media (max-width: 768px) {
+            .header-area { flex-direction: column; align-items: center; }
+            .stats-box { width: 100%; justify-content: space-around; }
+            .leaderboard { width: 100%; }
+            .dramatic-text { font-size: 12vw; }
+            .controls-area { flex-wrap: wrap; }
+        }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
 
-    <div id="loading-screen">
-        <div class="spinner"></div>
-        <div id="loading-text">Loading Teams...</div>
+    <div id="loader"><div class="spinner"></div><div style="margin-top:20px; font-weight:bold; color:var(--accent);">INITIALIZING PHYSICS...</div></div>
+
+    <canvas id="bg-canvas"></canvas>
+    
+    <div id="wrapper" style="position:absolute; width:100%; height:100%;">
+        <div id="game-layer"></div>
     </div>
 
-    <div id="game-container">
-        <div id="notification-layer">
-            <div id="msg-box" class="message"></div>
-        </div>
-        <div id="flash-overlay"></div>
+    <div id="flash"></div>
+
+    <div id="notify-layer">
+        <div id="elim-banner" class="elim-banner"></div>
+        <div id="dramatic-msg" class="dramatic-text"></div>
     </div>
 
-    <div id="ui-panel">
-        <h1>World Cup 2026</h1>
-        
-        <div class="stats-grid">
-            <div class="stat-box">
-                <div class="stat-label">ROUND</div>
-                <div class="stat-value" id="round-counter">1</div>
+    <div id="ui-layer">
+        <div class="header-area">
+            <div class="glass-panel stats-box">
+                <div class="stat">
+                    <div class="stat-label">Round</div>
+                    <div class="stat-val" id="ui-round">1</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Remaining</div>
+                    <div class="stat-val" id="ui-rem">48</div>
+                </div>
             </div>
-            <div class="stat-box">
-                <div class="stat-label">BALLS LEFT</div>
-                <div class="stat-value" id="balls-counter">48</div>
+            
+            <div class="glass-panel leaderboard">
+                <div class="lb-title">Top 5 Leaders</div>
+                <div id="lb-content"></div>
             </div>
         </div>
 
-        <div class="controls">
-            <div class="btn-group">
-                <button id="btn-start" class="primary">Start</button>
-                <button id="btn-pause">Pause</button>
-            </div>
-            <button id="btn-reset" class="danger">Reset Match</button>
-        </div>
-
-        <div class="controls">
-            <div class="settings-row">
-                <label>Target Score:</label>
-                <select id="target-score">
-                    <option value="3">3 Points</option>
-                    <option value="5">5 Points</option>
+        <div class="controls-area">
+            <div class="glass-panel" style="display:flex; gap:10px; align-items:center;">
+                <select id="set-target">
+                    <option value="3">Best of 3</option>
+                    <option value="5">Best of 5</option>
+                    <option value="7">Best of 7</option>
                 </select>
+                <label style="font-size:0.8rem; font-weight:bold;"><input type="checkbox" id="set-auto"> AUTO LIVE</label>
             </div>
-            <div class="settings-row">
-                <label>Auto Mode (Live):</label>
-                <input type="checkbox" id="auto-mode" style="width: 20px; height: 20px;">
-            </div>
-        </div>
-
-        <div class="leaderboard-container">
-            <div class="leaderboard-title">LIVE RANKING</div>
-            <div id="leaderboard-list"></div>
+            <button class="btn-start" id="btn-start">Start Game</button>
+            <button id="btn-reset">Reset</button>
         </div>
     </div>
 
     <script>
-        // Data & State
-        const ALL_TEAMS = [
-            { name: "USA", code: "us" }, { name: "Mexico", code: "mx" }, { name: "Canada", code: "ca" },
-            { name: "Brazil", code: "br" }, { name: "Argentina", code: "ar" }, { name: "France", code: "fr" },
-            { name: "Germany", code: "de" }, { name: "Italy", code: "it" }, { name: "Spain", code: "es" },
-            { name: "England", code: "gb-eng" }, { name: "Portugal", code: "pt" }, { name: "Netherlands", code: "nl" },
-            { name: "Belgium", code: "be" }, { name: "Croatia", code: "hr" }, { name: "Uruguay", code: "uy" },
-            { name: "Colombia", code: "co" }, { name: "Japan", code: "jp" }, { name: "South Korea", code: "kr" },
-            { name: "Morocco", code: "ma" }, { name: "Senegal", code: "sn" }, { name: "Switzerland", code: "ch" },
-            { name: "Denmark", code: "dk" }, { name: "Poland", code: "pl" }, { name: "Sweden", code: "se" },
-            { name: "Serbia", code: "rs" }, { name: "Australia", code: "au" }, { name: "Ecuador", code: "ec" },
-            { name: "Peru", code: "pe" }, { name: "Chile", code: "cl" }, { name: "Nigeria", code: "ng" },
-            { name: "Egypt", code: "eg" }, { name: "Algeria", code: "dz" }, { name: "Cameroon", code: "cm" },
-            { name: "Ivory Coast", code: "ci" }, { name: "Mali", code: "ml" }, { name: "Tunisia", code: "tn" },
-            { name: "Ghana", code: "gh" }, { name: "Costa Rica", code: "cr" }, { name: "Panama", code: "pa" },
-            { name: "Jamaica", code: "jm" }, { name: "Honduras", code: "hn" }, { name: "New Zealand", code: "nz" },
-            { name: "Qatar", code: "qa" }, { name: "Turkey", code: "tr" }, { name: "Ukraine", code: "ua" },
-            { name: "Saudi Arabia", code: "sa" }, { name: "Iran", code: "ir" }, { name: "Venezuela", code: "ve" }
+        // --- DATA ---
+        const TEAMS = [
+            { n: "USA", c: "us" }, { n: "Mexico", c: "mx" }, { n: "Canada", c: "ca" },
+            { n: "Brazil", c: "br" }, { n: "Argentina", c: "ar" }, { n: "France", c: "fr" },
+            { n: "Germany", c: "de" }, { n: "Italy", c: "it" }, { n: "Spain", c: "es" },
+            { n: "England", c: "gb-eng" }, { n: "Portugal", c: "pt" }, { n: "Netherlands", c: "nl" },
+            { n: "Belgium", c: "be" }, { n: "Croatia", c: "hr" }, { n: "Uruguay", c: "uy" },
+            { n: "Colombia", c: "co" }, { n: "Japan", c: "jp" }, { n: "South Korea", c: "kr" },
+            { n: "Morocco", c: "ma" }, { n: "Senegal", c: "sn" }, { n: "Switzerland", c: "ch" },
+            { n: "Denmark", c: "dk" }, { n: "Poland", c: "pl" }, { n: "Sweden", c: "se" },
+            { n: "Serbia", c: "rs" }, { n: "Australia", c: "au" }, { n: "Ecuador", c: "ec" },
+            { n: "Peru", c: "pe" }, { n: "Chile", c: "cl" }, { n: "Nigeria", c: "ng" },
+            { n: "Egypt", c: "eg" }, { n: "Algeria", c: "dz" }, { n: "Cameroon", c: "cm" },
+            { n: "Ivory Coast", c: "ci" }, { n: "Mali", c: "ml" }, { n: "Tunisia", c: "tn" },
+            { n: "Ghana", c: "gh" }, { n: "Costa Rica", c: "cr" }, { n: "Panama", c: "pa" },
+            { n: "Jamaica", c: "jm" }, { n: "Honduras", c: "hn" }, { n: "New Zealand", c: "nz" },
+            { n: "Qatar", c: "qa" }, { n: "Turkey", c: "tr" }, { n: "Ukraine", c: "ua" },
+            { n: "Saudi Arabia", c: "sa" }, { n: "Iran", c: "ir" }, { n: "Venezuela", c: "ve" }
         ];
 
-        let teamsData = [];
-        let flagImages = {};
-        let loadedImages = 0;
-        
-        let gameState = {
-            round: 1,
-            isRunning: false,
-            targetScore: 3,
-            autoMode: false,
-            activeBalls: [],
-            arenaRotation: 0,
-            rotationSpeed: 0.005,
-            rotationChangeTimer: 0
+        let state = {
+            teams: [], images: {}, loaded: 0,
+            round: 1, target: 3, auto: false, running: false,
+            balls: [], arenaRot: 0, rotSpeed: 0.008, 
+            baseTimeScale: 1, zoom: 1
         };
 
-        // DOM Elements
-        const elBallsCounter = document.getElementById('balls-counter');
-        const elRoundCounter = document.getElementById('round-counter');
-        const elLeaderboard = document.getElementById('leaderboard-list');
-        const elMsgBox = document.getElementById('msg-box');
-        const elFlash = document.getElementById('flash-overlay');
-        const btnStart = document.getElementById('btn-start');
-        const btnPause = document.getElementById('btn-pause');
-        const btnReset = document.getElementById('btn-reset');
-        const selTargetScore = document.getElementById('target-score');
-        const chkAutoMode = document.getElementById('auto-mode');
-
-        // Audio System
-        let audioCtx;
-        function initAudio() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-        }
-
-        function playTone(freq, type, duration, vol) {
-            if (!audioCtx) return;
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
+        // --- AUDIO ENGINE ---
+        let actx;
+        function initAudio() { if(!actx) actx = new (window.AudioContext || window.webkitAudioContext)(); if(actx.state==='suspended') actx.resume(); }
+        
+        function playTone(freq, type, dur, vol, slideFreq=null) {
+            if(!actx) return;
+            const osc = actx.createOscillator();
+            const gain = actx.createGain();
             osc.type = type;
-            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-            gain.gain.setValueAtTime(vol, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start();
-            osc.stop(audioCtx.currentTime + duration);
+            osc.frequency.setValueAtTime(freq, actx.currentTime);
+            if(slideFreq) osc.frequency.exponentialRampToValueAtTime(slideFreq, actx.currentTime + dur);
+            gain.gain.setValueAtTime(vol, actx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + dur);
+            osc.connect(gain); gain.connect(actx.destination);
+            osc.start(); osc.stop(actx.currentTime + dur);
         }
 
-        function playEliminateSound() {
-            playTone(150, 'sawtooth', 0.4, 0.1);
-            setTimeout(() => playTone(100, 'square', 0.4, 0.1), 100);
+        function sndHit(velocity) {
+            if(!actx || velocity < 2) return;
+            const vol = Math.min(velocity * 0.02, 0.15);
+            playTone(150 + Math.random()*50, 'triangle', 0.1, vol);
         }
 
-        function playWinSound() {
-            playTone(440, 'sine', 0.5, 0.2);
-            playTone(554, 'sine', 0.5, 0.2);
-            playTone(659, 'sine', 0.5, 0.2);
+        function sndEliminate() {
+            playTone(300, 'sawtooth', 0.5, 0.2, 50);
+            setTimeout(()=>playTone(150, 'square', 0.4, 0.2, 30), 100);
         }
 
-        function playChampionFanfare() {
-            const notes = [440, 554, 659, 880];
-            notes.forEach((freq, i) => {
-                setTimeout(() => {
-                    playTone(freq, 'square', 0.6, 0.2);
-                }, i * 150);
-            });
-            setTimeout(() => {
-                playTone(880, 'square', 1.5, 0.2);
-                playTone(1108, 'sine', 1.5, 0.2);
-            }, notes.length * 150);
+        function sndEvent() { playTone(800, 'sine', 1.0, 0.2, 200); }
+        
+        function sndWin() {
+            [440, 554, 659, 880].forEach((f, i) => setTimeout(()=>playTone(f, 'square', 0.5, 0.1), i*100));
         }
 
-        // LocalStorage
-        function loadSave() {
-            const saved = localStorage.getItem('wc2026_save');
-            if (saved) {
-                try {
-                    const data = JSON.parse(saved);
-                    teamsData = data.teams;
-                    gameState.round = data.round;
-                } catch(e) { initTeams(); }
-            } else {
-                initTeams();
-            }
+        function sndChampion() {
+            [440, 554, 659, 880, 1108, 1318].forEach((f, i) => setTimeout(()=>playTone(f, 'sine', 0.8, 0.15), i*150));
+            setTimeout(()=>playTone(880, 'square', 2.0, 0.2), 900);
         }
 
-        function saveGame() {
-            localStorage.setItem('wc2026_save', JSON.stringify({
-                teams: teamsData,
-                round: gameState.round
+        // --- BACKGROUND PARTICLES ---
+        const bgCanvas = document.getElementById('bg-canvas');
+        const bgCtx = bgCanvas.getContext('2d');
+        let particles = [];
+        function initBg() {
+            bgCanvas.width = window.innerWidth; bgCanvas.height = window.innerHeight;
+            particles = Array.from({length: 50}, () => ({
+                x: Math.random() * bgCanvas.width,
+                y: Math.random() * bgCanvas.height,
+                s: Math.random() * 2 + 1,
+                v: Math.random() * 0.5 + 0.2
             }));
         }
-
-        function initTeams() {
-            teamsData = ALL_TEAMS.map(t => ({ ...t, score: 0 }));
-            gameState.round = 1;
-            saveGame();
+        function drawBg() {
+            bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+            bgCtx.fillStyle = 'rgba(0, 240, 255, 0.3)';
+            particles.forEach(p => {
+                bgCtx.beginPath(); bgCtx.arc(p.x, p.y, p.s, 0, Math.PI*2); bgCtx.fill();
+                p.y -= p.v;
+                if(p.y < 0) { p.y = bgCanvas.height; p.x = Math.random() * bgCanvas.width; }
+            });
+            requestAnimationFrame(drawBg);
         }
+        initBg(); drawBg(); window.addEventListener('resize', initBg);
+
+        // --- CORE LOGIC & STORAGE ---
+        function loadStorage() {
+            const sv = localStorage.getItem('wcProSave');
+            if(sv) {
+                const p = JSON.parse(sv);
+                state.teams = p.teams; state.round = p.round;
+            } else initData();
+        }
+        function saveStorage() { localStorage.setItem('wcProSave', JSON.stringify({teams: state.teams, round: state.round})); }
+        function initData() { state.teams = TEAMS.map(t => ({...t, s: 0})); state.round = 1; saveStorage(); }
 
         function updateUI() {
-            elRoundCounter.textContent = gameState.round;
-            elBallsCounter.textContent = gameState.activeBalls.length;
+            document.getElementById('ui-round').innerText = state.round;
+            document.getElementById('ui-rem').innerText = state.balls.length;
             
-            const sortedTeams = [...teamsData].sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
-            elLeaderboard.innerHTML = '';
-            
-            sortedTeams.forEach((team, idx) => {
-                const row = document.createElement('div');
-                row.className = 'team-row';
-                row.innerHTML = `
-                    <div class="team-rank">${idx + 1}</div>
-                    <img src="https://flagcdn.com/w40/${team.code}.png" class="team-flag" crossorigin="anonymous">
-                    <div class="team-name">${team.name}</div>
-                    <div class="team-score">${team.score}</div>
-                `;
-                elLeaderboard.appendChild(row);
-            });
+            const sort = [...state.teams].sort((a,b) => b.s - a.s || a.n.localeCompare(b.n)).slice(0, 5);
+            document.getElementById('lb-content').innerHTML = sort.map((t, i) => `
+                <div class="lb-row">
+                    <div class="lb-rank">${i+1}</div>
+                    <img src="https://flagcdn.com/w40/${t.c}.png" class="lb-flag" crossorigin="anonymous">
+                    <div class="lb-name">${t.n}</div>
+                    <div class="lb-score">${t.s}</div>
+                </div>
+            `).join('');
         }
 
-        // Preload Images
-        function preloadAssets() {
-            ALL_TEAMS.forEach(team => {
-                const img = new Image();
-                img.crossOrigin = "anonymous";
+        function preload() {
+            TEAMS.forEach(t => {
+                const img = new Image(); img.crossOrigin = "anonymous";
                 img.onload = () => {
-                    flagImages[team.code] = img;
-                    loadedImages++;
-                    if(loadedImages === ALL_TEAMS.length) {
-                        document.getElementById('loading-screen').style.display = 'none';
-                        loadSave();
-                        updateUI();
-                        setupPhysics();
-                    }
+                    state.images[t.c] = img; state.loaded++;
+                    if(state.loaded === TEAMS.length) { document.getElementById('loader').style.display = 'none'; loadStorage(); updateUI(); setupMatter(); }
                 };
-                img.src = `https://flagcdn.com/w80/${team.code}.png`;
+                img.src = `https://flagcdn.com/w80/${t.c}.png`;
             });
         }
 
-        // Physics Setup (Matter.js)
-        const Engine = Matter.Engine,
-              Render = Matter.Render,
-              Runner = Matter.Runner,
-              Bodies = Matter.Bodies,
-              Body = Matter.Body,
-              Composite = Matter.Composite,
-              Events = Matter.Events;
+        // --- MATTER.JS PHYSICS ---
+        const { Engine, Render, Runner, Bodies, Body, Composite, Events, Vector } = Matter;
+        let eng, rnd, run, arena;
+        let cx, cy, rad;
 
-        let engine, render, runner, world, arenaBody;
-        let centerX, centerY, arenaRadius;
-
-        function setupPhysics() {
-            const container = document.getElementById('game-container');
-            const width = container.clientWidth;
-            const height = container.clientHeight;
-            centerX = width / 2;
-            centerY = height / 2;
-            arenaRadius = Math.min(width, height) * 0.45;
-
-            engine = Engine.create();
-            world = engine.world;
-            engine.gravity.y = 0;
-            engine.gravity.x = 0;
-
-            render = Render.create({
-                element: container,
-                engine: engine,
-                options: {
-                    width: width,
-                    height: height,
-                    wireframes: false,
-                    background: 'transparent'
-                }
+        function setupMatter() {
+            const cont = document.getElementById('game-layer');
+            eng = Engine.create({ positionIterations: 8, velocityIterations: 8 });
+            eng.gravity.y = 0; eng.gravity.x = 0; // Top-down
+            
+            rnd = Render.create({
+                element: cont, engine: eng,
+                options: { width: window.innerWidth, height: window.innerHeight, wireframes: false, background: 'transparent' }
             });
 
-            createArena();
-            Render.run(render);
-            runner = Runner.create();
-            
-            // Custom Render for Circular Flags
-            Events.on(render, 'afterRender', function() {
-                const ctx = render.context;
-                gameState.activeBalls.forEach(ball => {
-                    const team = ball.teamData;
-                    const img = flagImages[team.code];
-                    if (img) {
+            resizeArena();
+            Render.run(rnd);
+            run = Runner.create();
+
+            // Custom Render for Flags
+            Events.on(rnd, 'afterRender', () => {
+                const ctx = rnd.context;
+                // Handle Zoom
+                ctx.save();
+                if(state.zoom !== 1) {
+                    ctx.translate(cx, cy); ctx.scale(state.zoom, state.zoom); ctx.translate(-cx, -cy);
+                }
+
+                state.balls.forEach(b => {
+                    const t = b.tData; const img = state.images[t.c];
+                    if(img) {
                         ctx.save();
-                        ctx.translate(ball.position.x, ball.position.y);
-                        ctx.rotate(ball.angle);
-                        
-                        ctx.beginPath();
-                        ctx.arc(0, 0, ball.circleRadius, 0, 2 * Math.PI);
-                        ctx.clip();
-                        
-                        const r = ball.circleRadius;
-                        ctx.drawImage(img, -r, -r, r * 2, r * 2);
-                        
-                        // Inner shadow/border for depth
-                        ctx.strokeStyle = 'rgba(0,0,0,0.5)';
-                        ctx.lineWidth = 2;
-                        ctx.stroke();
-                        
+                        ctx.translate(b.position.x, b.position.y);
+                        ctx.rotate(b.angle);
+                        ctx.beginPath(); ctx.arc(0, 0, b.circleRadius, 0, Math.PI*2); ctx.clip();
+                        const r = b.circleRadius;
+                        ctx.drawImage(img, -r, -r, r*2, r*2);
+                        // Glass/Light effect on ball
+                        const grad = ctx.createRadialGradient(-r*0.3, -r*0.3, r*0.1, 0, 0, r);
+                        grad.addColorStop(0, 'rgba(255,255,255,0.4)'); grad.addColorStop(1, 'rgba(0,0,0,0.4)');
+                        ctx.fillStyle = grad; ctx.fill();
+                        ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(255,255,255,0.2)'; ctx.stroke();
                         ctx.restore();
                     }
                 });
+                ctx.restore();
             });
 
-            Events.on(engine, 'beforeUpdate', physicsLoop);
-            spawnBalls();
+            // Collisions for sound
+            Events.on(eng, 'collisionStart', (e) => {
+                e.pairs.forEach(p => {
+                    if(!p.bodyA.isStatic && !p.bodyB.isStatic) {
+                        const vA = p.bodyA.velocity; const vB = p.bodyB.velocity;
+                        const relVel = Math.hypot(vA.x - vB.x, vA.y - vB.y);
+                        sndHit(relVel);
+                    }
+                });
+            });
+
+            Events.on(eng, 'beforeUpdate', physicsLoop);
+            spawn();
         }
 
-        function createArena() {
-            if (arenaBody) Composite.remove(world, arenaBody);
+        function resizeArena() {
+            cx = window.innerWidth / 2; cy = window.innerHeight / 2;
+            rad = Math.min(window.innerWidth, window.innerHeight) * 0.42;
             
-            const parts = [];
-            const segments = 60;
-            const thickness = 20;
-            
-            // Gap size = 4 segments
-            for (let i = 0; i < segments; i++) {
-                if (i < 4) continue; 
-                const angle = (i / segments) * Math.PI * 2;
-                const x = centerX + Math.cos(angle) * arenaRadius;
-                const y = centerY + Math.sin(angle) * arenaRadius;
-                const length = (Math.PI * 2 * arenaRadius) / segments * 1.1;
-                
-                const part = Bodies.rectangle(x, y, length, thickness, {
-                    angle: angle,
-                    isStatic: true,
-                    render: { fillStyle: '#334155', strokeStyle: '#1e293b', lineWidth: 2 }
+            if(rnd) { rnd.canvas.width = window.innerWidth; rnd.canvas.height = window.innerHeight; rnd.options.width = window.innerWidth; rnd.options.height = window.innerHeight; }
+            if(arena) Composite.remove(eng.world, arena);
+
+            const parts = []; const segs = 70; const thick = 30;
+            for(let i=0; i<segs; i++) {
+                if(i < 5) continue; // Gap
+                const a = (i/segs) * Math.PI*2;
+                const p = Bodies.rectangle(cx + Math.cos(a)*rad, cy + Math.sin(a)*rad, (Math.PI*2*rad)/segs * 1.05, thick, {
+                    angle: a, isStatic: true, restitution: 0.8, friction: 0.1,
+                    render: { fillStyle: 'rgba(0, 240, 255, 0.1)', strokeStyle: '#00f0ff', lineWidth: 2 }
                 });
-                parts.push(part);
+                parts.push(p);
             }
-
-            // Central peg
-            const peg = Bodies.circle(centerX, centerY, 30, {
-                isStatic: true,
-                render: { fillStyle: '#475569' }
-            });
-            parts.push(peg);
-
-            arenaBody = Body.create({ parts: parts, isStatic: true });
-            Body.setPosition(arenaBody, { x: centerX, y: centerY });
-            Composite.add(world, arenaBody);
+            arena = Body.create({ parts: parts, isStatic: true });
+            Body.setPosition(arena, {x: cx, y: cy});
+            Composite.add(eng.world, arena);
+            if(!state.running) spawn();
         }
 
-        function spawnBalls() {
-            gameState.activeBalls.forEach(b => Composite.remove(world, b));
-            gameState.activeBalls = [];
+        window.addEventListener('resize', () => { clearTimeout(window.rsz); window.rsz = setTimeout(resizeArena, 200); });
 
-            const ballRadius = Math.max(8, arenaRadius / 25);
+        function spawn() {
+            state.balls.forEach(b => Composite.remove(eng.world, b));
+            state.balls = [];
+            const br = Math.max(10, rad / 22);
             
-            teamsData.forEach((team, i) => {
-                const angle = (i / teamsData.length) * Math.PI * 2;
-                const dist = Math.random() * (arenaRadius * 0.7) + 50;
-                const x = centerX + Math.cos(angle) * dist;
-                const y = centerY + Math.sin(angle) * dist;
-
-                const ball = Bodies.circle(x, y, ballRadius, {
-                    restitution: 0.9,
-                    friction: 0.05,
-                    frictionAir: 0.01,
-                    density: 0.05,
-                    render: { visible: false } // Custom render logic takes over
+            state.teams.forEach((t, i) => {
+                const a = (i/state.teams.length) * Math.PI*2;
+                const d = Math.random()*(rad*0.6) + 30;
+                const b = Bodies.circle(cx + Math.cos(a)*d, cy + Math.sin(a)*d, br, {
+                    restitution: 0.95, friction: 0.02, frictionAir: 0.005, density: 0.05, render: { visible: false }
                 });
-                
-                ball.teamData = team;
-                gameState.activeBalls.push(ball);
-                Composite.add(world, ball);
+                b.tData = t; state.balls.push(b); Composite.add(eng.world, b);
             });
-            updateUI();
+            state.baseTimeScale = 1; eng.timing.timeScale = 1; state.zoom = 1; updateUI();
         }
 
-        function showMessage(html, className, duration) {
-            elMsgBox.innerHTML = html;
-            elMsgBox.className = `message show ${className}`;
-            setTimeout(() => {
-                elMsgBox.className = 'message';
-            }, duration);
+        // --- DRAMA & UI FX ---
+        const elWrap = document.getElementById('wrapper');
+        const dText = document.getElementById('dramatic-msg');
+        const elimBan = document.getElementById('elim-banner');
+
+        function shake() { elWrap.classList.remove('shake-active'); void elWrap.offsetWidth; elWrap.classList.add('shake-active'); }
+        
+        function showText(txt, cls, dur) {
+            dText.innerHTML = txt; dText.className = `dramatic-text show ${cls}`;
+            setTimeout(() => dText.className = 'dramatic-text', dur);
         }
 
+        function showElim(txt) {
+            elimBan.innerHTML = txt; elimBan.classList.add('show');
+            setTimeout(() => elimBan.classList.remove('show'), 1500);
+        }
+
+        // --- GAME LOOP ---
         function physicsLoop() {
-            if (!gameState.isRunning) return;
+            if(!state.running) return;
 
-            // Rotate Arena
-            gameState.arenaRotation += gameState.rotationSpeed;
-            Body.setAngle(arenaBody, gameState.arenaRotation);
-            Body.setPosition(arenaBody, { x: centerX, y: centerY }); // Ensure it stays centered
+            // Arena Rotation
+            state.arenaRot += state.rotSpeed;
+            Body.setAngle(arena, state.arenaRot); Body.setPosition(arena, {x: cx, y: cy});
 
-            // Change rotation randomly
-            gameState.rotationChangeTimer++;
-            if (gameState.rotationChangeTimer > 300) {
-                gameState.rotationChangeTimer = 0;
-                gameState.rotationSpeed = (Math.random() - 0.5) * 0.015;
-                if(Math.abs(gameState.rotationSpeed) < 0.003) gameState.rotationSpeed = 0.005;
+            // Random impulses (Chaos)
+            if(Math.random() < 0.03) {
+                const b = state.balls[Math.floor(Math.random()*state.balls.length)];
+                if(b) Body.applyForce(b, b.position, {x: (Math.random()-0.5)*0.01, y: (Math.random()-0.5)*0.01});
             }
 
-            // Chaos logic and Elimination check
-            for (let i = gameState.activeBalls.length - 1; i >= 0; i--) {
-                const ball = gameState.activeBalls[i];
-                
-                // Keep balls moving randomly so they don't group up forever
-                if (Math.random() < 0.02) {
-                    const force = { x: (Math.random() - 0.5) * 0.001, y: (Math.random() - 0.5) * 0.001 };
-                    Body.applyForce(ball, ball.position, force);
-                }
+            // Speed changes
+            if(Math.random() < 0.005) state.rotSpeed = (Math.random() > 0.5 ? 1 : -1) * (0.005 + Math.random()*0.01);
 
-                // Check distance
-                const dist = Math.hypot(ball.position.x - centerX, ball.position.y - centerY);
-                if (dist > arenaRadius + 20) {
-                    // ELIMINATED
-                    const team = ball.teamData;
-                    Composite.remove(world, ball);
-                    gameState.activeBalls.splice(i, 1);
+            // Bounds check & Elimination
+            for(let i = state.balls.length-1; i>=0; i--) {
+                const b = state.balls[i];
+                if(Math.hypot(b.position.x - cx, b.position.y - cy) > rad + 20) {
+                    const t = b.tData;
+                    Composite.remove(eng.world, b); state.balls.splice(i, 1);
                     
-                    playEliminateSound();
-                    showMessage(`${team.name} ELIMINATED!`, 'msg-eliminated', 1200);
+                    sndEliminate(); shake();
+                    showElim(`${t.n.toUpperCase()} ELIMINATED!`);
                     updateUI();
-
-                    if (gameState.activeBalls.length === 1) {
-                        handleRoundWin();
-                    }
+                    checkMilestones();
                 }
             }
         }
 
-        function handleRoundWin() {
-            gameState.isRunning = false;
-            Runner.stop(runner);
-            
-            const winnerObj = gameState.activeBalls[0];
-            const winner = winnerObj.teamData;
-            
-            // Add point
-            const teamIndex = teamsData.findIndex(t => t.code === winner.code);
-            teamsData[teamIndex].score += 1;
-            saveGame();
-            updateUI();
+        function checkMilestones() {
+            const rem = state.balls.length;
+            if(rem === 10) { showText("FINAL 10", "", 2000); sndEvent(); }
+            if(rem === 5) { showText("FINAL 5", "text-danger", 2000); sndEvent(); state.rotSpeed *= 1.5; }
+            if(rem === 3) { showText("FINAL 3", "text-danger", 2000); sndEvent(); eng.timing.timeScale = 0.6; } // Slowmo
+            if(rem === 2) { showText("FINAL 2", "text-gold", 2000); sndEvent(); eng.timing.timeScale = 0.4; state.zoom = 1.3; } // Super Slow + Zoom
+            if(rem === 1) handleWin();
+        }
 
-            playWinSound();
+        function handleWin() {
+            state.running = false; Runner.stop(run);
+            const w = state.balls[0].tData;
+            const idx = state.teams.findIndex(t => t.c === w.c);
+            state.teams[idx].s++; saveStorage(); updateUI();
 
-            if (teamsData[teamIndex].score >= gameState.targetScore) {
-                // MATCH WIN
-                playChampionFanfare();
-                confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 }, zIndex: 1000 });
-                
-                elFlash.style.opacity = '1';
-                setTimeout(() => elFlash.style.opacity = '0', 200);
+            const isChamp = state.teams[idx].s >= state.target;
 
-                showMessage(`
-                    👑 ${winner.name.toUpperCase()} IS THE CHAMPION! <br>
-                    <img src="https://flagcdn.com/w160/${winner.code}.png" style="margin-top:20px; border-radius:10px; box-shadow:0 0 30px #fbbf24;">
-                `, 'msg-champion', 5000);
+            document.getElementById('flash').style.opacity = '1';
+            setTimeout(() => document.getElementById('flash').style.opacity = '0', 300);
 
-                setTimeout(() => {
-                    initTeams();
-                    updateUI();
-                    if (gameState.autoMode) startRound();
-                }, 6000);
-
+            if(isChamp) {
+                sndChampion();
+                confetti({ particleCount: 300, spread: 150, origin: { y: 0.6 }, zIndex: 1000, colors: ['#ffd700', '#00f0ff', '#ffffff'] });
+                showText(`
+                    👑 ${w.n.toUpperCase()} WINS! 👑<br>
+                    <img src="https://flagcdn.com/w160/${w.c}.png" style="margin-top:30px; border-radius:15px; box-shadow:0 0 50px var(--gold); border: 2px solid var(--gold);">
+                `, 'text-gold', 7000);
+                setTimeout(() => { initData(); updateUI(); if(state.auto) start(); else resetUI(); }, 8000);
             } else {
-                // ROUND WIN
-                showMessage(`
-                    🏆 ${winner.name.toUpperCase()} WINS THE ROUND!<br>
-                    <div class="msg-point">${winner.name.toUpperCase()} +1 POINT</div>
-                `, 'msg-win', 3000);
-
-                setTimeout(() => {
-                    gameState.round++;
-                    saveGame();
-                    if (gameState.autoMode) {
-                        startRound();
-                    } else {
-                        spawnBalls();
-                        updateUI();
-                        btnStart.textContent = "Start Next Round";
-                    }
-                }, 3500);
+                sndWin();
+                showText(`🏆 ${w.n.toUpperCase()} +1 POINT!`, 'text-gold', 4000);
+                setTimeout(() => { state.round++; saveStorage(); if(state.auto) start(); else resetUI(); }, 4500);
             }
         }
 
-        function startRound() {
+        function start() {
             initAudio();
-            if (gameState.activeBalls.length <= 1) {
-                spawnBalls();
-            }
-            gameState.isRunning = true;
-            Runner.run(runner, engine);
-            btnStart.textContent = "Running...";
+            if(state.balls.length <= 1) spawn();
+            state.running = true; Runner.run(run, eng);
+            document.getElementById('btn-start').innerText = "Running...";
         }
 
-        function resizeCanvas() {
-            if(!engine) return;
-            const container = document.getElementById('game-container');
-            const width = container.clientWidth;
-            const height = container.clientHeight;
-            
-            render.canvas.width = width;
-            render.canvas.height = height;
-            render.options.width = width;
-            render.options.height = height;
-            
-            centerX = width / 2;
-            centerY = height / 2;
-            arenaRadius = Math.min(width, height) * 0.45;
-            createArena();
-            if(!gameState.isRunning) spawnBalls();
+        function resetUI() {
+            spawn();
+            document.getElementById('btn-start').innerText = "Start Game";
         }
 
-        window.addEventListener('resize', () => {
-            clearTimeout(window.resizeTimer);
-            window.resizeTimer = setTimeout(resizeCanvas, 200);
-        });
+        // --- EVENTS ---
+        document.getElementById('btn-start').onclick = () => { if(!state.running) start(); };
+        document.getElementById('btn-reset').onclick = () => {
+            if(confirm("Wipe all scores and reset?")) { state.running = false; Runner.stop(run); initData(); resetUI(); }
+        };
+        document.getElementById('set-target').onchange = (e) => state.target = parseInt(e.target.value);
+        document.getElementById('set-auto').onchange = (e) => state.auto = e.target.checked;
 
-        // Events
-        btnStart.addEventListener('click', () => {
-            initAudio();
-            if (!gameState.isRunning) startRound();
-        });
-
-        btnPause.addEventListener('click', () => {
-            gameState.isRunning = false;
-            Runner.stop(runner);
-            btnStart.textContent = "Resume";
-        });
-
-        btnReset.addEventListener('click', () => {
-            if(confirm("Reset all scores and start over?")) {
-                gameState.isRunning = false;
-                Runner.stop(runner);
-                initTeams();
-                spawnBalls();
-                updateUI();
-                btnStart.textContent = "Start";
-            }
-        });
-
-        selTargetScore.addEventListener('change', (e) => {
-            gameState.targetScore = parseInt(e.target.value);
-        });
-
-        chkAutoMode.addEventListener('change', (e) => {
-            gameState.autoMode = e.target.checked;
-        });
-
-        // Init
-        preloadAssets();
-
+        preload();
     </script>
 </body>
 </html>
