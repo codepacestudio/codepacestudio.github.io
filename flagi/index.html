@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>World Cup 2026 Simulator - Final Master</title>
+    <title>World Cup 2026 Simulator - Stable Core</title>
     <style>
         :root {
             --bg-base: #060913;
@@ -145,7 +145,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 0 15px 15px 15px;
+            padding: 0 15px 25px 15px;
             gap: 12px;
             pointer-events: auto;
         }
@@ -249,7 +249,7 @@
             .event-item { min-width: 30%; border-right: none; text-align: center; margin-bottom: 5px;}
             .top-bar { padding: 15px; }
         }
-        @media (max-height: 800px) {
+        @media (max-height: 750px) {
             .events-panel, .info-row { display: none; } 
             .who-wins { font-size: 1.8rem; }
         }
@@ -259,7 +259,7 @@
 </head>
 <body>
 
-    <div id="loader">LOADING RESOURCES...</div>
+    <div id="loader">VERIFYING PHYSICS INTEGRITY...</div>
     <canvas id="bg-canvas"></canvas>
     <canvas id="physics-canvas"></canvas>
     <div id="flash-overlay"></div>
@@ -366,9 +366,10 @@
             m10: false, m5: false, m3: false, m2: false
         };
 
-        const FIXED_GAP = Math.PI * 0.10; 
+        const FIXED_GAP = Math.PI * 0.12; 
         const RESTITUTION_WALLS = 0.85;
         const RESTITUTION_BALLS = 0.85; 
+        const MAX_BALL_SPEED = 20;
 
         let actx = null;
         let lastHitTime = 0;
@@ -428,7 +429,7 @@
 
         function loadStorage() {
             try {
-                const sv = localStorage.getItem('wc26_final_v2');
+                const sv = localStorage.getItem('wc26_stable');
                 if(sv) {
                     const p = JSON.parse(sv);
                     state.teams = p.teams || TEAMS.map(t => ({...t, s: 0}));
@@ -436,7 +437,7 @@
                 } else initData();
             } catch(e) { initData(); }
         }
-        function saveStorage() { try { localStorage.setItem('wc26_final_v2', JSON.stringify({teams: state.teams, round: state.round})); } catch(e) {} }
+        function saveStorage() { try { localStorage.setItem('wc26_stable', JSON.stringify({teams: state.teams, round: state.round})); } catch(e) {} }
         function initData() { state.teams = TEAMS.map(t => ({...t, s: 0})); state.round = 1; state.events = []; saveStorage(); }
 
         function logEvent(teamName) {
@@ -497,14 +498,13 @@
         }
 
         const { Engine, Render, Bodies, Body, Composite, Events } = Matter;
-        let eng, rnd;
+        let eng, rnd, arenaBody;
         let cx, cy, rad;
-        let arenaSegments = [];
         const NUM_SEGMENTS = 100;
 
         function setupMatter() {
             const canvas = document.getElementById('physics-canvas');
-            eng = Engine.create({ positionIterations: 24, velocityIterations: 24 });
+            eng = Engine.create({ positionIterations: 16, velocityIterations: 16 });
             eng.gravity.y = 0.8;
             eng.gravity.x = 0;
             
@@ -547,25 +547,18 @@
             Events.on(eng, 'collisionStart', (e) => {
                 e.pairs.forEach(p => {
                     const bA = p.bodyA; const bB = p.bodyB;
-
                     if(!bA.isStatic && !bB.isStatic && bA.label==='ball' && bB.label==='ball') {
                         const vA = bA.velocity; const vB = bB.velocity;
                         sndHit(Math.hypot(vA.x - vB.x, vA.y - vB.y));
                     }
+                });
+            });
 
-                    if (bA.label === 'ball') {
-                        Body.setVelocity(bA, { 
-                            x: bA.velocity.x + (Math.random() - 0.5) * 0.15, 
-                            y: bA.velocity.y + (Math.random() - 0.5) * 0.15 
-                        });
-                        Body.setAngularVelocity(bA, bA.angularVelocity + (Math.random() - 0.5) * 0.05);
-                    }
-                    if (bB.label === 'ball') {
-                        Body.setVelocity(bB, { 
-                            x: bB.velocity.x + (Math.random() - 0.5) * 0.15, 
-                            y: bB.velocity.y + (Math.random() - 0.5) * 0.15 
-                        });
-                        Body.setAngularVelocity(bB, bB.angularVelocity + (Math.random() - 0.5) * 0.05);
+            Events.on(eng, 'beforeUpdate', () => {
+                state.balls.forEach(b => {
+                    if (b.speed > MAX_BALL_SPEED) {
+                        const scale = MAX_BALL_SPEED / b.speed;
+                        Body.setVelocity(b, { x: b.velocity.x * scale, y: b.velocity.y * scale });
                     }
                 });
             });
@@ -577,7 +570,7 @@
 
         function resizeArena() {
             const topSpace = 90; 
-            const bottomSpace = window.innerHeight > 800 ? 180 : 130; 
+            const bottomSpace = window.innerHeight > 800 ? 170 : 130; 
             const availableH = window.innerHeight - topSpace - bottomSpace;
             
             cx = window.innerWidth / 2; 
@@ -589,20 +582,30 @@
             
             if(rnd) { rnd.canvas.width = window.innerWidth; rnd.canvas.height = window.innerHeight; }
 
-            arenaSegments.forEach(s => Composite.remove(eng.world, s.body));
-            arenaSegments = [];
+            if (arenaBody) Composite.remove(eng.world, arenaBody);
 
-            const thick = 30;
-            const len = (Math.PI*2*rad)/NUM_SEGMENTS * 1.05;
+            const parts = [];
+            parts.push(Bodies.circle(cx, cy, 10, { isSensor: true, render: { visible: false } })); 
+            
+            const thick = 40;
+            const len = (Math.PI * 2 * rad) / NUM_SEGMENTS * 1.05;
 
             for(let i=0; i<NUM_SEGMENTS; i++) {
-                const baseAngle = (i/NUM_SEGMENTS) * Math.PI*2;
-                const body = Bodies.rectangle(cx + Math.cos(baseAngle)*rad, cy + Math.sin(baseAngle)*rad, len, thick, {
-                    isStatic: true, restitution: RESTITUTION_WALLS, friction: 0.005, label: 'wall', render: { visible: false }
-                });
-                arenaSegments.push({ body: body, baseAngle: baseAngle });
-                Composite.add(eng.world, body);
+                const angle = (i/NUM_SEGMENTS) * Math.PI*2;
+                let norm = angle;
+                if (norm > Math.PI) norm -= Math.PI * 2;
+                
+                if (Math.abs(norm) > FIXED_GAP / 2) {
+                    const part = Bodies.rectangle(cx + Math.cos(angle)*rad, cy + Math.sin(angle)*rad, len, thick, { 
+                        angle: angle, render: { visible: false }
+                    });
+                    parts.push(part);
+                }
             }
+
+            arenaBody = Body.create({ parts: parts, isStatic: true, restitution: RESTITUTION_WALLS, friction: 0.005 });
+            Body.setPosition(arenaBody, {x: cx, y: cy});
+            Composite.add(eng.world, arenaBody);
             
             if(!state.running && state.balls.length <= 1) spawn();
         }
@@ -661,33 +664,18 @@
             Engine.update(eng, delta * state.timeScale);
 
             state.arenaRot += state.rotSpeed * state.timeScale;
-            const omega = (state.rotSpeed * state.timeScale) / (delta / 1000); 
-
-            const limit = FIXED_GAP / 2;
-            const segmentAngle = (Math.PI * 2) / NUM_SEGMENTS;
-            const hideLimit = limit + (segmentAngle * 0.5);
-
-            arenaSegments.forEach(seg => {
-                let norm = seg.baseAngle;
-                if (norm > Math.PI*2 - hideLimit || norm < hideLimit) {
-                    Body.setPosition(seg.body, {x: -2000, y: -2000}); 
-                } else {
-                    const a = seg.baseAngle + state.arenaRot;
-                    const px = cx + Math.cos(a)*rad;
-                    const py = cy + Math.sin(a)*rad;
-                    Body.setPosition(seg.body, {x: px, y: py});
-                    Body.setAngle(seg.body, a);
-                    
-                    Body.setVelocity(seg.body, {
-                        x: -Math.sin(a) * rad * omega,
-                        y: Math.cos(a) * rad * omega
-                    });
-                }
-            });
+            Body.setAngle(arenaBody, state.arenaRot);
+            Body.setPosition(arenaBody, {x: cx, y: cy});
 
             for(let i = state.balls.length-1; i>=0; i--) {
                 const b = state.balls[i];
                 const distCenter = Math.hypot(b.position.x - cx, b.position.y - cy);
+                
+                if(b.speed < 0.5) {
+                    const nudgeAngle = Math.atan2(cy - b.position.y, cx - b.position.x);
+                    const nudgeForce = 0.000015 * b.mass;
+                    Body.applyForce(b, b.position, {x: Math.cos(nudgeAngle)*nudgeForce, y: Math.sin(nudgeAngle)*nudgeForce});
+                }
                 
                 if(distCenter > rad + 60) {
                     const t = b.tData;
