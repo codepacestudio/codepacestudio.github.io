@@ -3,17 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>World Cup 2026 Simulator - Pro Edition</title>
+    <title>World Cup 2026 Simulator - Ultimate Edition</title>
     <style>
         :root {
-            --bg-dark: #070b19;
-            --accent: #00f0ff;
-            --accent-glow: rgba(0, 240, 255, 0.4);
-            --danger: #ff003c;
-            --danger-glow: rgba(255, 0, 60, 0.6);
+            --bg-base: #03050a;
+            --accent: #00e5ff;
+            --accent-glow: rgba(0, 229, 255, 0.5);
+            --danger: #ff0044;
+            --danger-glow: rgba(255, 0, 68, 0.6);
             --gold: #ffd700;
-            --glass-bg: rgba(10, 15, 30, 0.7);
-            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-bg: rgba(10, 15, 30, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-main: #ffffff;
+            --text-muted: #8892b0;
         }
 
         * {
@@ -26,35 +28,33 @@
         }
 
         body {
-            background-color: var(--bg-dark);
-            color: white;
+            background-color: var(--bg-base);
+            color: var(--text-main);
             overflow: hidden;
             width: 100vw;
             height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
 
-        @keyframes shake {
-            0%, 100% { transform: translate(0, 0); }
-            20% { transform: translate(-3px, 2px); }
-            40% { transform: translate(3px, -2px); }
-            60% { transform: translate(-3px, -2px); }
-            80% { transform: translate(3px, 2px); }
-        }
-
-        .shake-active { animation: shake 0.3s cubic-bezier(.36,.07,.19,.97) both; }
-
+        /* Tła i Warstwy */
         #bg-canvas, #physics-canvas {
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
         }
-        
-        #bg-canvas { z-index: 1; }
+        #bg-canvas { z-index: 1; opacity: 0.6; }
         #physics-canvas { z-index: 2; }
 
+        /* Wstrząsy i Błyski */
+        @keyframes shake {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(-4px, 3px); }
+            50% { transform: translate(4px, -3px); }
+            75% { transform: translate(-4px, -3px); }
+        }
+        .shake-active { animation: shake 0.25s cubic-bezier(.36,.07,.19,.97) both; }
+        #flash-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: white; opacity: 0; z-index: 99; pointer-events: none; transition: opacity 0.15s; }
+
+        /* Główny Układ UI */
         #ui-layer {
             position: absolute;
             top: 0; left: 0;
@@ -63,190 +63,186 @@
             pointer-events: none;
             display: flex;
             flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
         }
 
-        /* Top Bar */
+        /* === GÓRNY PASEK === */
         .top-bar {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            padding: 20px;
-            width: 100%;
             pointer-events: auto;
+            width: 100%;
         }
 
         .icon-btn {
-            background: transparent;
-            border: 1px solid rgba(255,255,255,0.3);
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
             color: white;
-            width: 40px; height: 40px;
-            border-radius: 8px;
+            width: 45px; height: 45px;
+            border-radius: 12px;
             font-size: 1.2rem;
             cursor: pointer;
+            backdrop-filter: blur(10px);
             display: flex; justify-content: center; align-items: center;
+            transition: 0.2s;
         }
+        .icon-btn:hover { background: rgba(255,255,255,0.1); }
 
         .score-pill {
             display: flex;
-            background: rgba(10, 15, 30, 0.8);
+            background: var(--glass-bg);
             border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            padding: 10px 20px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            gap: 20px;
-            align-items: center;
+            border-radius: 16px;
+            padding: 10px 30px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            gap: 30px;
         }
 
-        .score-half { display: flex; flex-direction: column; align-items: center; }
-        .score-half .label { font-size: 0.65rem; color: #8892b0; letter-spacing: 1px; }
-        .score-half .value { font-size: 1.8rem; font-weight: 900; color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
-        .score-pill .divider { width: 1px; height: 30px; background: rgba(255,255,255,0.1); }
+        .score-half { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .score-half .label { font-size: 0.7rem; color: var(--text-muted); letter-spacing: 2px; font-weight: 600; }
+        .score-half .value { font-size: 2rem; font-weight: 900; color: var(--accent); text-shadow: 0 0 15px var(--accent-glow); line-height: 1; margin-top: 4px; }
+        .divider { width: 1px; background: var(--glass-border); margin: 5px 0; }
 
         .btn-ranking {
-            background: rgba(10, 15, 30, 0.8);
+            background: var(--glass-bg);
             border: 1px solid var(--glass-border);
             color: white;
-            padding: 10px 15px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 0.8rem;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 0.85rem;
             cursor: pointer;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
             transition: 0.3s;
-            display: flex; align-items: center; gap: 8px;
+            display: flex; align-items: center; gap: 8px; letter-spacing: 1px;
         }
-        .btn-ranking:hover { background: rgba(255,255,255,0.1); border-color: var(--accent); color: var(--accent); }
+        .btn-ranking:hover { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
 
-        .ranking-hint {
-            position: absolute;
-            top: 75px; right: 25px;
-            font-size: 0.7rem; color: rgba(255,255,255,0.5);
-            pointer-events: none;
-        }
-
-        /* Collapsible Leaderboard */
+        /* === WYSUWANY RANKING === */
         .ranking-panel {
             position: absolute;
-            top: 95px; right: 20px;
-            width: 240px;
-            background: var(--glass-bg);
+            top: 80px; right: 20px;
+            width: 260px;
+            background: rgba(8, 12, 25, 0.85);
             border: 1px solid var(--accent-glow);
-            border-radius: 12px;
-            padding: 15px;
-            backdrop-filter: blur(15px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-radius: 16px;
+            padding: 20px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             transform-origin: top right;
             pointer-events: auto;
             max-height: 50vh;
             overflow-y: auto;
+            z-index: 20;
         }
+        .ranking-panel.hidden { transform: scale(0.8) translateY(-20px); opacity: 0; pointer-events: none; }
+        .lb-title { text-align: center; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px; letter-spacing: 3px; font-weight: 700; }
+        .lb-row { display: flex; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .lb-rank { width: 25px; color: var(--accent); font-weight: 900; font-size: 0.9rem; }
+        .lb-flag { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; margin-right: 12px; border: 1px solid rgba(255,255,255,0.2); }
+        .lb-name { flex: 1; font-size: 0.9rem; font-weight: 600; }
+        .lb-score { font-weight: 900; color: var(--gold); font-size: 1.1rem; }
 
-        .ranking-panel.hidden { transform: scale(0.5); opacity: 0; pointer-events: none; }
-
-        .lb-title { text-align: center; font-size: 0.75rem; color: #8892b0; margin-bottom: 10px; letter-spacing: 2px; }
-        .lb-row { display: flex; align-items: center; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .lb-rank { width: 20px; color: var(--accent); font-weight: bold; font-size: 0.8rem; }
-        .lb-flag { width: 20px; height: 20px; border-radius: 50%; object-fit: cover; margin-right: 10px; border: 1px solid rgba(255,255,255,0.2); }
-        .lb-name { flex: 1; font-size: 0.85rem; }
-        .lb-score { font-weight: 900; color: var(--gold); }
-
-        /* Center Labels */
+        /* === NAPISY NAD PASEK DOLNY === */
         .center-labels {
-            position: absolute;
-            bottom: 22%; left: 50%;
-            transform: translateX(-50%);
-            text-align: center;
             width: 100%;
+            text-align: center;
+            margin-bottom: 15px; /* Odstęp od panelu kontrolnego */
         }
-        
-        .flags-remain { font-size: 0.8rem; color: rgba(255,255,255,0.6); letter-spacing: 1px; margin-bottom: 5px; }
-        .flags-remain span { color: var(--accent); font-weight: bold; font-size: 1rem; }
-        .who-wins { font-size: 2.2rem; font-weight: 900; letter-spacing: 2px; text-shadow: 0 0 20px var(--accent-glow); }
+        .flags-remain { font-size: 0.9rem; color: var(--text-muted); letter-spacing: 2px; margin-bottom: 5px; font-weight: 600; }
+        .flags-remain span { color: var(--accent); font-weight: 900; font-size: 1.2rem; }
+        .who-wins { font-size: 2.5rem; font-weight: 900; letter-spacing: 3px; text-shadow: 0 0 25px var(--accent-glow); line-height: 1; }
 
-        /* Bottom Control Panel */
-        .bottom-panel {
-            position: absolute;
-            bottom: 20px; left: 50%;
-            transform: translateX(-50%);
-            width: 92%; max-width: 600px;
-            background: rgba(10, 15, 30, 0.75);
+        /* === DOLNY PASEK === */
+        .bottom-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .controls-panel {
+            width: 100%; max-width: 700px;
+            background: var(--glass-bg);
             border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            padding: 15px;
-            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 20px;
+            backdrop-filter: blur(20px);
             pointer-events: auto;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-            display: flex; flex-direction: column; gap: 15px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+            display: flex; flex-direction: column; gap: 20px;
         }
-
         .controls-main {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
+            gap: 15px;
         }
-
         .select-wrapper { display: flex; flex-direction: column; }
-        .select-wrapper label { font-size: 0.6rem; color: #8892b0; margin-bottom: 3px; }
-        .select-wrapper select { background: transparent; color: white; border: 1px solid rgba(255,255,255,0.3); padding: 8px; border-radius: 6px; font-weight: bold; outline: none; }
+        .select-wrapper label { font-size: 0.65rem; color: var(--text-muted); margin-bottom: 5px; font-weight: bold; letter-spacing: 1px; }
+        .select-wrapper select { background: rgba(0,0,0,0.3); color: white; border: 1px solid var(--glass-border); padding: 10px; border-radius: 8px; font-weight: bold; outline: none; cursor: pointer; }
         
-        .auto-live { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; font-weight: bold; cursor: pointer; }
-        .auto-live input { width: 16px; height: 16px; accent-color: var(--accent); }
+        .auto-live { display: flex; align-items: center; gap: 10px; font-size: 0.85rem; font-weight: 800; cursor: pointer; letter-spacing: 1px;}
+        .auto-live input { width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer; }
 
-        button.action-btn { flex: 1; min-width: 140px; padding: 12px; font-weight: 900; border-radius: 8px; cursor: pointer; border: none; text-transform: uppercase; transition: 0.2s; letter-spacing: 1px; }
-        .btn-primary { background: linear-gradient(90deg, #00f0ff, #0080ff); color: #000; box-shadow: 0 0 15px var(--accent-glow); }
-        .btn-primary:active { transform: scale(0.95); }
-        .btn-secondary { background: transparent; border: 1px solid rgba(255,255,255,0.3) !important; color: white; }
+        button.action-btn { flex: 1; padding: 15px; font-weight: 900; font-size: 1rem; border-radius: 12px; cursor: pointer; border: none; text-transform: uppercase; transition: 0.2s; letter-spacing: 2px; }
+        .btn-primary { background: linear-gradient(90deg, #00f0ff, #0080ff); color: #000; box-shadow: 0 0 20px var(--accent-glow); }
+        .btn-primary:active { transform: scale(0.96); }
+        .btn-secondary { background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border) !important; color: white; }
         .btn-secondary:hover { background: rgba(255,255,255,0.1); }
 
-        .controls-footer {
-            display: flex; justify-content: space-between; align-items: center;
-            border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;
-        }
-        
+        .controls-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px; }
         .footer-col { display: flex; flex-direction: column; align-items: center; text-align: center; }
-        .footer-col .small-text { font-size: 0.55rem; color: #8892b0; letter-spacing: 1px; }
-        .footer-col .cyan-text { font-size: 0.8rem; color: var(--accent); font-weight: bold; margin: 2px 0; }
-        .footer-col.mid .trophy-icon { font-size: 1.2rem; color: var(--accent); text-shadow: 0 0 10px var(--accent); margin-bottom: 2px;}
+        .footer-col .small-text { font-size: 0.6rem; color: var(--text-muted); letter-spacing: 1px; font-weight: 600; }
+        .footer-col .cyan-text { font-size: 0.9rem; color: var(--accent); font-weight: 900; margin: 4px 0; letter-spacing: 1px;}
+        .footer-col.mid .trophy-icon { font-size: 1.5rem; color: var(--accent); text-shadow: 0 0 15px var(--accent); margin-bottom: 5px;}
 
-        /* Drama Text */
-        #notify-layer { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); z-index: 50; pointer-events: none; width: 100%; display: flex; flex-direction: column; align-items: center; }
-        
+        /* === DRAMATYCZNE NAPISY (ŚRODEK ARENY) === */
+        #notify-layer { position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%); z-index: 50; pointer-events: none; width: 100%; display: flex; flex-direction: column; align-items: center; }
         .dramatic-text {
-            font-size: 10vw; font-weight: 900; text-transform: uppercase; text-align: center;
-            opacity: 0; transform: scale(0.3); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            text-shadow: 0 10px 30px rgba(0,0,0,0.9);
+            font-size: 8vw; font-weight: 900; text-transform: uppercase; text-align: center;
+            opacity: 0; transform: scale(0.5); transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-shadow: 0 15px 40px rgba(0,0,0,0.9);
             background: -webkit-linear-gradient(#fff, #aaa); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            line-height: 1.1;
         }
         .dramatic-text.show { opacity: 1; transform: scale(1); }
-        .text-accent { background: -webkit-linear-gradient(#fff, #00f0ff); -webkit-background-clip: text; filter: drop-shadow(0 0 20px var(--accent-glow)); }
-        .text-danger { background: -webkit-linear-gradient(#ffaaaa, #ff003c); -webkit-background-clip: text; filter: drop-shadow(0 0 30px var(--danger-glow)); }
-        .text-gold { background: -webkit-linear-gradient(#ffeeaa, #ffd700); -webkit-background-clip: text; filter: drop-shadow(0 0 40px rgba(255, 215, 0, 0.6)); font-size: 12vw;}
+        .text-accent { background: -webkit-linear-gradient(#fff, #00e5ff); -webkit-background-clip: text; filter: drop-shadow(0 0 30px var(--accent-glow)); }
+        .text-danger { background: -webkit-linear-gradient(#ffaaaa, #ff0044); -webkit-background-clip: text; filter: drop-shadow(0 0 40px var(--danger-glow)); }
+        .text-gold { background: -webkit-linear-gradient(#fff, #ffd700); -webkit-background-clip: text; filter: drop-shadow(0 0 50px rgba(255, 215, 0, 0.6)); font-size: 10vw;}
 
         .elim-banner {
-            background: linear-gradient(90deg, transparent, rgba(255,0,60,0.9), transparent);
-            width: 100vw; text-align: center; padding: 10px 0; font-size: 1.5rem; font-weight: 800; color: white;
-            opacity: 0; transform: scaleY(0); transition: 0.2s; position: absolute; top: -100px;
+            position: absolute; top: -100px;
+            background: linear-gradient(90deg, transparent, rgba(255,0,68,0.95), transparent);
+            width: 100vw; text-align: center; padding: 12px 0; font-size: 1.8rem; font-weight: 900; color: white;
+            opacity: 0; transform: scaleY(0); transition: 0.25s; letter-spacing: 2px;
         }
         .elim-banner.show { opacity: 1; transform: scaleY(1); top: 0; }
 
-        #flash { position: absolute; top:0; left:0; width:100%; height:100%; background: white; opacity: 0; z-index: 100; pointer-events: none; transition: opacity 0.2s; }
-        
+        /* Loader */
         #loader {
-            position: absolute; top:0; left:0; width:100%; height:100%; background: var(--bg-dark); z-index: 200;
-            display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--accent); font-weight: bold;
+            position: absolute; top:0; left:0; width:100%; height:100%; background: var(--bg-base); z-index: 200;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--accent); font-weight: 900; font-size: 1.5rem; letter-spacing: 3px;
         }
 
-        @media (max-height: 700px) {
-            .center-labels { bottom: 25%; }
-            .flags-remain { font-size: 0.7rem; }
+        /* Responsywność */
+        @media (max-width: 768px) {
+            .score-pill { padding: 10px 20px; gap: 15px; }
+            .score-half .value { font-size: 1.5rem; }
             .who-wins { font-size: 1.8rem; }
-            .bottom-panel { padding: 10px; gap: 10px; }
-            .controls-main { gap: 5px; }
-            button.action-btn { font-size: 0.8rem; padding: 10px; }
+            .controls-main { flex-wrap: wrap; justify-content: center; }
+            button.action-btn { min-width: 100%; }
+            .controls-footer { display: none; } /* Ukrywamy dolne detale na małych ekranach, żeby zaoszczędzić miejsce */
+            .bottom-section { margin-bottom: -10px; }
+        }
+        @media (max-height: 700px) {
+            .who-wins { font-size: 1.5rem; }
+            .controls-panel { padding: 12px; gap: 10px; }
+            button.action-btn { padding: 10px; }
+            .ranking-panel { top: 70px; max-height: 40vh; }
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
@@ -254,14 +250,10 @@
 </head>
 <body>
 
-    <div id="loader">LOADING RESOURCES...</div>
+    <div id="loader">INITIALIZING SIMULATION...</div>
     <canvas id="bg-canvas"></canvas>
-    
-    <div id="wrapper" style="position:absolute; width:100%; height:100%;">
-        <canvas id="physics-canvas"></canvas>
-    </div>
-
-    <div id="flash"></div>
+    <canvas id="physics-canvas"></canvas>
+    <div id="flash-overlay"></div>
 
     <div id="notify-layer">
         <div id="elim-banner" class="elim-banner"></div>
@@ -269,6 +261,7 @@
     </div>
 
     <div id="ui-layer">
+        
         <div class="top-bar">
             <button class="icon-btn">☰</button>
             <div class="score-pill">
@@ -282,79 +275,79 @@
                     <div class="value" id="val-rem">48</div>
                 </div>
             </div>
-            <div style="position: relative;">
-                <button id="btn-ranking" class="btn-ranking"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M4 22H20C21.1 22 22 21.1 22 20V4C22 2.9 21.1 2 20 2H4C2.9 2 2 2.9 2 4V20C2 21.1 2.9 22 4 22ZM7 14H9V18H7V14ZM11 10H13V18H11V10ZM15 6H17V18H15V6Z"/></svg> RANKING</button>
-                <div class="ranking-hint" id="ranking-hint">Tap to show/hide ⤵</div>
-            </div>
+            <button id="btn-ranking" class="btn-ranking">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M4 22H20C21.1 22 22 21.1 22 20V4C22 2.9 21.1 2 20 2H4C2.9 2 2 2.9 2 4V20C2 21.1 2.9 22 4 22ZM7 14H9V18H7V14ZM11 10H13V18H11V10ZM15 6H17V18H15V6Z"/></svg> 
+                RANKING
+            </button>
         </div>
 
         <div class="ranking-panel hidden" id="ranking-panel">
-            <div class="lb-title">TOP 5</div>
+            <div class="lb-title">TOP 5 LEADERS</div>
             <div id="lb-content"></div>
         </div>
 
-        <div class="center-labels" id="center-labels">
-            <div class="flags-remain"><span id="lbl-rem-num">48</span> FLAGS REMAIN</div>
-            <div class="who-wins">WHO WILL WIN?</div>
+        <div class="bottom-section">
+            <div class="center-labels" id="center-labels">
+                <div class="flags-remain"><span id="lbl-rem-num">48</span> FLAGS REMAIN</div>
+                <div class="who-wins">WHO WILL WIN?</div>
+            </div>
+
+            <div class="controls-panel">
+                <div class="controls-main">
+                    <div class="select-wrapper">
+                        <label>BEST OF</label>
+                        <select id="sel-target">
+                            <option value="3">3</option>
+                            <option value="5" selected>5</option>
+                            <option value="7">7</option>
+                        </select>
+                    </div>
+                    <label class="auto-live"><input type="checkbox" id="chk-auto"> AUTO LIVE</label>
+                    <button id="btn-action" class="action-btn btn-primary">▶ START GAME</button>
+                    <button id="btn-reset" class="action-btn btn-secondary">↻ RESET</button>
+                </div>
+                <div class="controls-footer">
+                    <div class="footer-col">
+                        <div class="small-text">FIRST TEAM TO</div>
+                        <div class="cyan-text" id="ft-pts">5 POINTS</div>
+                        <div class="small-text">WINS THE BATTLE</div>
+                    </div>
+                    <div class="footer-col mid">
+                        <div class="trophy-icon">🏆</div>
+                        <div class="small-text">SURVIVE. ELIMINATE. WIN.</div>
+                    </div>
+                    <div class="footer-col">
+                        <div class="small-text">MAY THE BEST</div>
+                        <div class="cyan-text">FLAG</div>
+                        <div class="small-text">WIN!</div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="bottom-panel">
-            <div class="controls-main">
-                <div class="select-wrapper">
-                    <label>BEST OF</label>
-                    <select id="sel-target">
-                        <option value="3">3</option>
-                        <option value="5" selected>5</option>
-                        <option value="7">7</option>
-                    </select>
-                </div>
-                <label class="auto-live"><input type="checkbox" id="chk-auto"> AUTO LIVE</label>
-                <button id="btn-action" class="action-btn btn-primary">▶ START GAME</button>
-                <button id="btn-reset" class="action-btn btn-secondary">↻ RESET</button>
-            </div>
-            <div class="controls-footer">
-                <div class="footer-col">
-                    <div class="small-text">FIRST TEAM TO</div>
-                    <div class="cyan-text" id="ft-pts">5 POINTS</div>
-                    <div class="small-text">WINS THE BATTLE</div>
-                </div>
-                <div class="footer-col mid">
-                    <div class="trophy-icon">🏆</div>
-                    <div class="small-text">SURVIVE. ELIMINATE. WIN.</div>
-                </div>
-                <div class="footer-col">
-                    <div class="small-text">MAY THE BEST</div>
-                    <div class="cyan-text">FLAG</div>
-                    <div class="small-text">WIN!</div>
-                </div>
-            </div>
-        </div>
     </div>
 
     <script>
+        // 48 EXACT Qualified Teams for 2026 World Cup
         const TEAMS = [
-            { n: "USA", c: "us" }, { n: "Mexico", c: "mx" }, { n: "Canada", c: "ca" },
-            { n: "Panama", c: "pa" }, { n: "Haiti", c: "ht" }, { n: "Curaçao", c: "cw" },
-            { n: "Argentina", c: "ar" }, { n: "Brazil", c: "br" }, { n: "Uruguay", c: "uy" },
-            { n: "Colombia", c: "co" }, { n: "Ecuador", c: "ec" }, { n: "Paraguay", c: "py" },
-            { n: "France", c: "fr" }, { n: "Spain", c: "es" }, { n: "England", c: "gb-eng" },
-            { n: "Germany", c: "de" }, { n: "Portugal", c: "pt" }, { n: "Netherlands", c: "nl" },
-            { n: "Belgium", c: "be" }, { n: "Croatia", c: "hr" }, { n: "Switzerland", c: "ch" },
-            { n: "Austria", c: "at" }, { n: "Sweden", c: "se" }, { n: "Norway", c: "no" },
-            { n: "Scotland", c: "gb-sct" }, { n: "Bosnia", c: "ba" }, { n: "Czechia", c: "cz" },
-            { n: "Türkiye", c: "tr" }, { n: "Japan", c: "jp" }, { n: "South Korea", c: "kr" },
-            { n: "Iran", c: "ir" }, { n: "Australia", c: "au" }, { n: "Saudi Arabia", c: "sa" },
-            { n: "Qatar", c: "qa" }, { n: "Iraq", c: "iq" }, { n: "Jordan", c: "jo" },
-            { n: "Uzbekistan", c: "uz" }, { n: "Morocco", c: "ma" }, { n: "Senegal", c: "sn" },
-            { n: "Egypt", c: "eg" }, { n: "Algeria", c: "dz" }, { n: "Tunisia", c: "tn" },
-            { n: "South Africa", c: "za" }, { n: "Ghana", c: "gh" }, { n: "Ivory Coast", c: "ci" },
-            { n: "DR Congo", c: "cd" }, { n: "Cape Verde", c: "cv" }, { n: "New Zealand", c: "nz" }
+            { n: "Mexico", c: "mx" }, { n: "South Africa", c: "za" }, { n: "South Korea", c: "kr" }, { n: "Czechia", c: "cz" },
+            { n: "Canada", c: "ca" }, { n: "Bosnia", c: "ba" }, { n: "Qatar", c: "qa" }, { n: "Switzerland", c: "ch" },
+            { n: "Brazil", c: "br" }, { n: "Morocco", c: "ma" }, { n: "Haiti", c: "ht" }, { n: "Scotland", c: "gb-sct" },
+            { n: "USA", c: "us" }, { n: "Paraguay", c: "py" }, { n: "Australia", c: "au" }, { n: "Türkiye", c: "tr" },
+            { n: "Germany", c: "de" }, { n: "Curacao", c: "cw" }, { n: "Ivory Coast", c: "ci" }, { n: "Ecuador", c: "ec" },
+            { n: "Netherlands", c: "nl" }, { n: "Japan", c: "jp" }, { n: "Sweden", c: "se" }, { n: "Tunisia", c: "tn" },
+            { n: "Belgium", c: "be" }, { n: "Egypt", c: "eg" }, { n: "Iran", c: "ir" }, { n: "New Zealand", c: "nz" },
+            { n: "Spain", c: "es" }, { n: "Cape Verde", c: "cv" }, { n: "Saudi Arabia", c: "sa" }, { n: "Uruguay", c: "uy" },
+            { n: "France", c: "fr" }, { n: "Senegal", c: "sn" }, { n: "Iraq", c: "iq" }, { n: "Norway", c: "no" },
+            { n: "Argentina", c: "ar" }, { n: "Algeria", c: "dz" }, { n: "Austria", c: "at" }, { n: "Jordan", c: "jo" },
+            { n: "Portugal", c: "pt" }, { n: "DR Congo", c: "cd" }, { n: "Uzbekistan", c: "uz" }, { n: "Colombia", c: "co" },
+            { n: "England", c: "gb-eng" }, { n: "Croatia", c: "hr" }, { n: "Ghana", c: "gh" }, { n: "Panama", c: "pa" }
         ];
 
         let state = {
             teams: [], images: {}, loaded: 0,
             round: 1, target: 5, auto: false, running: false,
-            balls: [], arenaRot: 0, rotSpeed: 0.008, targetRotSpeed: 0.008,
+            balls: [], arenaRot: 0, rotSpeed: 0.02, targetRotSpeed: 0.02,
             timeScale: 1, targetTimeScale: 1, zoom: 1, targetZoom: 1,
             m10: false, m5: false, m3: false, m2: false
         };
@@ -386,36 +379,37 @@
 
         function sndHit(velocity) {
             const now = performance.now();
-            if(!actx || velocity < 2 || now - lastHitTime < 40) return;
+            if(!actx || velocity < 3 || now - lastHitTime < 30) return;
             lastHitTime = now;
-            playTone(150 + Math.random()*50, 'triangle', 0.1, Math.min(velocity * 0.015, 0.1));
+            playTone(100 + Math.random()*80, 'triangle', 0.1, Math.min(velocity * 0.015, 0.15));
         }
 
         function sndEliminate() {
-            playTone(300, 'sawtooth', 0.5, 0.2, 50);
-            setTimeout(()=>playTone(150, 'square', 0.4, 0.2, 30), 100);
+            playTone(250, 'sawtooth', 0.4, 0.2, 50);
+            setTimeout(()=>playTone(150, 'square', 0.3, 0.2, 30), 80);
         }
 
-        function sndEvent() { playTone(800, 'sine', 1.0, 0.2, 200); }
-        function sndWin() { [440, 554, 659, 880].forEach((f, i) => setTimeout(()=>playTone(f, 'square', 0.5, 0.1), i*100)); }
+        function sndEvent() { playTone(900, 'sine', 1.5, 0.2, 200); }
+        function sndWin() { [440, 554, 659, 880].forEach((f, i) => setTimeout(()=>playTone(f, 'square', 0.4, 0.15), i*100)); }
         function sndChampion() {
-            [440, 554, 659, 880, 1108, 1318].forEach((f, i) => setTimeout(()=>playTone(f, 'sine', 0.8, 0.15), i*150));
-            setTimeout(()=>playTone(880, 'square', 2.0, 0.2), 900);
+            [440, 554, 659, 880, 1108, 1318].forEach((f, i) => setTimeout(()=>playTone(f, 'sine', 0.8, 0.2), i*150));
+            setTimeout(()=>playTone(880, 'square', 2.0, 0.3), 900);
         }
 
+        // Tło
         const bgCanvas = document.getElementById('bg-canvas');
         const bgCtx = bgCanvas.getContext('2d');
         let particles = [];
         function initBg() {
             bgCanvas.width = window.innerWidth; bgCanvas.height = window.innerHeight;
-            particles = Array.from({length: 80}, () => ({
+            particles = Array.from({length: 60}, () => ({
                 x: Math.random() * bgCanvas.width, y: Math.random() * bgCanvas.height,
-                s: Math.random() * 1.5 + 0.5, v: Math.random() * 0.3 + 0.1
+                s: Math.random() * 2 + 0.5, v: Math.random() * 0.4 + 0.1
             }));
         }
         function drawBg() {
             bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
-            bgCtx.fillStyle = 'rgba(0, 240, 255, 0.4)';
+            bgCtx.fillStyle = 'rgba(0, 229, 255, 0.5)';
             particles.forEach(p => {
                 bgCtx.beginPath(); bgCtx.arc(p.x, p.y, p.s, 0, Math.PI*2); bgCtx.fill();
                 p.y -= p.v; if(p.y < 0) { p.y = bgCanvas.height; p.x = Math.random() * bgCanvas.width; }
@@ -424,33 +418,19 @@
         }
         initBg(); drawBg(); window.addEventListener('resize', initBg);
 
+        // Stan
         function loadStorage() {
             try {
-                const sv = localStorage.getItem('wc26Pro');
+                const sv = localStorage.getItem('wc26_ultimate');
                 if(sv) {
                     const p = JSON.parse(sv);
                     state.teams = p.teams || TEAMS.map(t => ({...t, s: 0}));
                     state.round = p.round || 1;
-                } else {
-                    initData();
-                }
-            } catch(e) {
-                state.teams = TEAMS.map(t => ({...t, s: 0}));
-                state.round = 1;
-            }
+                } else initData();
+            } catch(e) { initData(); }
         }
-        
-        function saveStorage() { 
-            try {
-                localStorage.setItem('wc26Pro', JSON.stringify({teams: state.teams, round: state.round})); 
-            } catch(e) {}
-        }
-        
-        function initData() { 
-            state.teams = TEAMS.map(t => ({...t, s: 0})); 
-            state.round = 1; 
-            saveStorage(); 
-        }
+        function saveStorage() { try { localStorage.setItem('wc26_ultimate', JSON.stringify({teams: state.teams, round: state.round})); } catch(e) {} }
+        function initData() { state.teams = TEAMS.map(t => ({...t, s: 0})); state.round = 1; saveStorage(); }
 
         function updateUI() {
             document.getElementById('val-round').innerText = state.round;
@@ -469,44 +449,32 @@
         }
 
         function preload() {
-            if(TEAMS.length === 0) return;
-            
             TEAMS.forEach(t => {
                 const img = new Image(); 
                 img.crossOrigin = "anonymous";
-                
                 const checkLoad = () => {
                     state.loaded++;
                     if(state.loaded === TEAMS.length) { 
                         document.getElementById('loader').style.display = 'none'; 
-                        loadStorage(); 
-                        updateUI(); 
-                        setupMatter(); 
+                        loadStorage(); updateUI(); setupMatter(); 
                     }
                 };
-
-                img.onload = () => {
-                    state.images[t.c] = img;
-                    checkLoad();
-                };
-
+                img.onload = () => { state.images[t.c] = img; checkLoad(); };
                 img.onerror = () => {
-                    const c = document.createElement('canvas');
-                    c.width = 80; c.height = 80;
+                    // Fallback dla obrazka
+                    const c = document.createElement('canvas'); c.width = 80; c.height = 80;
                     const ctx = c.getContext('2d');
-                    ctx.fillStyle = '#1e1e2f'; ctx.fillRect(0,0,80,80);
-                    ctx.fillStyle = '#00f0ff'; ctx.font = 'bold 30px sans-serif'; 
-                    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-                    ctx.fillText(t.c.toUpperCase().substring(0,2), 40, 40);
-                    state.images[t.c] = c;
-                    checkLoad();
+                    ctx.fillStyle = `hsl(${Math.random()*360}, 60%, 40%)`; ctx.fillRect(0,0,80,80);
+                    ctx.fillStyle = '#fff'; ctx.font = 'bold 24px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                    ctx.fillText(t.c.toUpperCase(), 40, 40);
+                    state.images[t.c] = c; checkLoad();
                 };
-
                 img.src = `https://flagcdn.com/w80/${t.c}.png`;
             });
         }
 
-        const { Engine, Render, Bodies, Body, Composite, Events } = Matter;
+        // FIZYKA POTEZNA
+        const { Engine, Render, Bodies, Body, Composite, Constraint, Events } = Matter;
         let eng, rnd, arena;
         let cx, cy, rad;
 
@@ -521,11 +489,50 @@
             });
 
             resizeArena();
-            
-            Events.on(rnd, 'afterRender', customRender);
+
+            Events.on(rnd, 'beforeRender', () => {
+                const ctx = rnd.context;
+                ctx.save();
+                ctx.translate(cx, cy); ctx.scale(state.zoom, state.zoom); ctx.translate(-cx, -cy);
+            });
+
+            Events.on(rnd, 'afterRender', () => {
+                const ctx = rnd.context;
+                // Rysowanie obwodu areny
+                const segs = 60;
+                const gapAngle = (3/segs) * Math.PI * 2;
+                const startA = arena.angle + gapAngle;
+                const endA = arena.angle + Math.PI*2;
+
+                ctx.beginPath();
+                ctx.arc(cx, cy, rad, startA, endA);
+                ctx.strokeStyle = '#00e5ff'; ctx.lineWidth = 8;
+                ctx.shadowBlur = 30; ctx.shadowColor = '#00e5ff';
+                ctx.stroke(); ctx.shadowBlur = 0;
+
+                // Rysowanie flag
+                state.balls.forEach(b => {
+                    const img = state.images[b.tData.c];
+                    if(img) {
+                        ctx.save();
+                        ctx.translate(b.position.x, b.position.y);
+                        ctx.rotate(b.angle);
+                        ctx.beginPath(); ctx.arc(0, 0, b.circleRadius, 0, Math.PI*2); ctx.clip();
+                        const r = b.circleRadius;
+                        ctx.drawImage(img, -r, -r, r*2, r*2);
+                        const grad = ctx.createRadialGradient(-r*0.2, -r*0.2, r*0.1, 0, 0, r);
+                        grad.addColorStop(0, 'rgba(255,255,255,0.5)'); grad.addColorStop(1, 'rgba(0,0,0,0.6)');
+                        ctx.fillStyle = grad; ctx.fill();
+                        ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(255,255,255,0.3)'; ctx.stroke();
+                        ctx.restore();
+                    }
+                });
+                ctx.restore(); // Restore from beforeRender
+            });
+
             Events.on(eng, 'collisionStart', (e) => {
                 e.pairs.forEach(p => {
-                    if(!p.bodyA.isStatic && !p.bodyB.isStatic) {
+                    if(!p.bodyA.isStatic && !p.bodyB.isStatic && p.bodyA.label==='ball' && p.bodyB.label==='ball') {
                         const vA = p.bodyA.velocity; const vB = p.bodyB.velocity;
                         sndHit(Math.hypot(vA.x - vB.x, vA.y - vB.y));
                     }
@@ -537,57 +544,42 @@
             requestAnimationFrame(customPhysicsLoop);
         }
 
-        function customRender() {
-            const ctx = rnd.context;
-            ctx.save();
-            ctx.translate(cx, cy); ctx.scale(state.zoom, state.zoom); ctx.translate(-cx, -cy);
-
-            const gapAngle = (4/70) * Math.PI * 2;
-            ctx.beginPath();
-            ctx.arc(cx, cy, rad, state.arenaRot + gapAngle + 0.05, state.arenaRot + Math.PI*2 - 0.05);
-            ctx.strokeStyle = '#00f0ff'; ctx.lineWidth = 6;
-            ctx.shadowBlur = 20; ctx.shadowColor = '#00f0ff';
-            ctx.stroke(); ctx.shadowBlur = 0;
-
-            state.balls.forEach(b => {
-                const img = state.images[b.tData.c];
-                if(img) {
-                    ctx.save();
-                    ctx.translate(b.position.x, b.position.y);
-                    ctx.rotate(b.angle);
-                    ctx.beginPath(); ctx.arc(0, 0, b.circleRadius, 0, Math.PI*2); ctx.clip();
-                    const r = b.circleRadius;
-                    ctx.drawImage(img, -r, -r, r*2, r*2);
-                    const grad = ctx.createRadialGradient(-r*0.3, -r*0.3, r*0.1, 0, 0, r);
-                    grad.addColorStop(0, 'rgba(255,255,255,0.4)'); grad.addColorStop(1, 'rgba(0,0,0,0.5)');
-                    ctx.fillStyle = grad; ctx.fill();
-                    ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(255,255,255,0.2)'; ctx.stroke();
-                    ctx.restore();
-                }
-            });
-            ctx.restore();
-        }
-
         function resizeArena() {
-            cx = window.innerWidth / 2; cy = window.innerHeight * 0.45;
-            rad = Math.min(window.innerWidth, window.innerHeight) * 0.38;
-            if(rad > 250) rad = 250;
+            cx = window.innerWidth / 2; 
+            cy = window.innerHeight * 0.45; // Podniesione wyżej, by dół miał miejsce
+            rad = Math.min(window.innerWidth, window.innerHeight) * 0.35;
+            if(rad > 300) rad = 300; // Limit
+            if(rad < 150) rad = 150;
             
             if(rnd) { rnd.canvas.width = window.innerWidth; rnd.canvas.height = window.innerHeight; }
-            if(arena) Composite.remove(eng.world, arena);
+            if(arena) Composite.remove(eng.world, arena.composites); // Zależnie od implementacji
 
-            const parts = []; const segs = 70; const thick = 30;
-            for(let i=4; i<segs; i++) {
+            // Budowa areny kinetycznej połączonej pinem
+            const parts = [];
+            // Niewidzialny środek dla idealnego wyważenia
+            parts.push(Bodies.circle(cx, cy, rad, { isSensor: true, render: { visible: false } }));
+            
+            const segs = 60;
+            const thick = 30;
+            for(let i=3; i<segs; i++) { // Luka w indeksach 0, 1, 2
                 const a = (i/segs) * Math.PI*2;
-                const p = Bodies.rectangle(cx + Math.cos(a)*rad, cy + Math.sin(a)*rad, (Math.PI*2*rad)/segs * 1.05, thick, {
-                    angle: a, isStatic: true, restitution: 0.9, friction: 0.05, render: { visible: false }
+                const p = Bodies.rectangle(cx + Math.cos(a)*rad, cy + Math.sin(a)*rad, (Math.PI*2*rad)/segs * 1.1, thick, {
+                    angle: a, render: { visible: false }
                 });
                 parts.push(p);
             }
-            arena = Body.create({ parts: parts, isStatic: true });
-            Body.setPosition(arena, {x: cx, y: cy});
-            Composite.add(eng.world, arena);
+            arena = Body.create({ parts: parts, friction: 0.1, restitution: 0.9, density: 100 });
+            const anchor = Bodies.circle(cx, cy, 10, { isStatic: true, render: { visible: false } });
+            const pin = Constraint.create({ bodyA: arena, bodyB: anchor, length: 0, stiffness: 1, render: {visible: false} });
+            
+            Composite.clear(eng.world);
+            Composite.add(eng.world, [arena, anchor, pin]);
+            
             if(!state.running && state.balls.length <= 1) spawn();
+            else {
+                // Przywracanie piłek
+                state.balls.forEach(b => Composite.add(eng.world, b));
+            }
         }
 
         window.addEventListener('resize', () => { clearTimeout(window.rsz); window.rsz = setTimeout(resizeArena, 200); });
@@ -595,17 +587,17 @@
         function spawn() {
             state.balls.forEach(b => Composite.remove(eng.world, b));
             state.balls = [];
-            const br = Math.max(10, rad / 15);
+            const br = Math.max(8, rad / 14);
             
             state.teams.forEach((t, i) => {
                 const a = (i/state.teams.length) * Math.PI*2;
-                const d = Math.random()*(rad*0.7) + 20;
+                const d = Math.random()*(rad*0.6) + 20;
                 const b = Bodies.circle(cx + Math.cos(a)*d, cy + Math.sin(a)*d, br, {
-                    restitution: 0.95, friction: 0.005, frictionAir: 0.015, density: 0.08, render: { visible: false }
+                    restitution: 0.95, friction: 0.01, frictionAir: 0.005, density: 0.05, label: 'ball', render: { visible: false }
                 });
                 b.tData = t; state.balls.push(b); Composite.add(eng.world, b);
             });
-            state.targetTimeScale = 1; state.timeScale = 1; state.targetZoom = 1; state.zoom = 1;
+            state.targetTimeScale = 1; state.timeScale = 1; state.targetZoom = 1; state.zoom = 1; state.targetRotSpeed = 0.02; state.rotSpeed = 0.02;
             state.m10 = false; state.m5 = false; state.m3 = false; state.m2 = false;
             document.getElementById('center-labels').style.opacity = '1';
             updateUI();
@@ -619,54 +611,57 @@
 
             state.zoom += (state.targetZoom - state.zoom) * 0.05;
             state.timeScale += (state.targetTimeScale - state.timeScale) * 0.05;
-            state.rotSpeed += (state.targetRotSpeed - state.rotSpeed) * 0.05;
+            state.rotSpeed += (state.targetRotSpeed - state.rotSpeed) * 0.02;
 
             if(!state.running) return;
 
             Engine.update(eng, delta * state.timeScale);
 
-            state.arenaRot += state.rotSpeed * state.timeScale;
-            Body.setAngle(arena, state.arenaRot); Body.setPosition(arena, {x: cx, y: cy});
+            // REALNA FIZYKA: Nadajemy prędkość kątową ścianie. To napędza piłki naturalnie przy odbiciach.
+            Body.setAngularVelocity(arena, state.rotSpeed * state.timeScale);
 
-            if(Math.random() < 0.005) state.targetRotSpeed = (Math.random() > 0.5 ? 1 : -1) * (0.005 + Math.random()*0.015);
+            // Zmiany kierunku i prędkości areny
+            if(Math.random() < 0.008) state.targetRotSpeed = (Math.random() > 0.5 ? 1 : -1) * (0.015 + Math.random()*0.025);
 
-            const hAngle = state.arenaRot + ((2/70) * Math.PI * 2);
-            const hx = cx + Math.cos(hAngle) * rad;
-            const hy = cy + Math.sin(hAngle) * rad;
-
+            // Siła rozpychająca od środka i losowe impulsy viralowe
             for(let i = state.balls.length-1; i>=0; i--) {
                 const b = state.balls[i];
                 
-                if(b.speed < 0.2) Body.applyForce(b, b.position, {x: (Math.random()-0.5)*0.002, y: (Math.random()-0.5)*0.002});
-                
-                const distH = Math.hypot(b.position.x - hx, b.position.y - hy);
-                if(distH < rad * 0.3) {
-                    Body.applyForce(b, b.position, {x: (hx - b.position.x)*0.0001, y: (hy - b.position.y)*0.0001});
+                // Odpychanie od środka, by nie stały w miejscu
+                const distC = Math.hypot(b.position.x - cx, b.position.y - cy);
+                if(distC < rad * 0.4) {
+                    const ang = Math.atan2(b.position.y - cy, b.position.x - cx);
+                    Body.applyForce(b, b.position, { x: Math.cos(ang)*b.mass*0.0001, y: Math.sin(ang)*b.mass*0.0001 });
                 }
 
-                if(Math.hypot(b.position.x - cx, b.position.y - cy) > rad + 30) {
+                // Randomowy "kopniak"
+                if(Math.random() < 0.015) {
+                    Body.applyForce(b, b.position, { x: (Math.random()-0.5)*b.mass*0.015, y: (Math.random()-0.5)*b.mass*0.015 });
+                }
+
+                // Eliminacja po wypadnięciu z areny
+                if(distC > rad + 40) {
                     const t = b.tData;
                     Composite.remove(eng.world, b); state.balls.splice(i, 1);
-                    sndEliminate(); shake(); showElim(`${t.n.toUpperCase()} ELIMINATED!`);
+                    document.body.classList.remove('shake-active'); void document.body.offsetWidth; document.body.classList.add('shake-active');
+                    sndEliminate(); showElim(`${t.n.toUpperCase()} ELIMINATED!`);
                     updateUI(); checkMilestones();
                 }
             }
         }
 
-        const elWrap = document.getElementById('wrapper');
         const dText = document.getElementById('dramatic-msg');
         const elimBan = document.getElementById('elim-banner');
 
-        function shake() { elWrap.classList.remove('shake-active'); void elWrap.offsetWidth; elWrap.classList.add('shake-active'); }
         function showText(txt, cls, dur) { dText.innerHTML = txt; dText.className = `dramatic-text show ${cls}`; setTimeout(() => dText.className = 'dramatic-text', dur); }
         function showElim(txt) { elimBan.innerHTML = txt; elimBan.classList.add('show'); setTimeout(() => elimBan.classList.remove('show'), 1500); }
 
         function checkMilestones() {
             const rem = state.balls.length;
             if(rem === 10 && !state.m10) { state.m10 = true; showText("FINAL 10", "text-accent", 2000); sndEvent(); }
-            if(rem === 5 && !state.m5) { state.m5 = true; showText("FINAL 5", "text-danger", 2000); sndEvent(); state.targetRotSpeed *= 1.5; }
+            if(rem === 5 && !state.m5) { state.m5 = true; showText("FINAL 5", "text-danger", 2000); sndEvent(); state.targetRotSpeed = 0.05; }
             if(rem === 3 && !state.m3) { state.m3 = true; showText("FINAL 3", "text-danger", 2000); sndEvent(); state.targetTimeScale = 0.5; }
-            if(rem === 2 && !state.m2) { state.m2 = true; showText("FINAL DUEL", "text-gold", 3000); sndEvent(); state.targetTimeScale = 0.3; state.targetZoom = 1.4; document.getElementById('center-labels').style.opacity = '0'; }
+            if(rem === 2 && !state.m2) { state.m2 = true; showText("FINAL DUEL", "text-gold", 3000); sndEvent(); state.targetTimeScale = 0.3; state.targetZoom = 1.35; document.getElementById('center-labels').style.opacity = '0'; }
             if(rem === 1) handleWin();
         }
 
@@ -678,13 +673,13 @@
 
             const isChamp = state.teams[idx].s >= state.target;
 
-            document.getElementById('flash').style.opacity = '1';
-            setTimeout(() => document.getElementById('flash').style.opacity = '0', 300);
+            document.getElementById('flash-overlay').style.opacity = '1';
+            setTimeout(() => document.getElementById('flash-overlay').style.opacity = '0', 200);
 
             if(isChamp) {
                 sndChampion();
-                confetti({ particleCount: 400, spread: 160, origin: { y: 0.5 }, zIndex: 1000, colors: ['#ffd700', '#00f0ff', '#ffffff'] });
-                showText(`👑 ${w.n.toUpperCase()} WINS! 👑<br><img src="https://flagcdn.com/w160/${w.c}.png" style="margin-top:20px; border-radius:15px; box-shadow:0 0 50px var(--gold); border: 2px solid var(--gold);">`, 'text-gold', 7000);
+                confetti({ particleCount: 500, spread: 200, origin: { y: 0.5 }, zIndex: 1000, colors: ['#ffd700', '#00e5ff', '#ffffff'] });
+                showText(`👑 ${w.n.toUpperCase()} WINS! 👑<br><img src="https://flagcdn.com/w160/${w.c}.png" style="margin-top:30px; border-radius:50%; width:120px; height:120px; object-fit:cover; box-shadow:0 0 60px var(--gold); border: 4px solid var(--gold);">`, 'text-gold', 7000);
                 setTimeout(() => { initData(); updateUI(); autoCheck(); }, 8000);
             } else {
                 sndWin();
@@ -699,36 +694,19 @@
             else { document.getElementById('btn-action').innerHTML = "▶ START NEXT ROUND"; }
         }
 
-        function startSim() {
-            initAudio();
-            if(state.balls.length <= 1) spawn();
-            state.running = true;
-            document.getElementById('btn-action').innerHTML = "⏸ PAUSE GAME";
-        }
+        function startSim() { initAudio(); if(state.balls.length <= 1) spawn(); state.running = true; document.getElementById('btn-action').innerHTML = "⏸ PAUSE GAME"; }
+        function pauseSim() { state.running = false; document.getElementById('btn-action').innerHTML = "▶ RESUME GAME"; }
 
-        function pauseSim() {
-            state.running = false;
-            document.getElementById('btn-action').innerHTML = "▶ RESUME GAME";
-        }
-
+        // Eventy Przyciski
         document.getElementById('btn-action').onclick = () => { state.running ? pauseSim() : startSim(); };
-        
-        document.getElementById('btn-reset').onclick = () => {
-            if(confirm("Reset entire match to Round 1?")) { pauseSim(); initData(); spawn(); document.getElementById('btn-action').innerHTML = "▶ START GAME"; }
-        };
-
-        document.getElementById('sel-target').onchange = (e) => {
-            state.target = parseInt(e.target.value);
-            document.getElementById('ft-pts').innerText = `${state.target} POINTS`;
-        };
-
+        document.getElementById('btn-reset').onclick = () => { if(confirm("Reset match to Round 1?")) { pauseSim(); initData(); spawn(); document.getElementById('btn-action').innerHTML = "▶ START GAME"; } };
+        document.getElementById('sel-target').onchange = (e) => { state.target = parseInt(e.target.value); document.getElementById('ft-pts').innerText = `${state.target} POINTS`; };
         document.getElementById('chk-auto').onchange = (e) => { state.auto = e.target.checked; };
 
         let rOpen = false;
         document.getElementById('btn-ranking').onclick = () => {
             rOpen = !rOpen;
             document.getElementById('ranking-panel').classList.toggle('hidden', !rOpen);
-            document.getElementById('ranking-hint').style.display = 'none';
         };
 
         preload();
