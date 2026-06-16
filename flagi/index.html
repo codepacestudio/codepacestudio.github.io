@@ -8,7 +8,7 @@
 :root {
   --bg: #f4f6f9; --bg2: #ffffff;
   --cyan: #0077b6; --blue: #023e8a; --red: #d90429; --green: #2a9d8f; --gold: #f4a261;
-  --muted: #6c757d; --text: #1a1a1a; --border: rgba(0,0,0,0.08);
+  --muted: #6c757d; --text: #1a1a1a; --border: rgba(0,0,0,0.1);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: Inter, "Segoe UI", system-ui, sans-serif; -webkit-tap-highlight-color: transparent; user-select: none; }
 html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg); color: var(--text); }
@@ -24,7 +24,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg);
   flex: 1;
   position: relative;
   overflow: hidden;
-  background: radial-gradient(circle at 50% 50%, rgba(0,119,182,0.05), transparent 60%), #f4f6f9;
+  background: radial-gradient(circle at 50% 50%, rgba(0,119,182,0.06), transparent 60%), #f4f6f9;
 }
 
 #uiBox {
@@ -34,7 +34,8 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg);
   display: flex;
   flex-direction: column;
   z-index: 10;
-  box-shadow: -5px 0 20px rgba(0,0,0,0.04);
+  box-shadow: -5px 0 20px rgba(0,0,0,0.05);
+  overflow-y: auto;
 }
 
 canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: block; }
@@ -46,37 +47,37 @@ canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display
 @keyframes spin { to { transform: rotate(360deg); } }
 .loaderTitle { font-weight: 1000; letter-spacing: 2px; text-transform: uppercase; color: var(--cyan); }
 
-.hudHeader { padding: 20px 20px 10px; text-align: center; border-bottom: 1px solid var(--border); }
+.hudHeader { padding: 20px 20px 10px; text-align: center; border-bottom: 1px solid var(--border); flex-shrink: 0; }
 .headline { font-size: 1.6rem; font-weight: 1000; letter-spacing: 2px; text-transform: uppercase; background: linear-gradient(90deg, var(--cyan), var(--red)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 4px; }
 .flagsRemain { font-size: 0.8rem; color: var(--muted); font-weight: 800; text-transform: uppercase; }
 .flagsRemain span { color: var(--red); font-size: 1rem; }
 
-.statsGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 15px 20px; background: rgba(0,0,0,0.02); border-bottom: 1px solid var(--border); }
+.statsGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 15px 20px; background: rgba(0,0,0,0.02); border-bottom: 1px solid var(--border); flex-shrink: 0; }
 .statBox { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 10px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
 .statLabel { font-size: 0.65rem; color: var(--muted); font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
 .statValue { font-size: 1.6rem; font-weight: 1000; color: var(--cyan); margin-top: 4px; }
 .statValue.small { font-size: 1rem; margin-top: 8px; color: var(--text); }
 
-.controls { padding: 15px 20px; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px; }
+.controls { padding: 15px 20px; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; }
 .mainBtn { width: 100%; min-height: 54px; border: 0; border-radius: 14px; background: linear-gradient(90deg, var(--cyan), var(--blue)); color: white; font-size: 1rem; font-weight: 1000; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; box-shadow: 0 6px 15px rgba(0,119,182,0.25); transition: 0.2s; }
 .mainBtn.running { background: linear-gradient(90deg, var(--red), #ff6b6b); box-shadow: 0 6px 15px rgba(217,4,41,0.25); }
-.controlRow { display: flex; gap: 8px; }
-.selectBox { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 5px 10px; display: flex; flex-direction: column; justify-content: center; }
-.selectBox label { font-size: 0.55rem; font-weight: 900; color: var(--muted); text-transform: uppercase; }
-.selectBox select { background: transparent; border: 0; outline: 0; font-size: 0.95rem; font-weight: 1000; color: var(--text); }
-.autoToggle { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.8rem; font-weight: 900; color: var(--text); text-transform: uppercase; }
-.resetBtn { flex: 1; background: white; border: 1px solid var(--border); border-radius: 10px; color: var(--red); font-size: 0.8rem; font-weight: 900; text-transform: uppercase; cursor: pointer; }
 
-.rankingHeader { padding: 15px 20px 10px; font-size: 0.75rem; font-weight: 1000; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; }
-.rankingList { flex: 1; overflow-y: auto; padding: 0 20px 20px; }
-.rankingList::-webkit-scrollbar { width: 6px; }
-.rankingList::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 10px; }
+.controlGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.selectBox { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 8px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+.selectBox label { font-size: 0.55rem; font-weight: 900; color: var(--muted); text-transform: uppercase; margin-bottom: 2px; }
+.selectBox select { background: transparent; border: 0; outline: 0; font-size: 1rem; font-weight: 1000; color: var(--text); text-align: center; }
+.autoToggle { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.8rem; font-weight: 900; color: var(--text); text-transform: uppercase; cursor: pointer; }
+.autoToggle input { width: 18px; height: 18px; accent-color: var(--cyan); cursor: pointer; }
+.resetBtn { grid-column: 1 / 3; background: white; border: 1px solid rgba(217,4,41,0.3); border-radius: 10px; color: var(--red); font-size: 0.85rem; font-weight: 900; text-transform: uppercase; cursor: pointer; padding: 12px; }
+
+.rankingHeader { padding: 15px 20px 10px; font-size: 0.8rem; font-weight: 1000; color: var(--text); letter-spacing: 1px; text-transform: uppercase; flex-shrink: 0; }
+.rankingList { padding: 0 20px 20px; flex-shrink: 0; }
 .row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
 .row:last-child { border-bottom: 0; }
-.rankNum { width: 20px; color: var(--muted); font-weight: 1000; text-align: center; font-size: 0.9rem; }
+.rankNum { width: 24px; color: var(--muted); font-weight: 1000; text-align: center; font-size: 0.95rem; }
 .flagIcon { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-.rowName { flex: 1; font-size: 0.9rem; font-weight: 800; }
-.rowScore { font-size: 1.1rem; font-weight: 1000; color: var(--cyan); }
+.rowName { flex: 1; font-size: 0.95rem; font-weight: 800; }
+.rowScore { font-size: 1.2rem; font-weight: 1000; color: var(--cyan); }
 
 #toastLayer { position: absolute; left: 50%; top: 40%; transform: translate(-50%, -50%); z-index: 70; width: 100%; text-align: center; pointer-events: none; }
 .bigText { max-width: 90vw; margin: 0 auto; font-size: clamp(2.5rem, 6vw, 5rem); line-height: 1.1; font-weight: 1000; text-transform: uppercase; letter-spacing: 3px; opacity: 0; transform: scale(.65); transition: .3s cubic-bezier(.18,.89,.32,1.28); text-shadow: 0 10px 30px rgba(0,0,0,.15); }
@@ -91,10 +92,10 @@ canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display
 @media (max-width: 850px) {
   #app { flex-direction: column; }
   #uiBox { width: 100%; flex: 1; border-left: none; border-top: 1px solid var(--border); box-shadow: 0 -5px 20px rgba(0,0,0,0.05); }
-  #gameBox { height: 50vh; flex: none; }
+  #gameBox { height: 48vh; flex: none; }
   .statsGrid { padding: 10px; }
   .controls { padding: 10px; }
-  .rankingList { padding: 0 10px 10px; }
+  .rankingList { padding: 0 10px 20px; }
 }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -139,18 +140,18 @@ canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display
 
     <div class="controls">
       <button id="mainBtn" class="mainBtn">Start Match</button>
-      <div class="controlRow">
+      <div class="controlGrid">
         <div class="selectBox">
-          <label>First to</label>
+          <label>Target Score</label>
           <select id="targetSelect">
-            <option value="3">3</option>
-            <option value="5" selected>5</option>
-            <option value="7">7</option>
-            <option value="10">10</option>
+            <option value="3">3 Points</option>
+            <option value="5" selected>5 Points</option>
+            <option value="7">7 Points</option>
+            <option value="10">10 Points</option>
           </select>
         </div>
-        <label class="autoToggle"><input type="checkbox" id="autoCheck"> Auto</label>
-        <button id="resetBtn" class="resetBtn">Reset</button>
+        <label class="autoToggle"><input type="checkbox" id="autoCheck"> Auto Live</label>
+        <button id="resetBtn" class="resetBtn">Reset Tournament</button>
       </div>
     </div>
 
@@ -189,15 +190,27 @@ function fmt(ms) { let t = Math.floor(ms / 1000); return String(Math.floor(t / 6
 
 function load() {
   try {
-    let s = JSON.parse(localStorage.getItem("wc26_flex_v1") || "{}");
-    if (Array.isArray(s.teams) && s.teams.length === 48) { state.teams = s.teams; state.round = s.round || 1; state.target = s.target || 5; }
+    let s = JSON.parse(localStorage.getItem("wc26_save_v1") || "{}");
+    if (Array.isArray(s.teams) && s.teams.length === 48) { 
+      state.teams = s.teams; 
+      state.round = s.round || 1; 
+      state.target = s.target || 5; 
+      state.auto = !!s.auto;
+    }
   } catch (e) {}
   $("targetSelect").value = String(state.target);
   $("autoCheck").checked = state.auto;
 }
 
 function save() {
-  try { localStorage.setItem("wc26_flex_v1", JSON.stringify({ teams: state.teams, round: state.round, target: state.target })); } catch (e) {}
+  try { 
+    localStorage.setItem("wc26_save_v1", JSON.stringify({ 
+      teams: state.teams, 
+      round: state.round, 
+      target: state.target,
+      auto: state.auto
+    })); 
+  } catch (e) {}
 }
 
 function updateUI() {
@@ -513,7 +526,6 @@ function roundWin() {
   updateUI();
   
   if (champ) {
-    save();
     if (typeof confetti === "function") confetti({ particleCount: 650, spread: 280, startVelocity: 45, origin: { y: .48 }, zIndex: 1000, colors: ["#0077b6", "#d90429", "#2a9d8f", "#f4a261"] });
     big(`${w.n.toUpperCase()}<br>WORLD CHAMPIONS!`, "goldText", 7200);
     setTimeout(() => { state.teams = cloneTeams(); state.round = 1; save(); spawn(); autoNext(); }, 7800);
@@ -551,7 +563,7 @@ function autoNext() {
 
 $("mainBtn").onclick = () => state.running ? pause() : start();
 $("resetBtn").onclick = () => {
-  if (confirm("Reset championship to Round 1?")) {
+  if (confirm("Reset tournament completely? All scores will be lost.")) {
     pause();
     state.teams = cloneTeams();
     state.round = 1;
