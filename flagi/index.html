@@ -332,8 +332,6 @@
     </div>
 
     <script>
-        // --- DATA VERIFIED FOR 2026 WORLD CUP ---
-        // Poland, Italy, Wales do not appear here. 48 exact qualified teams.
         const TEAMS = [
             { n: "USA", c: "us" }, { n: "Mexico", c: "mx" }, { n: "Canada", c: "ca" },
             { n: "Panama", c: "pa" }, { n: "Haiti", c: "ht" }, { n: "Curaçao", c: "cw" },
@@ -361,14 +359,14 @@
             m10: false, m5: false, m3: false, m2: false
         };
 
-        // --- AUDIO ENGINE ---
         let actx = null;
         let lastHitTime = 0;
+        
         function initAudio() {
             try {
                 if(!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
                 if(actx.state === 'suspended') actx.resume();
-            } catch(e) { console.warn("Audio Context blocked."); }
+            } catch(e) {}
         }
         
         function playTone(freq, type, dur, vol, slideFreq=null) {
@@ -405,7 +403,6 @@
             setTimeout(()=>playTone(880, 'square', 2.0, 0.2), 900);
         }
 
-        // --- BACKGROUND ---
         const bgCanvas = document.getElementById('bg-canvas');
         const bgCtx = bgCanvas.getContext('2d');
         let particles = [];
@@ -427,17 +424,33 @@
         }
         initBg(); drawBg(); window.addEventListener('resize', initBg);
 
-        // --- STATE MANAGEMENT ---
         function loadStorage() {
-            const sv = localStorage.getItem('wc26Pro');
-            if(sv) {
-                const p = JSON.parse(sv);
-                state.teams = p.teams || TEAMS.map(t => ({...t, s: 0}));
-                state.round = p.round || 1;
-            } else initData();
+            try {
+                const sv = localStorage.getItem('wc26Pro');
+                if(sv) {
+                    const p = JSON.parse(sv);
+                    state.teams = p.teams || TEAMS.map(t => ({...t, s: 0}));
+                    state.round = p.round || 1;
+                } else {
+                    initData();
+                }
+            } catch(e) {
+                state.teams = TEAMS.map(t => ({...t, s: 0}));
+                state.round = 1;
+            }
         }
-        function saveStorage() { localStorage.setItem('wc26Pro', JSON.stringify({teams: state.teams, round: state.round})); }
-        function initData() { state.teams = TEAMS.map(t => ({...t, s: 0})); state.round = 1; saveStorage(); }
+        
+        function saveStorage() { 
+            try {
+                localStorage.setItem('wc26Pro', JSON.stringify({teams: state.teams, round: state.round})); 
+            } catch(e) {}
+        }
+        
+        function initData() { 
+            state.teams = TEAMS.map(t => ({...t, s: 0})); 
+            state.round = 1; 
+            saveStorage(); 
+        }
 
         function updateUI() {
             document.getElementById('val-round').innerText = state.round;
@@ -456,20 +469,43 @@
         }
 
         function preload() {
+            if(TEAMS.length === 0) return;
+            
             TEAMS.forEach(t => {
-                const img = new Image(); img.crossOrigin = "anonymous";
-                img.onload = () => {
-                    state.images[t.c] = img; state.loaded++;
+                const img = new Image(); 
+                img.crossOrigin = "anonymous";
+                
+                const checkLoad = () => {
+                    state.loaded++;
                     if(state.loaded === TEAMS.length) { 
                         document.getElementById('loader').style.display = 'none'; 
-                        loadStorage(); updateUI(); setupMatter(); 
+                        loadStorage(); 
+                        updateUI(); 
+                        setupMatter(); 
                     }
                 };
+
+                img.onload = () => {
+                    state.images[t.c] = img;
+                    checkLoad();
+                };
+
+                img.onerror = () => {
+                    const c = document.createElement('canvas');
+                    c.width = 80; c.height = 80;
+                    const ctx = c.getContext('2d');
+                    ctx.fillStyle = '#1e1e2f'; ctx.fillRect(0,0,80,80);
+                    ctx.fillStyle = '#00f0ff'; ctx.font = 'bold 30px sans-serif'; 
+                    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                    ctx.fillText(t.c.toUpperCase().substring(0,2), 40, 40);
+                    state.images[t.c] = c;
+                    checkLoad();
+                };
+
                 img.src = `https://flagcdn.com/w80/${t.c}.png`;
             });
         }
 
-        // --- MATTER.JS PANCERNY SILNIK ---
         const { Engine, Render, Bodies, Body, Composite, Events } = Matter;
         let eng, rnd, arena;
         let cx, cy, rad;
@@ -497,8 +533,8 @@
             });
 
             spawn();
-            Render.run(rnd); // Render runs async from physics
-            requestAnimationFrame(customPhysicsLoop); // Własna pętla fizyki
+            Render.run(rnd);
+            requestAnimationFrame(customPhysicsLoop);
         }
 
         function customRender() {
@@ -506,7 +542,6 @@
             ctx.save();
             ctx.translate(cx, cy); ctx.scale(state.zoom, state.zoom); ctx.translate(-cx, -cy);
 
-            // Glowing Arena Arc
             const gapAngle = (4/70) * Math.PI * 2;
             ctx.beginPath();
             ctx.arc(cx, cy, rad, state.arenaRot + gapAngle + 0.05, state.arenaRot + Math.PI*2 - 0.05);
@@ -514,7 +549,6 @@
             ctx.shadowBlur = 20; ctx.shadowColor = '#00f0ff';
             ctx.stroke(); ctx.shadowBlur = 0;
 
-            // Render Flags
             state.balls.forEach(b => {
                 const img = state.images[b.tData.c];
                 if(img) {
@@ -577,14 +611,12 @@
             updateUI();
         }
 
-        // --- CUSTOM RAF LOOP ---
         let lastTime = performance.now();
         function customPhysicsLoop(time) {
             requestAnimationFrame(customPhysicsLoop);
             let delta = time - lastTime; lastTime = time;
-            if(delta > 100) delta = 1000/60; // Tab inactive fix
+            if(delta > 100) delta = 1000/60;
 
-            // Smooth transitions
             state.zoom += (state.targetZoom - state.zoom) * 0.05;
             state.timeScale += (state.targetTimeScale - state.timeScale) * 0.05;
             state.rotSpeed += (state.targetRotSpeed - state.rotSpeed) * 0.05;
@@ -593,14 +625,11 @@
 
             Engine.update(eng, delta * state.timeScale);
 
-            // Arena rotation
             state.arenaRot += state.rotSpeed * state.timeScale;
             Body.setAngle(arena, state.arenaRot); Body.setPosition(arena, {x: cx, y: cy});
 
-            // Random events
             if(Math.random() < 0.005) state.targetRotSpeed = (Math.random() > 0.5 ? 1 : -1) * (0.005 + Math.random()*0.015);
 
-            // Dangerous Hole Logic
             const hAngle = state.arenaRot + ((2/70) * Math.PI * 2);
             const hx = cx + Math.cos(hAngle) * rad;
             const hy = cy + Math.sin(hAngle) * rad;
@@ -608,16 +637,13 @@
             for(let i = state.balls.length-1; i>=0; i--) {
                 const b = state.balls[i];
                 
-                // Anti-stuck and movement
                 if(b.speed < 0.2) Body.applyForce(b, b.position, {x: (Math.random()-0.5)*0.002, y: (Math.random()-0.5)*0.002});
                 
-                // Suck into hole
                 const distH = Math.hypot(b.position.x - hx, b.position.y - hy);
                 if(distH < rad * 0.3) {
                     Body.applyForce(b, b.position, {x: (hx - b.position.x)*0.0001, y: (hy - b.position.y)*0.0001});
                 }
 
-                // Elimination
                 if(Math.hypot(b.position.x - cx, b.position.y - cy) > rad + 30) {
                     const t = b.tData;
                     Composite.remove(eng.world, b); state.balls.splice(i, 1);
@@ -627,7 +653,6 @@
             }
         }
 
-        // --- DRAMA ---
         const elWrap = document.getElementById('wrapper');
         const dText = document.getElementById('dramatic-msg');
         const elimBan = document.getElementById('elim-banner');
@@ -674,7 +699,6 @@
             else { document.getElementById('btn-action').innerHTML = "▶ START NEXT ROUND"; }
         }
 
-        // --- CONTROLS ---
         function startSim() {
             initAudio();
             if(state.balls.length <= 1) spawn();
@@ -700,12 +724,11 @@
 
         document.getElementById('chk-auto').onchange = (e) => { state.auto = e.target.checked; };
 
-        // Ranking Toggle
         let rOpen = false;
         document.getElementById('btn-ranking').onclick = () => {
             rOpen = !rOpen;
             document.getElementById('ranking-panel').classList.toggle('hidden', !rOpen);
-            document.getElementById('ranking-hint').style.display = 'none'; // hide hint forever
+            document.getElementById('ranking-hint').style.display = 'none';
         };
 
         preload();
