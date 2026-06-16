@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>World Cup 2026 Simulator - Final Polish</title>
+    <title>World Cup 2026 Simulator - Aggressive Polish</title>
     <style>
         :root {
             --bg-base: #060913;
@@ -15,6 +15,7 @@
             --text-muted: #8892b0;
             --danger: #ff4757;
             --success: #2ed573;
+            --gold: #ffd700;
         }
 
         * {
@@ -36,7 +37,6 @@
             flex-direction: column;
         }
 
-        /* Background & Physics Layers */
         #bg-canvas, #physics-canvas {
             position: absolute;
             top: 0; left: 0;
@@ -45,7 +45,6 @@
         #bg-canvas { z-index: 1; opacity: 0.8; }
         #physics-canvas { z-index: 2; }
 
-        /* Dramatic Effects */
         @keyframes shake {
             0%, 100% { transform: translate(0, 0); }
             25% { transform: translate(-2px, 1px); }
@@ -55,7 +54,6 @@
         .shake-active { animation: shake 0.2s cubic-bezier(.36,.07,.19,.97) both; }
         #flash-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: white; opacity: 0; z-index: 99; pointer-events: none; transition: opacity 0.15s; }
 
-        /* UI Overlay */
         #ui-layer {
             position: absolute;
             top: 0; left: 0;
@@ -67,7 +65,6 @@
             justify-content: space-between;
         }
 
-        /* --- TOP BAR --- */
         .top-bar {
             display: flex;
             justify-content: space-between;
@@ -120,7 +117,6 @@
         }
         .btn-ranking:hover { border-color: var(--accent-cyan); color: var(--accent-cyan); }
 
-        /* --- RANKING PANEL --- */
         .ranking-panel {
             position: absolute;
             top: 75px; right: 25px;
@@ -144,7 +140,6 @@
         .lb-name { flex: 1; font-size: 0.8rem; font-weight: 500; }
         .lb-score { font-weight: bold; color: var(--gold); font-size: 0.9rem; }
 
-        /* --- BOTTOM UI CONTAINER --- */
         .bottom-container {
             width: 100%;
             display: flex;
@@ -168,7 +163,6 @@
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
 
-        /* Controls Block */
         .main-controls-box {
             width: 100%; max-width: 800px;
             display: flex; flex-direction: column; gap: 12px;
@@ -203,7 +197,6 @@
         }
         .btn-reset:hover { background: rgba(255,255,255,0.1); }
 
-        /* Info Row */
         .info-row {
             display: flex; justify-content: space-between; align-items: center;
             background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 10px 20px; backdrop-filter: blur(15px);
@@ -214,7 +207,6 @@
         .info-col.mid { border-left: 1px solid var(--border-color); border-right: 1px solid var(--border-color); }
         .info-col.mid .icon { color: var(--accent-cyan); font-size: 1.2rem; margin-bottom: 2px; text-shadow: 0 0 10px var(--accent-glow);}
 
-        /* Events Panel */
         .events-panel {
             background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 10px 15px; backdrop-filter: blur(15px); display: flex; flex-direction: column; gap: 8px;
         }
@@ -226,7 +218,6 @@
         .event-item .status { font-weight: bold; color: white; }
         .event-item .time { color: var(--text-muted); font-size: 0.55rem; margin-top: 2px;}
 
-        /* Bottom Toggles */
         .bottom-toggles {
             display: flex; justify-content: space-between; align-items: center; width: 100%;
             background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 10px 20px; backdrop-filter: blur(15px);
@@ -240,7 +231,6 @@
         input:checked + .slider { background-color: var(--accent-cyan); }
         input:checked + .slider:before { transform: translateX(14px); }
 
-        /* Dramatic Center Notifications */
         #notify-layer { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); z-index: 50; pointer-events: none; width: 100%; display: flex; flex-direction: column; align-items: center; }
         .dramatic-text {
             font-size: 8vw; font-weight: 900; text-transform: uppercase; text-align: center;
@@ -259,13 +249,11 @@
         }
         .elim-banner.show { opacity: 1; transform: scaleY(1); top: 0; }
 
-        /* Loader */
         #loader {
             position: absolute; top:0; left:0; width:100%; height:100%; background: var(--bg-base); z-index: 200;
             display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--accent-cyan); font-weight: 900; font-size: 1.2rem; letter-spacing: 2px;
         }
 
-        /* Responsiveness */
         @media (max-width: 768px) {
             .action-row { flex-wrap: wrap; justify-content: center; padding: 10px; }
             .btn-start { min-width: 100%; order: 1; padding: 15px; }
@@ -276,7 +264,7 @@
             .bottom-toggles { padding: 10px; }
         }
         @media (max-height: 800px) {
-            .events-panel, .info-row { display: none; } /* Hide secondary UI to give arena max space on very small screens */
+            .events-panel, .info-row { display: none; } 
             .who-wins { font-size: 1.8rem; }
         }
     </style>
@@ -403,17 +391,17 @@
         let state = {
             teams: [], images: {}, loaded: 0, events: [],
             round: 1, target: 5, auto: false, running: false,
-            balls: [], arenaRot: 0, rotSpeed: 0.015,
+            balls: [], arenaRot: 0, rotSpeed: 0.018,
             zoom: 1, targetZoom: 1, timeScale: 1, targetTimeScale: 1,
             m10: false, m5: false, m3: false, m2: false
         };
 
-        // Fixed Physics Params
-        const FIXED_GAP = Math.PI * 0.16; // Stała dziura (ok. 28 stopni), lekko większa by zapewnić sprawny finisz, ale bez gigantycznych zmian
-        const RESTITUTION_WALLS = 0.8;
-        const RESTITUTION_BALLS = 0.8; // Równe wartości zapewniają idealnie sprawiedliwe i fizyczne odbicia
+        // PANCERNA, AGRESYWNA FIZYKA - IDEALNY BALANS
+        const FIXED_GAP = Math.PI * 0.10; // Stała dziura z dobrego, początkowego wariantu
+        const RESTITUTION_WALLS = 0.85; // Odrobina mniej niż 0.90, mocno eliminuje wystrzały
+        const RESTITUTION_BALLS = 0.85; 
+        const MAX_BALL_SPEED = 25; // Ogranicznik glitchy silnika, nie limituje naturalnej prędkosci
 
-        // Audio System
         let actx = null;
         let lastHitTime = 0;
         
@@ -449,7 +437,6 @@
             setTimeout(()=>playTone(880, 'square', 2.0, 0.2), 900);
         }
 
-        // Particle Background
         const bgCanvas = document.getElementById('bg-canvas');
         const bgCtx = bgCanvas.getContext('2d');
         let particles = [];
@@ -471,10 +458,9 @@
         }
         initBg(); drawBg(); window.addEventListener('resize', initBg);
 
-        // Data Management
         function loadStorage() {
             try {
-                const sv = localStorage.getItem('wc26_final');
+                const sv = localStorage.getItem('wc26_aggro');
                 if(sv) {
                     const p = JSON.parse(sv);
                     state.teams = p.teams || TEAMS.map(t => ({...t, s: 0}));
@@ -482,13 +468,12 @@
                 } else initData();
             } catch(e) { initData(); }
         }
-        function saveStorage() { try { localStorage.setItem('wc26_final', JSON.stringify({teams: state.teams, round: state.round})); } catch(e) {} }
+        function saveStorage() { try { localStorage.setItem('wc26_aggro', JSON.stringify({teams: state.teams, round: state.round})); } catch(e) {} }
         function initData() { state.teams = TEAMS.map(t => ({...t, s: 0})); state.round = 1; state.events = []; saveStorage(); }
 
         function logEvent(teamName) {
             const now = new Date();
             const timeStr = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0') + ':' + now.getSeconds().toString().padStart(2,'0');
-            // Zmiana kolorów w zależności od flagi to świetny pomysł wizualny ze zrzutu ekranu. Tu użyjemy lekkich wariantów kolorystycznych
             const colors = ['#2ed573', '#ff4757', '#eccc68', '#70a1ff', '#ffffff'];
             const color = colors[state.events.length % colors.length];
             
@@ -501,7 +486,6 @@
             document.getElementById('val-rem').innerText = state.balls.length;
             document.getElementById('lbl-rem-num').innerText = state.balls.length;
             
-            // Ranking
             const sort = [...state.teams].sort((a,b) => b.s - a.s || a.n.localeCompare(b.n)).slice(0, 5);
             document.getElementById('lb-content').innerHTML = sort.map((t, i) => `
                 <div class="lb-row">
@@ -512,7 +496,6 @@
                 </div>
             `).join('');
 
-            // Events Log
             const evList = document.getElementById('events-list');
             if(state.events.length === 0) {
                 evList.innerHTML = `<div class="event-item" style="opacity: 0.3;"><div class="country" style="color:white;">Awaiting...</div><div class="status">-</div><div class="time">--:--:--</div></div>`;
@@ -545,7 +528,6 @@
             });
         }
 
-        // MATTER.JS CORE
         const { Engine, Render, Bodies, Body, Composite, Events } = Matter;
         let eng, rnd;
         let cx, cy, rad;
@@ -554,7 +536,7 @@
 
         function setupMatter() {
             const canvas = document.getElementById('physics-canvas');
-            eng = Engine.create({ positionIterations: 24, velocityIterations: 24 }); // Bardzo dokładne obliczenia
+            eng = Engine.create({ positionIterations: 24, velocityIterations: 24 });
             eng.gravity.y = 0.8;
             eng.gravity.x = 0;
             
@@ -569,7 +551,6 @@
 
             Events.on(rnd, 'afterRender', () => {
                 const ctx = rnd.context;
-                // Renderowanie świecącej obręczy z przerwą
                 const gapHalf = FIXED_GAP / 2;
                 ctx.beginPath();
                 ctx.arc(cx, cy, rad, state.arenaRot + gapHalf, state.arenaRot + Math.PI*2 - gapHalf);
@@ -577,7 +558,6 @@
                 ctx.shadowBlur = 25; ctx.shadowColor = '#00e5ff';
                 ctx.stroke(); ctx.shadowBlur = 0;
 
-                // Renderowanie 3D kulek
                 state.balls.forEach(b => {
                     const img = state.images[b.tData.c];
                     if(img) {
@@ -586,7 +566,6 @@
                         ctx.beginPath(); ctx.arc(0, 0, b.circleRadius, 0, Math.PI*2); ctx.clip();
                         const r = b.circleRadius;
                         ctx.drawImage(img, -r, -r, r*2, r*2);
-                        // Delikatny gradient cieniujący kulę, by wyglądała trójwymiarowo (jak na zrzucie)
                         const grad = ctx.createRadialGradient(-r*0.3, -r*0.3, r*0.1, 0, 0, r);
                         grad.addColorStop(0, 'rgba(255,255,255,0.4)'); grad.addColorStop(1, 'rgba(0,0,0,0.6)');
                         ctx.fillStyle = grad; ctx.fill();
@@ -606,13 +585,22 @@
                 });
             });
 
+            // Ogranicznik wyłapujący tylko glitche (prawdziwe zderzenia zostają pełne energii)
+            Events.on(eng, 'beforeUpdate', () => {
+                state.balls.forEach(b => {
+                    if (b.speed > MAX_BALL_SPEED) {
+                        const scale = MAX_BALL_SPEED / b.speed;
+                        Body.setVelocity(b, { x: b.velocity.x * scale, y: b.velocity.y * scale });
+                    }
+                });
+            });
+
             spawn();
             Render.run(rnd);
             requestAnimationFrame(customPhysicsLoop);
         }
 
         function resizeArena() {
-            // Obliczenia wymiarów tak, by arena dominowała, a UI było omijanie
             const topSpace = 90; 
             const bottomSpace = window.innerHeight > 800 ? 280 : 180; 
             const availableH = window.innerHeight - topSpace - bottomSpace;
@@ -621,7 +609,7 @@
             cy = topSpace + (availableH / 2);
             
             rad = Math.min(window.innerWidth * 0.9, availableH) * 0.45;
-            if(rad > 350) rad = 350; // Max wielkość
+            if(rad > 350) rad = 350; 
             if(rad < 150) rad = 150;
             
             if(rnd) { rnd.canvas.width = window.innerWidth; rnd.canvas.height = window.innerHeight; }
@@ -646,13 +634,11 @@
 
         window.addEventListener('resize', () => { clearTimeout(window.rsz); window.rsz = setTimeout(resizeArena, 200); });
 
-        // KONCENTRYCZNY GRID SPAWNING (Brak nakładania, idealny wygląd)
         function spawn() {
             state.balls.forEach(b => Composite.remove(eng.world, b));
             state.balls = [];
             const br = Math.max(10, rad / 14);
             
-            // Algorytm rozmieszczający w idealnych ringach (od środka w górę)
             const rings = [
                 { count: 1,  radius: 0 },
                 { count: 7,  radius: br * 2.3 },
@@ -664,7 +650,6 @@
             rings.forEach(ring => {
                 for(let i=0; i<ring.count; i++) {
                     if (teamIdx >= state.teams.length) break;
-                    // Przesunięcie Y lekko w górę, żeby po stracie grawitacja je ładnie wymieszała
                     let angle = (i / ring.count) * Math.PI * 2;
                     let bx = cx + Math.cos(angle) * ring.radius;
                     let by = cy - 20 + Math.sin(angle) * ring.radius;
@@ -680,7 +665,7 @@
             
             state.targetTimeScale = 1; state.timeScale = 1; state.targetZoom = 1; state.zoom = 1; 
             state.m10 = false; state.m5 = false; state.m3 = false; state.m2 = false;
-            state.events = []; // Czysty log na nową grę
+            state.events = []; 
             
             document.getElementById('center-labels').style.opacity = '1';
             updateUI();
@@ -688,7 +673,6 @@
 
         let lastTime = performance.now();
 
-        // GŁÓWNA PĘTLA
         function customPhysicsLoop(time) {
             requestAnimationFrame(customPhysicsLoop);
             let delta = time - lastTime; lastTime = time;
@@ -701,16 +685,14 @@
 
             Engine.update(eng, delta * state.timeScale);
 
-            // Stała, stabilna rotacja w jednym kierunku
             state.arenaRot += state.rotSpeed * state.timeScale;
             const omega = (state.rotSpeed * state.timeScale) / (delta / 1000); 
 
-            // Kinematyka ścian
             const limit = FIXED_GAP / 2;
             arenaSegments.forEach(seg => {
                 let norm = seg.baseAngle;
                 if (norm > Math.PI*2 - limit || norm < limit) {
-                    Body.setPosition(seg.body, {x: -2000, y: -2000}); // Schowaj segment dla zrobienia luki
+                    Body.setPosition(seg.body, {x: -2000, y: -2000}); 
                 } else {
                     const a = seg.baseAngle + state.arenaRot;
                     const px = cx + Math.cos(a)*rad;
@@ -725,19 +707,16 @@
                 }
             });
 
-            // Anti-Stall & Eliminacja
             for(let i = state.balls.length-1; i>=0; i--) {
                 const b = state.balls[i];
                 const distCenter = Math.hypot(b.position.x - cx, b.position.y - cy);
                 
-                // MIKRO-IMPULS (Balans dla ostatnich zwalniających piłek). Zachowuje naturalność ruchu, brak wybuchów.
                 if(b.speed < 0.5) {
                     const nudgeAngle = Math.atan2(cy - b.position.y, cx - b.position.x);
-                    const nudgeForce = 0.000015 * b.mass; // Ekstremalnie delikatny
+                    const nudgeForce = 0.000015 * b.mass;
                     Body.applyForce(b, b.position, {x: Math.cos(nudgeAngle)*nudgeForce, y: Math.sin(nudgeAngle)*nudgeForce});
                 }
                 
-                // Eliminacja (wypadnięcie grawitacyjne)
                 if(distCenter > rad + 60) {
                     const t = b.tData;
                     Composite.remove(eng.world, b); state.balls.splice(i, 1);
