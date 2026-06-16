@@ -1,22 +1,1740 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>World Cup 2026 Simulator</title><style>
-:root{--bg:#050816;--panel:rgba(8,14,34,.88);--cyan:#00e5ff;--blue:#0878ff;--red:#ff334e;--green:#00d084;--gold:#ffd166;--muted:#98a3c7}*{box-sizing:border-box;margin:0;padding:0;font-family:Segoe UI,system-ui,sans-serif;user-select:none;-webkit-tap-highlight-color:transparent}html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:#fff}canvas{position:absolute;inset:0;width:100%;height:100%}#bg{z-index:1}#game{z-index:2}#ui{position:absolute;inset:0;z-index:10;pointer-events:none;display:flex;flex-direction:column;justify-content:space-between}.top{pointer-events:auto;display:flex;align-items:flex-start;justify-content:space-between;padding:14px;gap:10px}.pill{background:var(--panel);border:1px solid rgba(0,229,255,.35);border-radius:20px;box-shadow:0 12px 35px #0008,0 0 25px #00e5ff22;backdrop-filter:blur(16px)}.score{display:flex;gap:28px;padding:10px 28px;text-align:center}.lab{font-size:.65rem;color:var(--muted);font-weight:900;letter-spacing:2px;text-transform:uppercase}.val{font-size:2.15rem;font-weight:1000;color:var(--cyan);text-shadow:0 0 18px #00e5ffaa}.div{width:1px;background:#ffffff24}.btn{height:48px;border-radius:16px;border:1px solid rgba(0,229,255,.35);background:var(--panel);color:#fff;font-weight:1000;letter-spacing:2px;padding:0 18px;cursor:pointer;pointer-events:auto;box-shadow:0 8px 25px #0008}.small{width:48px;padding:0}.live{margin-top:-8px;padding:8px 18px;display:flex;gap:18px;justify-content:center;font-size:.68rem;color:var(--muted);font-weight:900;letter-spacing:2px;text-transform:uppercase}.live b{color:#fff}.live span{color:var(--cyan)}.center{display:flex;flex-direction:column;align-items:center}.side{position:absolute;top:92px;right:16px;width:300px;max-height:60vh;overflow:auto;padding:18px;z-index:40;pointer-events:auto}.side.left{right:auto;left:16px}.hidden{opacity:0;transform:scale(.96);pointer-events:none}.title{text-align:center;color:var(--muted);font-size:.72rem;font-weight:1000;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}.row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #fff1}.flag{width:26px;height:26px;border-radius:50%;object-fit:cover}.name{flex:1;font-size:.86rem;font-weight:800}.pts{color:var(--gold);font-weight:1000}.bottom{pointer-events:auto;padding:0 16px 20px;display:flex;flex-direction:column;align-items:center}.hero{text-align:center;margin-bottom:14px;transition:.25s}.remain{font-size:.8rem;color:var(--muted);font-weight:900;letter-spacing:3px;text-transform:uppercase}.remain span{font-size:1.25rem;color:var(--cyan)}.who{font-size:clamp(2.1rem,8vw,4.2rem);font-weight:1000;letter-spacing:5px;text-transform:uppercase;background:linear-gradient(90deg,var(--cyan),var(--blue),var(--red),var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 18px #00e5ff55)}.controls{width:100%;max-width:760px;padding:15px}.actions{display:flex;gap:14px;align-items:center}.start{flex:1;min-height:62px;border:0;border-radius:16px;background:linear-gradient(90deg,var(--cyan),var(--blue));color:white;font-size:1.05rem;font-weight:1000;letter-spacing:2.5px;text-transform:uppercase;box-shadow:0 0 28px #00e5ff70}.start.run{background:linear-gradient(90deg,var(--red),#ff8a33);box-shadow:0 0 28px #ff334e80}.select{min-width:112px;background:#0006;border:1px solid #fff2;border-radius:16px;padding:8px 12px}.select span{display:block;color:var(--muted);font-size:.58rem;font-weight:900;letter-spacing:2px;text-transform:uppercase}.select select{background:transparent;color:white;border:0;outline:0;font-size:1.15rem;font-weight:1000}.auto{font-weight:1000;letter-spacing:1.5px;display:flex;gap:10px;align-items:center;white-space:nowrap}.auto input{width:20px;height:20px;accent-color:var(--cyan)}#notify{position:absolute;top:38%;left:50%;transform:translate(-50%,-50%);z-index:60;width:100%;pointer-events:none;text-align:center}.msg{font-size:clamp(2.2rem,8vw,5.6rem);font-weight:1000;text-transform:uppercase;letter-spacing:3px;opacity:0;transform:scale(.65);transition:.35s;text-shadow:0 16px 45px #000}.msg.show{opacity:1;transform:scale(1)}.gold{color:var(--gold);filter:drop-shadow(0 0 35px #ffd166aa)}.red{color:#fff;filter:drop-shadow(0 0 35px #ff334eaa)}.banner{position:absolute;top:-100px;width:100vw;padding:14px 0;background:linear-gradient(90deg,transparent,#ff334eea,#00e5ff88,transparent);font-weight:1000;letter-spacing:3px;font-size:clamp(1rem,4vw,1.9rem);opacity:0;transition:.22s}.banner.show{top:11vh;opacity:1}#loader{position:absolute;inset:0;z-index:300;background:radial-gradient(circle at 30% 25%,#00e5ff2a,transparent 35%),radial-gradient(circle at 80% 75%,#ff334e25,transparent 35%),#050816;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:15px;color:var(--cyan);font-weight:1000;letter-spacing:3px;text-transform:uppercase}.spin{width:82px;height:82px;border:5px solid #fff2;border-top-color:var(--cyan);border-right-color:var(--red);border-bottom-color:var(--green);border-radius:50%;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}@keyframes shake{25%{transform:translate(-3px,2px)}50%{transform:translate(3px,-2px)}75%{transform:translate(-2px,-1px)}}.shake{animation:shake .22s}.flash{position:absolute;inset:0;background:#fff;opacity:0;z-index:99;pointer-events:none;transition:.14s}@media(max-width:768px){.top{display:grid;grid-template-columns:56px 1fr 140px}.center{grid-column:1/4;grid-row:2}.score{padding:10px 22px;gap:20px}.side,.side.left{width:92vw;left:4vw;right:4vw;top:138px}.actions{flex-wrap:wrap;justify-content:center}.start{min-width:100%;order:1}.select,.auto,.reset{order:2}.reset{flex:1}.banner.show{top:15vh}}
-</style><script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script><script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script></head><body><div id="loader"><div class="spin"></div><div>World Cup 2026 Loading</div></div><canvas id="bg"></canvas><canvas id="game"></canvas><div id="flash" class="flash"></div><div id="notify"><div id="banner" class="banner"></div><div id="msg" class="msg"></div></div><div id="ui"><div class="top"><button id="statsBtn" class="btn small">▥</button><div class="center"><div class="score pill"><div><div class="lab">Round</div><div id="round" class="val">1</div></div><div class="div"></div><div><div class="lab">Remaining</div><div id="rem" class="val">48</div></div></div><div class="live pill"><div>Match time: <b id="timer">00:00</b></div><div>Leader: <span id="leader">NONE</span></div></div></div><button id="rankBtn" class="btn">☷ Ranking</button></div><div id="ranking" class="side pill hidden"><div class="title">World Cup Leaders</div><div id="rankList"></div></div><div id="stats" class="side left pill hidden"><div class="title">Global Statistics</div><div id="statList"></div><div class="title" style="margin-top:14px">Elimination Feed</div><div id="feed"></div></div><div class="bottom"><div id="hero" class="hero"><div class="remain"><span id="rem2">48</span> flags remain</div><div class="who">Who will win?</div></div><div class="controls pill"><div class="actions"><div class="select"><span>First to</span><select id="target"><option>3</option><option selected>5</option><option>7</option><option>10</option></select></div><label class="auto"><input id="auto" type="checkbox">Auto live</label><button id="start" class="start">▶ Start Match</button><button id="reset" class="btn reset">↻ Reset</button></div></div></div></div><script>
-const TEAMS=[['Mexico','mx'],['South Africa','za'],['South Korea','kr'],['Czechia','cz'],['Canada','ca'],['Bosnia','ba'],['Qatar','qa'],['Switzerland','ch'],['Brazil','br'],['Morocco','ma'],['Haiti','ht'],['Scotland','gb-sct'],['USA','us'],['Paraguay','py'],['Australia','au'],['Türkiye','tr'],['Germany','de'],['Curacao','cw'],['Ivory Coast','ci'],['Ecuador','ec'],['Netherlands','nl'],['Japan','jp'],['Sweden','se'],['Tunisia','tn'],['Belgium','be'],['Egypt','eg'],['Iran','ir'],['New Zealand','nz'],['Spain','es'],['Cape Verde','cv'],['Saudi Arabia','sa'],['Uruguay','uy'],['France','fr'],['Senegal','sn'],['Iraq','iq'],['Norway','no'],['Argentina','ar'],['Algeria','dz'],['Austria','at'],['Jordan','jo'],['Portugal','pt'],['DR Congo','cd'],['Uzbekistan','uz'],['Colombia','co'],['England','gb-eng'],['Croatia','hr'],['Ghana','gh'],['Panama','pa']].map(x=>({n:x[0],c:x[1],s:0}));
-let S={teams:JSON.parse(JSON.stringify(TEAMS)),imgs:{},round:1,target:5,auto:false,running:false,balls:[],rot:0,speed:.013,time:0,feed:[],m:{}};let Stats={cups:0,rounds:0,fast:999999,slow:0,wins:{}};const $=id=>document.getElementById(id),GAP=Math.PI*.13,MAX=15.5,SEG=80;let Engine=Matter.Engine,Render=Matter.Render,Bodies=Matter.Bodies,Body=Matter.Body,Composite=Matter.Composite,Events=Matter.Events,eng,rend,cx,cy,rad,segs=[],last=performance.now(),lastUi=0;
-function save(){localStorage.wc26_game=JSON.stringify({teams:S.teams,round:S.round,target:S.target,auto:S.auto});localStorage.wc26_stats=JSON.stringify(Stats)}function load(){try{let g=JSON.parse(localStorage.wc26_game||'{}');if(g.teams&&g.teams.length==48)S.teams=g.teams;S.round=g.round||1;S.target=g.target||5;S.auto=!!g.auto;let st=JSON.parse(localStorage.wc26_stats||'{}');Stats={cups:st.cups||0,rounds:st.rounds||0,fast:st.fast||999999,slow:st.slow||0,wins:st.wins||{}}}catch(e){}$('target').value=S.target;$('auto').checked=S.auto}
-function time(ms){let t=Math.floor(ms/1000),m=String(Math.floor(t/60)).padStart(2,'0'),s=String(t%60).padStart(2,'0');return m+':'+s}function ui(){let sort=[...S.teams].sort((a,b)=>b.s-a.s||a.n.localeCompare(b.n));$('round').textContent=S.round;$('rem').textContent=S.balls.length;$('rem2').textContent=S.balls.length;$('timer').textContent=time(S.time);$('leader').textContent=sort[0].s?sort[0].n.toUpperCase():'NONE';$('rankList').innerHTML=sort.slice(0,12).map((t,i)=>`<div class="row"><b style="color:var(--cyan);width:22px">${i+1}</b><img class="flag" src="https://flagcdn.com/w40/${t.c}.png"><div class="name">${t.n}</div><div class="pts">${t.s}</div></div>`).join('');$('statList').innerHTML=`<div class="row"><div class="name">Completed Cups</div><div class="pts">${Stats.cups}</div></div><div class="row"><div class="name">Total Rounds</div><div class="pts">${Stats.rounds}</div></div><div class="row"><div class="name">Fastest Round</div><div class="pts">${Stats.fast==999999?'--':time(Stats.fast)}</div></div><div class="row"><div class="name">Longest Round</div><div class="pts">${Stats.slow?time(Stats.slow):'--'}</div></div>`;$('feed').innerHTML=S.feed.slice(0,10).map(x=>`<div class="row"><b style="color:var(--red);width:32px">#${x.p}</b><div class="name">${x.n}</div></div>`).join('')||'<div style="text-align:center;color:var(--muted);font-weight:800">No eliminations yet</div>'}
-function bg(){let c=$('bg'),x=c.getContext('2d'),P=[];function init(){c.width=innerWidth;c.height=innerHeight;P=Array.from({length:90},()=>({x:Math.random()*c.width,y:Math.random()*c.height,s:Math.random()*1.8+.5,v:Math.random()*.35+.12}))}function loop(){let g=x.createRadialGradient(c.width/2,c.height*.42,0,c.width/2,c.height*.42,Math.max(c.width,c.height));g.addColorStop(0,'#0b1738');g.addColorStop(.5,'#071022');g.addColorStop(1,'#040712');x.fillStyle=g;x.fillRect(0,0,c.width,c.height);P.forEach((p,i)=>{x.fillStyle=i%9?'#00e5ffbb':i%2?'#00d08499':'#ff334e99';x.beginPath();x.arc(p.x,p.y,p.s,0,7);x.fill();p.y-=p.v;if(p.y<0){p.y=c.height;p.x=Math.random()*c.width}});requestAnimationFrame(loop)}init();addEventListener('resize',init);loop()}bg();
-function fallback(code){let c=document.createElement('canvas'),x=c.getContext('2d');c.width=c.height=80;x.fillStyle='#0878ff';x.fillRect(0,0,80,80);x.fillStyle='#fff';x.font='900 20px sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText(code.toUpperCase().slice(0,4),40,40);return c}
-function preload(){load();let n=0;TEAMS.forEach(t=>{let im=new Image;im.crossOrigin='anonymous';im.onload=im.onerror=()=>{S.imgs[t.c]=im.complete&&im.naturalWidth?im:fallback(t.c);if(++n==48)init()};im.src=`https://flagcdn.com/w80/${t.c}.png`});setTimeout(()=>{TEAMS.forEach(t=>S.imgs[t.c]||(S.imgs[t.c]=fallback(t.c)));init()},5200)}
-function init(){if(eng)return;$('loader').style.display='none';eng=Engine.create({positionIterations:16,velocityIterations:16});eng.gravity.y=.26;rend=Render.create({canvas:$('game'),engine:eng,options:{width:innerWidth,height:innerHeight,wireframes:false,background:'transparent',pixelRatio:devicePixelRatio||1}});Events.on(rend,'afterRender',draw);Events.on(eng,'beforeUpdate',()=>S.balls.forEach(b=>{if(b.speed>MAX){let s=MAX/b.speed;Body.setVelocity(b,{x:b.velocity.x*s,y:b.velocity.y*s})}}));resize();Render.run(rend);spawn();requestAnimationFrame(loop)}
-function resize(){if(!eng)return;rend.canvas.width=innerWidth;rend.canvas.height=innerHeight;rend.options.width=innerWidth;rend.options.height=innerHeight;let mob=innerWidth<769,top=mob?190:138,bot=mob?270:245;cx=innerWidth/2;rad=Math.max(135,Math.min((innerWidth-52)/2,(innerHeight-top-bot)/2,mob?330:395));cy=top+Math.max(240,innerHeight-top-bot)/2;segs.forEach(s=>Composite.remove(eng.world,s.b));segs=[];let thick=140,or=rad+72,len=2*Math.PI*or/SEG*1.08;for(let i=0;i<SEG;i++){let a=i/SEG*Math.PI*2,b=Bodies.rectangle(cx+Math.cos(a)*or,cy+Math.sin(a)*or,len,thick,{isStatic:true,restitution:.86,friction:.002,label:'wall',render:{visible:false}});segs.push({b,base:a});Composite.add(eng.world,b)}if(!S.running&&S.balls.length)spawn()}addEventListener('resize',()=>setTimeout(resize,120));
-function spawn(){S.balls.forEach(b=>Composite.remove(eng.world,b));S.balls=[];S.time=0;S.feed=[];S.m={};S.speed=.013;$('hero').style.opacity=1;let r=Math.max(10.5,Math.min(21,rad/14.2)),rings=[[1,0],[7,r*2.35],[14,r*4.75],[26,r*7.05]],idx=0;rings.forEach((R,k)=>{for(let i=0;i<R[0]&&idx<48;i++,idx++){let a=i/R[0]*Math.PI*2+(Math.random()-.5)*.2+k*.07,b=Bodies.circle(cx+Math.cos(a)*R[1]+(Math.random()-.5)*r*.7,cy-12+Math.sin(a)*R[1]+(Math.random()-.5)*r*.7,r,{restitution:.88,friction:.001,frictionAir:.0012,density:.045,label:'ball',render:{visible:false}});b.tData=S.teams[idx];Body.setVelocity(b,{x:(Math.random()-.5)*5.2,y:(Math.random()-.5)*5.2});S.balls.push(b);Composite.add(eng.world,b)}});ui()}
-function draw(){let x=rend.context,gh=GAP/2,st=S.rot+gh,en=S.rot+Math.PI*2-gh;x.save();x.lineCap='round';let gr=x.createLinearGradient(cx-rad,cy,cx+rad,cy);gr.addColorStop(0,'#00e5ff');gr.addColorStop(.32,'#0878ff');gr.addColorStop(.58,'#ff334e');gr.addColorStop(.82,'#00d084');gr.addColorStop(1,'#ffd166');x.beginPath();x.arc(cx,cy,rad+1,st,en);x.strokeStyle='#00e5ff28';x.lineWidth=24;x.shadowBlur=42;x.shadowColor='#00e5ff';x.stroke();x.beginPath();x.arc(cx,cy,rad,st,en);x.strokeStyle=gr;x.lineWidth=8;x.shadowBlur=18;x.stroke();x.shadowBlur=0;S.balls.forEach(b=>{let im=S.imgs[b.tData.c],r=b.circleRadius;x.save();x.translate(b.position.x,b.position.y);x.rotate(b.angle);x.beginPath();x.arc(0,0,r,0,7);x.clip();x.drawImage(im,-r,-r,r*2,r*2);let sh=x.createRadialGradient(-r*.35,-r*.4,r*.1,0,0,r);sh.addColorStop(0,'#ffffff88');sh.addColorStop(1,'#0009');x.fillStyle=sh;x.fillRect(-r,-r,r*2,r*2);x.restore();x.beginPath();x.arc(b.position.x,b.position.y,r,0,7);x.strokeStyle='#ffffff88';x.lineWidth=1.5;x.stroke()});x.restore()}
-function loop(t){requestAnimationFrame(loop);let d=t-last;last=t;if(!d||d>80)d=16.66;if(!S.running){Engine.update(eng,16.66);return}S.time+=d;if(S.time-lastUi>250){$('timer').textContent=time(S.time);lastUi=S.time}S.rot+=S.speed*d/16.66;let gh=GAP/2,hide=gh+2*Math.PI/SEG*.65,or=rad+70;segs.forEach(s=>{let rel=s.base>Math.PI?s.base-2*Math.PI:s.base;if(Math.abs(rel)<hide)Body.setPosition(s.b,{x:-3000,y:-3000});else{let a=s.base+S.rot;Body.setPosition(s.b,{x:cx+Math.cos(a)*or,y:cy+Math.sin(a)*or});Body.setAngle(s.b,a)}});Engine.update(eng,d);validate()}
-function validate(){let lim=GAP/2+.08;for(let i=S.balls.length-1;i>=0;i--){let b=S.balls[i],dx=b.position.x-cx,dy=b.position.y-cy,dist=Math.hypot(dx,dy);if(dist<.001)continue;if(b.speed<.75)Body.applyForce(b,b.position,{x:-(dx/dist)*.000012*b.mass,y:-(dy/dist)*.000012*b.mass});let max=rad-b.circleRadius+2;if(dist>max){let a=Math.atan2(dy,dx)-S.rot;a=Math.atan2(Math.sin(a),Math.cos(a));if(Math.abs(a)>lim){Body.setPosition(b,{x:cx+dx/dist*max,y:cy+dy/dist*max});let nx=-dx/dist,ny=-dy/dist,dot=b.velocity.x*nx+b.velocity.y*ny;if(dot<0)Body.setVelocity(b,{x:b.velocity.x-1.86*dot*nx,y:b.velocity.y-1.86*dot*ny})}else if(dist>rad+58)elim(i)}}}
-function text(v,cl='gold',dur=2200){$('msg').innerHTML=v;$('msg').className='msg show '+cl;clearTimeout(text.t);text.t=setTimeout(()=>$('msg').className='msg',dur)}function ban(v){$('banner').textContent=v;$('banner').classList.add('show');clearTimeout(ban.t);ban.t=setTimeout(()=>$('banner').classList.remove('show'),1250)}function elim(i){let b=S.balls[i],t=b.tData,p=S.balls.length;Composite.remove(eng.world,b);S.balls.splice(i,1);S.feed.unshift({p,n:t.n});document.body.classList.remove('shake');void document.body.offsetWidth;document.body.classList.add('shake');ban(t.n.toUpperCase()+' ELIMINATED!');ui();mile()}
-function mile(){let r=S.balls.length;if(r==10&&!S.m[10]){S.m[10]=1;text('Final 10','red')}if(r==5&&!S.m[5]){S.m[5]=1;text('Final 5','red')}if(r==3&&!S.m[3]){S.m[3]=1;text('Final 3','red')}if(r==2&&!S.m[2]){S.m[2]=1;S.speed=.019;$('hero').style.opacity=0;text('Final Duel','gold',2500)}if(r==1)win()}
-function win(){if(!S.running)return;S.running=false;$('start').classList.remove('run');let w=S.balls[0].tData,idx=S.teams.findIndex(t=>t.c==w.c);S.teams[idx].s++;Stats.rounds++;Stats.fast=Math.min(Stats.fast,S.time);Stats.slow=Math.max(Stats.slow,S.time);$('flash').style.opacity=1;setTimeout(()=>$('flash').style.opacity=0,180);let champ=S.teams[idx].s>=S.target;save();ui();if(champ){Stats.cups++;Stats.wins[w.n]=(Stats.wins[w.n]||0)+1;save();if(typeof confetti=='function')confetti({particleCount:650,spread:280,origin:{y:.48},zIndex:1000,colors:['#00e5ff','#0878ff','#ff334e','#00d084','#ffd166','#fff']});text(`👑 ${w.n.toUpperCase()}<br>WORLD CHAMPIONS!`,'gold',7200);setTimeout(()=>{S.teams=JSON.parse(JSON.stringify(TEAMS));S.round=1;save();spawn();auto()},7800)}else{text((S.teams[idx].s==S.target-1?'🔥 Match Point<br>':'🏆 ')+w.n.toUpperCase()+' +1 POINT<br>'+S.teams[idx].s+'/'+S.target,'gold',3900);setTimeout(()=>{S.round++;save();spawn();auto()},4300)}}
-function auto(){if(S.auto)setTimeout(start,900);else $('start').textContent='▶ Start Next Round'}function start(){if(S.balls.length<=1)spawn();S.running=true;$('hero').style.opacity=0;$('start').textContent='⏸ Pause Game';$('start').classList.add('run')}function pause(){S.running=false;$('start').textContent='▶ Resume Game';$('start').classList.remove('run')}
-$('start').onclick=()=>S.running?pause():start();$('reset').onclick=()=>{if(confirm('Reset championship to Round 1?')){pause();S.teams=JSON.parse(JSON.stringify(TEAMS));S.round=1;S.time=0;save();spawn();$('start').textContent='▶ Start Match'}};$('target').onchange=e=>{S.target=parseInt(e.target.value)||5;save();ui()};$('auto').onchange=e=>{S.auto=e.target.checked;save()};$('rankBtn').onclick=()=>{$('stats').classList.add('hidden');$('ranking').classList.toggle('hidden');ui()};$('statsBtn').onclick=()=>{$('ranking').classList.add('hidden');$('stats').classList.toggle('hidden');ui()};preload();
-</script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>World Cup 2026 Flag Arena</title>
+
+  <style>
+    :root{
+      --navy:#050814;
+      --navy2:#07132b;
+      --panel:rgba(7,13,31,.82);
+      --panel2:rgba(11,20,45,.92);
+      --cyan:#00e5ff;
+      --blue:#156bff;
+      --red:#ff334e;
+      --green:#00d084;
+      --gold:#ffd166;
+      --white:#fff;
+      --muted:#98a5c7;
+      --shadow:0 18px 60px rgba(0,0,0,.55);
+    }
+
+    *{
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
+      font-family:Inter,"Segoe UI",system-ui,-apple-system,sans-serif;
+      -webkit-tap-highlight-color:transparent;
+      user-select:none;
+    }
+
+    html,body{
+      width:100%;
+      height:100%;
+      overflow:hidden;
+      background:var(--navy);
+      color:var(--white);
+    }
+
+    body{
+      position:fixed;
+      inset:0;
+      height:100dvh;
+      background:
+        radial-gradient(circle at 50% 18%,rgba(0,229,255,.14),transparent 34%),
+        radial-gradient(circle at 15% 75%,rgba(255,51,78,.12),transparent 30%),
+        linear-gradient(180deg,#050814,#07132b 55%,#03050d);
+    }
+
+    canvas{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      display:block;
+    }
+
+    #bgCanvas{z-index:1}
+    #gameCanvas{z-index:2}
+
+    #loader{
+      position:absolute;
+      inset:0;
+      z-index:200;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+      gap:18px;
+      background:radial-gradient(circle at 50% 35%,rgba(0,229,255,.16),transparent 38%),#050814;
+      color:white;
+      text-align:center;
+    }
+
+    .loaderBall{
+      width:86px;
+      height:86px;
+      border-radius:50%;
+      border:5px solid rgba(255,255,255,.14);
+      border-top-color:var(--cyan);
+      border-right-color:var(--red);
+      border-bottom-color:var(--green);
+      animation:spin 1s linear infinite;
+      box-shadow:0 0 45px rgba(0,229,255,.35);
+    }
+
+    .loaderTitle{
+      font-size:1.05rem;
+      font-weight:1000;
+      letter-spacing:3px;
+      text-transform:uppercase;
+      color:var(--cyan);
+    }
+
+    .loaderSub{
+      font-size:.72rem;
+      font-weight:900;
+      letter-spacing:2px;
+      text-transform:uppercase;
+      color:var(--muted);
+    }
+
+    @keyframes spin{
+      to{transform:rotate(360deg)}
+    }
+
+    #flash{
+      position:absolute;
+      inset:0;
+      background:white;
+      opacity:0;
+      z-index:90;
+      pointer-events:none;
+      transition:opacity .16s;
+    }
+
+    @keyframes shake{
+      0%,100%{transform:translate(0)}
+      25%{transform:translate(-3px,2px)}
+      50%{transform:translate(3px,-2px)}
+      75%{transform:translate(-2px,-1px)}
+    }
+
+    .shake{
+      animation:shake .22s both;
+    }
+
+    #ui{
+      position:absolute;
+      inset:0;
+      z-index:10;
+      pointer-events:none;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+    }
+
+    .glass{
+      background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.018)),var(--panel);
+      border:1px solid rgba(0,229,255,.25);
+      box-shadow:var(--shadow),inset 0 0 24px rgba(0,229,255,.035);
+      backdrop-filter:blur(18px);
+    }
+
+    #topHud{
+      width:100%;
+      padding:12px 16px 0;
+      display:grid;
+      grid-template-columns:54px 1fr 132px;
+      gap:10px;
+      align-items:start;
+      pointer-events:auto;
+    }
+
+    .iconBtn,.textBtn{
+      height:50px;
+      border-radius:17px;
+      border:1px solid rgba(0,229,255,.26);
+      background:var(--panel);
+      color:white;
+      font-weight:1000;
+      letter-spacing:1.8px;
+      cursor:pointer;
+      box-shadow:0 10px 30px rgba(0,0,0,.35);
+      backdrop-filter:blur(16px);
+    }
+
+    .iconBtn{
+      width:54px;
+      font-size:1.22rem;
+    }
+
+    .textBtn{
+      padding:0 14px;
+      text-transform:uppercase;
+      font-size:.78rem;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+    }
+
+    .iconBtn:active,
+    .textBtn:active,
+    .mainBtn:active,
+    .resetBtn:active{
+      transform:scale(.97);
+    }
+
+    .scoreWrap{
+      grid-column:2;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      min-width:0;
+    }
+
+    .scorePill{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:24px;
+      border-radius:22px;
+      padding:10px 28px;
+      min-width:min(470px,100%);
+      background:linear-gradient(90deg,rgba(0,229,255,.09),rgba(255,51,78,.045),rgba(0,208,132,.06)),var(--panel2);
+    }
+
+    .scoreBox{
+      text-align:center;
+      min-width:86px;
+    }
+
+    .scoreLabel{
+      font-size:.66rem;
+      font-weight:1000;
+      color:var(--muted);
+      letter-spacing:2px;
+      text-transform:uppercase;
+    }
+
+    .scoreValue{
+      font-size:2.15rem;
+      line-height:1;
+      font-weight:1000;
+      color:var(--cyan);
+      text-shadow:0 0 18px rgba(0,229,255,.75);
+      margin-top:4px;
+    }
+
+    .scoreDivider{
+      width:1px;
+      height:48px;
+      background:rgba(255,255,255,.12);
+    }
+
+    .livePill{
+      margin-top:-4px;
+      border-radius:0 0 22px 22px;
+      padding:8px 18px;
+      display:flex;
+      gap:18px;
+      justify-content:center;
+      align-items:center;
+      color:var(--muted);
+      font-size:.68rem;
+      font-weight:1000;
+      letter-spacing:1.7px;
+      text-transform:uppercase;
+      background:rgba(0,0,0,.38);
+      border-top:0;
+      max-width:min(520px,92vw);
+    }
+
+    .livePill strong{
+      color:#fff;
+    }
+
+    .livePill span{
+      color:var(--cyan);
+      text-shadow:0 0 12px rgba(0,229,255,.65);
+    }
+
+    #bottomHud{
+      width:100%;
+      padding:0 16px 16px;
+      display:flex;
+      align-items:center;
+      flex-direction:column;
+      pointer-events:auto;
+    }
+
+    #hero{
+      width:100%;
+      text-align:center;
+      margin-bottom:10px;
+      transition:opacity .25s,transform .25s,height .25s,margin .25s;
+      pointer-events:none;
+    }
+
+    body.playing #hero{
+      height:0;
+      margin:0;
+      opacity:0;
+      overflow:hidden;
+      transform:translateY(10px);
+    }
+
+    .flagsRemain{
+      font-size:.8rem;
+      color:var(--muted);
+      font-weight:1000;
+      letter-spacing:3px;
+      text-transform:uppercase;
+      text-shadow:0 3px 15px rgba(0,0,0,.8);
+    }
+
+    .flagsRemain span{
+      color:var(--cyan);
+      font-size:1.28rem;
+      text-shadow:0 0 14px rgba(0,229,255,.8);
+    }
+
+    .headline{
+      font-size:clamp(2rem,7.6vw,4.3rem);
+      font-weight:1000;
+      letter-spacing:5px;
+      line-height:.96;
+      text-transform:uppercase;
+      background:linear-gradient(90deg,var(--cyan),#5f90ff,var(--red),var(--green),var(--gold));
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      filter:drop-shadow(0 0 22px rgba(0,229,255,.28));
+    }
+
+    #controls{
+      width:100%;
+      max-width:780px;
+      border-radius:24px;
+      padding:14px;
+      background:linear-gradient(90deg,rgba(0,229,255,.065),rgba(255,51,78,.035),rgba(0,208,132,.045)),var(--panel);
+    }
+
+    .controlRow{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .mainBtn{
+      flex:1;
+      min-height:62px;
+      border:0;
+      border-radius:18px;
+      background:linear-gradient(90deg,var(--cyan),var(--blue));
+      box-shadow:0 0 30px rgba(0,229,255,.42),inset 0 0 25px rgba(255,255,255,.08);
+      color:white;
+      font-size:1.02rem;
+      font-weight:1000;
+      letter-spacing:2.4px;
+      text-transform:uppercase;
+      cursor:pointer;
+      text-shadow:0 3px 10px rgba(0,0,0,.4);
+    }
+
+    .mainBtn.running{
+      background:linear-gradient(90deg,var(--red),#ff8733);
+      box-shadow:0 0 30px rgba(255,51,78,.42);
+    }
+
+    .selectBox{
+      min-height:56px;
+      min-width:112px;
+      border-radius:17px;
+      background:rgba(0,0,0,.32);
+      border:1px solid rgba(255,255,255,.1);
+      padding:8px 12px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+    }
+
+    .selectBox label{
+      font-size:.58rem;
+      font-weight:1000;
+      letter-spacing:2px;
+      color:var(--muted);
+      text-transform:uppercase;
+    }
+
+    .selectBox select{
+      background:transparent;
+      color:white;
+      border:0;
+      outline:0;
+      font-size:1.16rem;
+      font-weight:1000;
+    }
+
+    .autoToggle{
+      min-height:56px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:1000;
+      letter-spacing:1.4px;
+      white-space:nowrap;
+    }
+
+    .autoToggle input{
+      width:20px;
+      height:20px;
+      accent-color:var(--cyan);
+    }
+
+    .resetBtn{
+      min-height:56px;
+      border-radius:17px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.06);
+      color:white;
+      font-size:.9rem;
+      font-weight:1000;
+      letter-spacing:1.5px;
+      padding:0 20px;
+      cursor:pointer;
+    }
+
+    .sidePanel{
+      position:absolute;
+      top:92px;
+      right:16px;
+      width:min(330px,92vw);
+      max-height:58dvh;
+      overflow:auto;
+      border-radius:22px;
+      padding:18px;
+      z-index:60;
+      pointer-events:auto;
+      transition:.22s;
+    }
+
+    .sidePanel.left{
+      right:auto;
+      left:16px;
+    }
+
+    .sidePanel.hidden{
+      opacity:0;
+      transform:translateY(-8px) scale(.96);
+      pointer-events:none;
+    }
+
+    .panelTitle{
+      text-align:center;
+      font-size:.72rem;
+      font-weight:1000;
+      color:var(--muted);
+      letter-spacing:2px;
+      text-transform:uppercase;
+      margin-bottom:10px;
+    }
+
+    .row{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:8px 0;
+      border-bottom:1px solid rgba(255,255,255,.07);
+    }
+
+    .row:last-child{
+      border-bottom:0;
+    }
+
+    .rankNum{
+      width:24px;
+      color:var(--cyan);
+      font-weight:1000;
+    }
+
+    .flagIcon{
+      width:28px;
+      height:28px;
+      border-radius:50%;
+      object-fit:cover;
+      border:1px solid rgba(255,255,255,.25);
+    }
+
+    .rowName{
+      flex:1;
+      font-size:.86rem;
+      font-weight:850;
+    }
+
+    .rowScore{
+      font-size:1.06rem;
+      font-weight:1000;
+      color:var(--gold);
+      text-shadow:0 0 12px rgba(255,209,102,.55);
+    }
+
+    #toastLayer{
+      position:absolute;
+      left:50%;
+      top:40%;
+      transform:translate(-50%,-50%);
+      z-index:70;
+      width:100%;
+      text-align:center;
+      pointer-events:none;
+    }
+
+    .bigText{
+      max-width:96vw;
+      margin:0 auto;
+      font-size:clamp(2.35rem,8vw,6rem);
+      line-height:1.04;
+      font-weight:1000;
+      text-transform:uppercase;
+      letter-spacing:3px;
+      opacity:0;
+      transform:scale(.65);
+      transition:.36s cubic-bezier(.18,.89,.32,1.28);
+      text-shadow:0 20px 60px rgba(0,0,0,.95);
+    }
+
+    .bigText.show{
+      opacity:1;
+      transform:scale(1);
+    }
+
+    .goldText{
+      color:var(--gold);
+      filter:drop-shadow(0 0 34px rgba(255,209,102,.7));
+    }
+
+    .redText{
+      color:white;
+      filter:drop-shadow(0 0 34px rgba(255,51,78,.7));
+    }
+
+    .cyanText{
+      color:white;
+      filter:drop-shadow(0 0 34px rgba(0,229,255,.7));
+    }
+
+    .elimBanner{
+      position:absolute;
+      top:-110px;
+      left:0;
+      width:100vw;
+      padding:14px 0;
+      background:linear-gradient(90deg,transparent,rgba(255,51,78,.94),rgba(0,229,255,.58),transparent);
+      font-size:clamp(1rem,4.2vw,1.9rem);
+      font-weight:1000;
+      letter-spacing:3px;
+      text-transform:uppercase;
+      opacity:0;
+      transition:.22s;
+      text-shadow:0 4px 16px rgba(0,0,0,.9);
+    }
+
+    .elimBanner.show{
+      top:11dvh;
+      opacity:1;
+    }
+
+    @media(max-width:768px){
+      #topHud{
+        grid-template-columns:54px 1fr 132px;
+        padding:10px 10px 0;
+        gap:8px;
+      }
+
+      .scoreWrap{
+        grid-column:1/4;
+        grid-row:2;
+      }
+
+      .scorePill{
+        padding:9px 22px;
+        gap:18px;
+        min-width:min(92vw,470px);
+      }
+
+      .scoreValue{
+        font-size:2rem;
+      }
+
+      .scoreDivider{
+        height:44px;
+      }
+
+      .livePill{
+        font-size:.64rem;
+        gap:12px;
+        padding:7px 12px;
+      }
+
+      .textBtn{
+        font-size:.72rem;
+        padding:0 12px;
+      }
+
+      .sidePanel,
+      .sidePanel.left{
+        left:4vw;
+        right:4vw;
+        top:142px;
+        width:92vw;
+        max-height:50dvh;
+      }
+
+      .controlRow{
+        flex-wrap:wrap;
+        justify-content:center;
+      }
+
+      .mainBtn{
+        min-width:100%;
+        order:1;
+        min-height:60px;
+      }
+
+      .selectBox,
+      .autoToggle,
+      .resetBtn{
+        order:2;
+      }
+
+      .resetBtn{
+        flex:1;
+      }
+
+      .headline{
+        letter-spacing:4px;
+      }
+
+      #bottomHud{
+        padding:0 12px 14px;
+      }
+
+      .elimBanner.show{
+        top:15dvh;
+      }
+    }
+
+    @media(max-height:740px){
+      .headline{
+        font-size:clamp(1.75rem,6.8vw,3.2rem);
+      }
+
+      #hero{
+        margin-bottom:6px;
+      }
+
+      .mainBtn{
+        min-height:54px;
+      }
+
+      .selectBox,
+      .autoToggle,
+      .resetBtn{
+        min-height:50px;
+      }
+
+      #controls{
+        padding:11px;
+      }
+    }
+  </style>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+
+<body>
+  <div id="loader">
+    <div class="loaderBall"></div>
+    <div class="loaderTitle">World Cup 2026 Arena</div>
+    <div class="loaderSub">USA · Mexico · Canada edition</div>
+  </div>
+
+  <canvas id="bgCanvas"></canvas>
+  <canvas id="gameCanvas"></canvas>
+  <div id="flash"></div>
+
+  <div id="toastLayer">
+    <div id="elimBanner" class="elimBanner"></div>
+    <div id="bigText" class="bigText"></div>
+  </div>
+
+  <div id="ui">
+    <div id="topHud">
+      <button class="iconBtn" id="statsBtn" aria-label="Stats">▥</button>
+
+      <div class="scoreWrap">
+        <div class="scorePill glass">
+          <div class="scoreBox">
+            <div class="scoreLabel">Round</div>
+            <div class="scoreValue" id="roundVal">1</div>
+          </div>
+
+          <div class="scoreDivider"></div>
+
+          <div class="scoreBox">
+            <div class="scoreLabel">Remaining</div>
+            <div class="scoreValue" id="remainVal">48</div>
+          </div>
+        </div>
+
+        <div class="livePill glass">
+          <div>Match time: <strong id="timerVal">00:00</strong></div>
+          <div>Leader: <span id="leaderVal">NONE</span></div>
+        </div>
+      </div>
+
+      <button class="textBtn" id="rankingBtn">☷ Ranking</button>
+    </div>
+
+    <div id="rankingPanel" class="sidePanel glass hidden">
+      <div class="panelTitle">World Cup Leaders</div>
+      <div id="rankingList"></div>
+    </div>
+
+    <div id="statsPanel" class="sidePanel left glass hidden">
+      <div class="panelTitle">Global Statistics</div>
+      <div id="statsList"></div>
+
+      <div class="panelTitle" style="margin-top:16px">Elimination Feed</div>
+      <div id="feedList"></div>
+    </div>
+
+    <div id="bottomHud">
+      <div id="hero">
+        <div class="flagsRemain"><span id="remainHero">48</span> flags remain</div>
+        <div class="headline">Who will win?</div>
+      </div>
+
+      <div id="controls" class="glass">
+        <div class="controlRow">
+          <div class="selectBox">
+            <label for="targetSelect">First to</label>
+            <select id="targetSelect">
+              <option value="3">3</option>
+              <option value="5" selected>5</option>
+              <option value="7">7</option>
+              <option value="10">10</option>
+            </select>
+          </div>
+
+          <label class="autoToggle">
+            <input type="checkbox" id="autoCheck">
+            Auto live
+          </label>
+
+          <button id="mainBtn" class="mainBtn">▶ Start Match</button>
+          <button id="resetBtn" class="resetBtn">↻ Reset</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+const TEAM_DATA = [
+  ["Mexico","mx"],["South Africa","za"],["South Korea","kr"],["Czechia","cz"],
+  ["Canada","ca"],["Bosnia","ba"],["Qatar","qa"],["Switzerland","ch"],
+  ["Brazil","br"],["Morocco","ma"],["Haiti","ht"],["Scotland","gb-sct"],
+  ["USA","us"],["Paraguay","py"],["Australia","au"],["Türkiye","tr"],
+  ["Germany","de"],["Curacao","cw"],["Ivory Coast","ci"],["Ecuador","ec"],
+  ["Netherlands","nl"],["Japan","jp"],["Sweden","se"],["Tunisia","tn"],
+  ["Belgium","be"],["Egypt","eg"],["Iran","ir"],["New Zealand","nz"],
+  ["Spain","es"],["Cape Verde","cv"],["Saudi Arabia","sa"],["Uruguay","uy"],
+  ["France","fr"],["Senegal","sn"],["Iraq","iq"],["Norway","no"],
+  ["Argentina","ar"],["Algeria","dz"],["Austria","at"],["Jordan","jo"],
+  ["Portugal","pt"],["DR Congo","cd"],["Uzbekistan","uz"],["Colombia","co"],
+  ["England","gb-eng"],["Croatia","hr"],["Ghana","gh"],["Panama","pa"]
+];
+
+const BASE_TEAMS = TEAM_DATA.map(([n,c]) => ({ n, c, s: 0 }));
+const $ = id => document.getElementById(id);
+
+const CONFIG = {
+  gap: Math.PI * 0.135,
+  segments: 84,
+  wallRest: 0.88,
+  ballRest: 0.89,
+  maxSpeed: 15.2,
+  baseRotSpeed: 0.0125,
+  duelRotSpeed: 0.019
+};
+
+let state = {
+  teams: JSON.parse(JSON.stringify(BASE_TEAMS)),
+  images: {},
+  round: 1,
+  target: 5,
+  auto: false,
+  running: false,
+  balls: [],
+  rot: 0,
+  rotSpeed: CONFIG.baseRotSpeed,
+  timeMs: 0,
+  milestones: {},
+  feed: []
+};
+
+let stats = {
+  cups: 0,
+  rounds: 0,
+  fastest: 999999,
+  slowest: 0,
+  wins: {}
+};
+
+let Engine, Render, Bodies, Body, Composite, Events;
+let engine, render;
+let cx = 0;
+let cy = 0;
+let radius = 220;
+let segments = [];
+let lastFrame = performance.now();
+let lastTimerUpdate = 0;
+
+function cloneTeams(){
+  return JSON.parse(JSON.stringify(BASE_TEAMS));
+}
+
+function formatTime(ms){
+  const t = Math.floor(ms / 1000);
+  const m = String(Math.floor(t / 60)).padStart(2,"0");
+  const s = String(t % 60).padStart(2,"0");
+  return `${m}:${s}`;
+}
+
+function storageLoad(){
+  try{
+    const saved = JSON.parse(localStorage.getItem("wc26_arena_v6") || "{}");
+
+    if(Array.isArray(saved.teams) && saved.teams.length === BASE_TEAMS.length){
+      state.teams = saved.teams;
+    }
+
+    state.round = saved.round || 1;
+    state.target = saved.target || 5;
+    state.auto = !!saved.auto;
+
+    const st = JSON.parse(localStorage.getItem("wc26_arena_stats_v6") || "{}");
+
+    stats = {
+      cups: st.cups || 0,
+      rounds: st.rounds || 0,
+      fastest: st.fastest || 999999,
+      slowest: st.slowest || 0,
+      wins: st.wins || {}
+    };
+  }catch(e){}
+
+  $("targetSelect").value = String(state.target);
+  $("autoCheck").checked = state.auto;
+}
+
+function storageSave(){
+  try{
+    localStorage.setItem("wc26_arena_v6", JSON.stringify({
+      teams: state.teams,
+      round: state.round,
+      target: state.target,
+      auto: state.auto
+    }));
+
+    localStorage.setItem("wc26_arena_stats_v6", JSON.stringify(stats));
+  }catch(e){}
+}
+
+function updateUI(){
+  const sorted = [...state.teams].sort((a,b) => b.s - a.s || a.n.localeCompare(b.n));
+
+  $("roundVal").textContent = state.round;
+  $("remainVal").textContent = state.balls.length;
+  $("remainHero").textContent = state.balls.length;
+  $("timerVal").textContent = formatTime(state.timeMs);
+  $("leaderVal").textContent = sorted[0] && sorted[0].s > 0 ? sorted[0].n.toUpperCase() : "NONE";
+
+  $("rankingList").innerHTML = sorted.slice(0,12).map((t,i) => `
+    <div class="row">
+      <div class="rankNum">${i + 1}</div>
+      https://flagcdn.com/w40/${t.c}.png
+      <div class="rowName">${t.n}</div>
+      <div class="rowScore">${t.s}</div>
+    </div>
+  `).join("");
+
+  const most = Object.keys(stats.wins).sort((a,b) => stats.wins[b] - stats.wins[a])[0];
+
+  $("statsList").innerHTML = `
+    <div class="row"><div class="rowName">Completed Cups</div><div class="rowScore">${stats.cups}</div></div>
+    <div class="row"><div class="rowName">Total Rounds</div><div class="rowScore">${stats.rounds}</div></div>
+    <div class="row"><div class="rowName">Fastest Round</div><div class="rowScore">${stats.fastest === 999999 ? "--" : formatTime(stats.fastest)}</div></div>
+    <div class="row"><div class="rowName">Longest Round</div><div class="rowScore">${stats.slowest ? formatTime(stats.slowest) : "--"}</div></div>
+    <div class="row"><div class="rowName">Most Championships</div><div class="rowScore">${most ? most + " " + stats.wins[most] : "--"}</div></div>
+  `;
+
+  $("feedList").innerHTML = state.feed.slice(0,10).map(x => `
+    <div class="row">
+      <div class="rankNum" style="color:var(--red)">#${x.place}</div>
+      <div class="rowName">${x.name}</div>
+    </div>
+  `).join("") || `
+    <div style="text-align:center;color:var(--muted);font-weight:900;font-size:.82rem">
+      No eliminations yet
+    </div>
+  `;
+}
+
+function makeFallbackFlag(code){
+  const c = document.createElement("canvas");
+  c.width = 96;
+  c.height = 96;
+
+  const x = c.getContext("2d");
+  const g = x.createLinearGradient(0,0,96,96);
+
+  g.addColorStop(0,"#00e5ff");
+  g.addColorStop(.5,"#156bff");
+  g.addColorStop(1,"#ff334e");
+
+  x.fillStyle = g;
+  x.fillRect(0,0,96,96);
+
+  x.fillStyle = "rgba(255,255,255,.14)";
+  x.beginPath();
+  x.arc(48,48,43,0,Math.PI*2);
+  x.fill();
+
+  x.fillStyle = "white";
+  x.font = "1000 22px Segoe UI, sans-serif";
+  x.textAlign = "center";
+  x.textBaseline = "middle";
+  x.fillText(code.toUpperCase().slice(0,4),48,49);
+
+  return c;
+}
+
+function preloadFlags(){
+  storageLoad();
+
+  let done = false;
+
+  const finish = () => {
+    if(done) return;
+    done = true;
+
+    for(const t of BASE_TEAMS){
+      if(!state.images[t.c]){
+        state.images[t.c] = makeFallbackFlag(t.c);
+      }
+    }
+
+    bootMatter();
+  };
+
+  let loaded = 0;
+
+  for(const t of BASE_TEAMS){
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+
+    img.onload = () => {
+      state.images[t.c] = img;
+      loaded++;
+
+      if(loaded === BASE_TEAMS.length){
+        finish();
+      }
+    };
+
+    img.onerror = () => {
+      state.images[t.c] = makeFallbackFlag(t.c);
+      loaded++;
+
+      if(loaded === BASE_TEAMS.length){
+        finish();
+      }
+    };
+
+    img.src = `https://flagcdn.com/w80/${t.c}.png`;
+  }
+
+  setTimeout(finish, 4500);
+}
+
+function initBackground(){
+  const c = $("bgCanvas");
+  const x = c.getContext("2d");
+  let stars = [];
+
+  function resize(){
+    const dpr = window.devicePixelRatio || 1;
+
+    c.width = Math.floor(innerWidth * dpr);
+    c.height = Math.floor(innerHeight * dpr);
+    c.style.width = innerWidth + "px";
+    c.style.height = innerHeight + "px";
+
+    x.setTransform(dpr,0,0,dpr,0,0);
+
+    stars = Array.from({
+      length: innerWidth < 700 ? 82 : 130
+    }, () => ({
+      x: Math.random() * innerWidth,
+      y: Math.random() * innerHeight,
+      s: Math.random() * 1.8 + .45,
+      v: Math.random() * .32 + .08,
+      hue: Math.random()
+    }));
+  }
+
+  function draw(){
+    const t = performance.now() * 0.00035;
+
+    x.clearRect(0,0,innerWidth,innerHeight);
+
+    const g = x.createRadialGradient(
+      innerWidth * .5,
+      innerHeight * .35,
+      0,
+      innerWidth * .5,
+      innerHeight * .35,
+      Math.max(innerWidth,innerHeight)
+    );
+
+    g.addColorStop(0,"#102052");
+    g.addColorStop(.45,"#07132b");
+    g.addColorStop(1,"#03050d");
+
+    x.fillStyle = g;
+    x.fillRect(0,0,innerWidth,innerHeight);
+
+    x.save();
+    x.globalAlpha = .12;
+    x.strokeStyle = "#00e5ff";
+    x.lineWidth = 1;
+
+    for(let i=0;i<5;i++){
+      x.beginPath();
+      x.arc(
+        innerWidth * .5,
+        innerHeight * .46,
+        160 + i * 95 + Math.sin(t + i) * 18,
+        0,
+        Math.PI * 2
+      );
+      x.stroke();
+    }
+
+    x.restore();
+
+    for(const p of stars){
+      const col = p.hue < .12
+        ? "rgba(255,51,78,.7)"
+        : p.hue < .24
+          ? "rgba(0,208,132,.65)"
+          : "rgba(0,229,255,.72)";
+
+      x.fillStyle = col;
+      x.shadowColor = col;
+      x.shadowBlur = 8;
+
+      x.beginPath();
+      x.arc(p.x,p.y,p.s,0,Math.PI*2);
+      x.fill();
+
+      p.y -= p.v;
+      p.x += Math.sin(t + p.y * .01) * .05;
+
+      if(p.y < -8){
+        p.y = innerHeight + 8;
+        p.x = Math.random() * innerWidth;
+      }
+    }
+
+    x.shadowBlur = 0;
+    requestAnimationFrame(draw);
+  }
+
+  resize();
+  addEventListener("resize", resize);
+  draw();
+}
+
+function bootMatter(){
+  if(!window.Matter){
+    $("loader").innerHTML = `
+      <div class="loaderTitle">Matter.js failed to load</div>
+      <div class="loaderSub">Check internet/CDN</div>
+    `;
+    return;
+  }
+
+  ({Engine, Render, Bodies, Body, Composite, Events} = Matter);
+
+  engine = Engine.create({
+    positionIterations: 16,
+    velocityIterations: 16,
+    constraintIterations: 4
+  });
+
+  engine.gravity.y = 0.22;
+
+  render = Render.create({
+    canvas: $("gameCanvas"),
+    engine,
+    options: {
+      width: innerWidth,
+      height: innerHeight,
+      wireframes: false,
+      background: "transparent",
+      pixelRatio: window.devicePixelRatio || 1
+    }
+  });
+
+  Events.on(render, "afterRender", drawArenaAndBalls);
+
+  Events.on(engine, "beforeUpdate", () => {
+    for(const b of state.balls){
+      if(b.speed > CONFIG.maxSpeed){
+        const k = CONFIG.maxSpeed / b.speed;
+
+        Body.setVelocity(b,{
+          x:b.velocity.x * k,
+          y:b.velocity.y * k
+        });
+      }
+    }
+  });
+
+  resizeArena();
+  Render.run(render);
+  spawnBalls();
+
+  $("loader").style.display = "none";
+
+  requestAnimationFrame(loop);
+}
+
+function getArenaBand(){
+  const topRect = $("topHud").getBoundingClientRect();
+  const bottomRect = $("bottomHud").getBoundingClientRect();
+
+  const top = Math.ceil(topRect.bottom + 12);
+  const bottom = Math.floor(bottomRect.top - 12);
+  const h = Math.max(170, bottom - top);
+
+  return { top, bottom, h };
+}
+
+function resizeArena(){
+  if(!engine || !render) return;
+
+  const dpr = devicePixelRatio || 1;
+
+  render.options.width = innerWidth;
+  render.options.height = innerHeight;
+
+  render.canvas.width = Math.floor(innerWidth * dpr);
+  render.canvas.height = Math.floor(innerHeight * dpr);
+  render.canvas.style.width = innerWidth + "px";
+  render.canvas.style.height = innerHeight + "px";
+
+  render.context.setTransform(dpr,0,0,dpr,0,0);
+
+  const band = getArenaBand();
+
+  cx = innerWidth / 2;
+  cy = band.top + band.h / 2;
+
+  const sideLimit = innerWidth * (innerWidth < 700 ? .445 : .43);
+  const heightLimit = band.h * .47;
+
+  radius = Math.floor(
+    Math.max(
+      105,
+      Math.min(
+        sideLimit,
+        heightLimit,
+        innerWidth < 700 ? 310 : 390
+      )
+    )
+  );
+
+  for(const s of segments){
+    Composite.remove(engine.world, s.body);
+  }
+
+  segments = [];
+
+  const thick = 132;
+  const outer = radius + thick / 2 + 2;
+  const len = (Math.PI * 2 * outer) / CONFIG.segments * 1.08;
+
+  for(let i=0;i<CONFIG.segments;i++){
+    const a = i / CONFIG.segments * Math.PI * 2;
+
+    const body = Bodies.rectangle(
+      cx + Math.cos(a) * outer,
+      cy + Math.sin(a) * outer,
+      len,
+      thick,
+      {
+        isStatic:true,
+        restitution:CONFIG.wallRest,
+        friction:.002,
+        label:"wall",
+        render:{visible:false}
+      }
+    );
+
+    segments.push({
+      body,
+      base:a
+    });
+
+    Composite.add(engine.world, body);
+  }
+
+  updateWallSegments();
+
+  if(!state.running && state.balls.length && state.timeMs === 0){
+    spawnBalls();
+  }
+}
+
+addEventListener("resize", () => {
+  setTimeout(resizeArena, 120);
+});
+
+function updateWallSegments(){
+  const gapHalf = CONFIG.gap / 2;
+  const hideLimit = gapHalf + (Math.PI * 2 / CONFIG.segments) * .66;
+  const outer = radius + 68;
+
+  for(const s of segments){
+    let rel = s.base;
+
+    if(rel > Math.PI){
+      rel -= Math.PI * 2;
+    }
+
+    if(Math.abs(rel) < hideLimit){
+      Body.setPosition(s.body,{
+        x:-4000,
+        y:-4000
+      });
+    }else{
+      const a = s.base + state.rot;
+
+      Body.setPosition(s.body,{
+        x:cx + Math.cos(a) * outer,
+        y:cy + Math.sin(a) * outer
+      });
+
+      Body.setAngle(s.body, a);
+    }
+  }
+}
+
+function spawnBalls(){
+  for(const b of state.balls){
+    Composite.remove(engine.world,b);
+  }
+
+  document.body.classList.remove("playing");
+
+  state.balls = [];
+  state.feed = [];
+  state.milestones = {};
+  state.timeMs = 0;
+  state.rotSpeed = CONFIG.baseRotSpeed;
+  lastTimerUpdate = 0;
+
+  $("hero").style.opacity = "1";
+  $("hero").style.transform = "translateY(0)";
+
+  const br = Math.max(8.8, Math.min(18.5, radius / 15.6));
+
+  const rings = [
+    [1,0],
+    [7,br * 2.45],
+    [14,br * 5.05],
+    [26,br * 7.6]
+  ];
+
+  let idx = 0;
+
+  for(let r=0;r<rings.length;r++){
+    for(let i=0;i<rings[r][0] && idx<state.teams.length;i++){
+      const a = (i / rings[r][0]) * Math.PI * 2 + r * .09 + (Math.random() - .5) * .22;
+
+      const x = cx + Math.cos(a) * rings[r][1] + (Math.random() - .5) * br * .8;
+      const y = cy - 8 + Math.sin(a) * rings[r][1] + (Math.random() - .5) * br * .8;
+
+      const ball = Bodies.circle(x,y,br,{
+        restitution:CONFIG.ballRest,
+        friction:.001,
+        frictionAir:.0012,
+        density:.045,
+        label:"ball",
+        render:{visible:false}
+      });
+
+      ball.tData = state.teams[idx];
+
+      Body.setVelocity(ball,{
+        x:(Math.random() - .5) * 4.8,
+        y:(Math.random() - .5) * 4.8
+      });
+
+      Body.setAngularVelocity(ball,(Math.random() - .5) * .16);
+
+      state.balls.push(ball);
+      Composite.add(engine.world,ball);
+
+      idx++;
+    }
+  }
+
+  updateUI();
+  updateWallSegments();
+}
+
+function drawArenaAndBalls(){
+  const ctx = render.context;
+
+  ctx.save();
+  ctx.lineCap = "round";
+
+  const gapHalf = CONFIG.gap / 2;
+  const start = state.rot + gapHalf;
+  const end = state.rot + Math.PI * 2 - gapHalf;
+
+  const gr = ctx.createLinearGradient(cx - radius,cy,cx + radius,cy);
+
+  gr.addColorStop(0,"#00e5ff");
+  gr.addColorStop(.30,"#156bff");
+  gr.addColorStop(.55,"#ff334e");
+  gr.addColorStop(.78,"#00d084");
+  gr.addColorStop(1,"#ffd166");
+
+  ctx.beginPath();
+  ctx.arc(cx,cy,radius + 2,start,end);
+  ctx.strokeStyle = "rgba(0,229,255,.16)";
+  ctx.lineWidth = 26;
+  ctx.shadowBlur = 46;
+  ctx.shadowColor = "#00e5ff";
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.arc(cx,cy,radius,start,end);
+  ctx.strokeStyle = gr;
+  ctx.lineWidth = 8;
+  ctx.shadowBlur = 18;
+  ctx.shadowColor = "#00e5ff";
+  ctx.stroke();
+
+  ctx.shadowBlur = 0;
+
+  ctx.beginPath();
+  ctx.arc(cx,cy,radius - 18,0,Math.PI * 2);
+  ctx.strokeStyle = "rgba(255,255,255,.04)";
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  for(const b of state.balls){
+    const img = state.images[b.tData.c];
+    const r = b.circleRadius;
+
+    ctx.save();
+    ctx.translate(b.position.x,b.position.y);
+    ctx.rotate(b.angle);
+
+    ctx.beginPath();
+    ctx.arc(0,0,r + 2,0,Math.PI * 2);
+    ctx.fillStyle = "rgba(255,255,255,.12)";
+    ctx.shadowBlur = 14;
+    ctx.shadowColor = "rgba(0,229,255,.35)";
+    ctx.fill();
+
+    ctx.shadowBlur = 0;
+
+    ctx.beginPath();
+    ctx.arc(0,0,r,0,Math.PI * 2);
+    ctx.clip();
+
+    if(img){
+      ctx.drawImage(img,-r,-r,r * 2,r * 2);
+    }
+
+    const shade = ctx.createRadialGradient(-r * .35,-r * .4,r * .1,0,0,r);
+
+    shade.addColorStop(0,"rgba(255,255,255,.48)");
+    shade.addColorStop(.5,"rgba(255,255,255,.03)");
+    shade.addColorStop(1,"rgba(0,0,0,.58)");
+
+    ctx.fillStyle = shade;
+    ctx.fillRect(-r,-r,r * 2,r * 2);
+
+    ctx.restore();
+
+    ctx.beginPath();
+    ctx.arc(b.position.x,b.position.y,r,0,Math.PI * 2);
+    ctx.strokeStyle = "rgba(255,255,255,.55)";
+    ctx.lineWidth = 1.4;
+    ctx.stroke();
+  }
+
+  ctx.restore();
+}
+
+function loop(now){
+  requestAnimationFrame(loop);
+
+  let delta = now - lastFrame;
+  lastFrame = now;
+
+  if(!Number.isFinite(delta) || delta <= 0 || delta > 80){
+    delta = 16.66;
+  }
+
+  if(!engine) return;
+  if(!state.running) return;
+
+  state.timeMs += delta;
+
+  if(state.timeMs - lastTimerUpdate > 250){
+    $("timerVal").textContent = formatTime(state.timeMs);
+    lastTimerUpdate = state.timeMs;
+  }
+
+  state.rot += state.rotSpeed * (delta / 16.66);
+
+  updateWallSegments();
+  Engine.update(engine, delta);
+  validateBalls();
+}
+
+function validateBalls(){
+  const limit = CONFIG.gap / 2 + .08;
+
+  for(let i=state.balls.length-1;i>=0;i--){
+    const b = state.balls[i];
+
+    const dx = b.position.x - cx;
+    const dy = b.position.y - cy;
+    const dist = Math.hypot(dx,dy);
+
+    if(!Number.isFinite(dist) || dist < .001){
+      continue;
+    }
+
+    if(b.speed < .72){
+      const f = .000012 * b.mass;
+
+      Body.applyForce(b,b.position,{
+        x:-(dx / dist) * f + (Math.random() - .5) * f,
+        y:-(dy / dist) * f + (Math.random() - .5) * f
+      });
+    }
+
+    const maxInside = radius - b.circleRadius + 2;
+
+    if(dist > maxInside){
+      let a = Math.atan2(dy,dx) - state.rot;
+      a = Math.atan2(Math.sin(a),Math.cos(a));
+
+      if(Math.abs(a) > limit){
+        Body.setPosition(b,{
+          x:cx + dx / dist * maxInside,
+          y:cy + dy / dist * maxInside
+        });
+
+        const nx = -dx / dist;
+        const ny = -dy / dist;
+        const dot = b.velocity.x * nx + b.velocity.y * ny;
+
+        if(dot < 0){
+          Body.setVelocity(b,{
+            x:b.velocity.x - (1 + CONFIG.wallRest) * dot * nx,
+            y:b.velocity.y - (1 + CONFIG.wallRest) * dot * ny
+          });
+        }
+      }else if(dist > radius + 54){
+        eliminate(i);
+      }
+    }
+  }
+}
+
+function showText(html, cls="goldText", ms=2200){
+  const el = $("bigText");
+
+  el.innerHTML = html;
+  el.className = "bigText show " + cls;
+
+  clearTimeout(showText.t);
+
+  showText.t = setTimeout(() => {
+    el.className = "bigText";
+  }, ms);
+}
+
+function showBanner(txt){
+  const el = $("elimBanner");
+
+  el.textContent = txt;
+  el.classList.add("show");
+
+  clearTimeout(showBanner.t);
+
+  showBanner.t = setTimeout(() => {
+    el.classList.remove("show");
+  }, 1250);
+}
+
+function eliminate(i){
+  const b = state.balls[i];
+  const t = b.tData;
+  const place = state.balls.length;
+
+  Composite.remove(engine.world,b);
+  state.balls.splice(i,1);
+
+  state.feed.unshift({
+    place,
+    name:t.n
+  });
+
+  document.body.classList.remove("shake");
+  void document.body.offsetWidth;
+  document.body.classList.add("shake");
+
+  showBanner(t.n.toUpperCase() + " ELIMINATED!");
+
+  updateUI();
+  checkMilestones();
+}
+
+function checkMilestones(){
+  const r = state.balls.length;
+
+  if(r === 10 && !state.milestones[10]){
+    state.milestones[10] = 1;
+    showText("Final 10","cyanText",1900);
+  }
+
+  if(r === 5 && !state.milestones[5]){
+    state.milestones[5] = 1;
+    showText("Final 5","redText",1900);
+  }
+
+  if(r === 3 && !state.milestones[3]){
+    state.milestones[3] = 1;
+    showText("Final 3","redText",1900);
+  }
+
+  if(r === 2 && !state.milestones[2]){
+    state.milestones[2] = 1;
+    state.rotSpeed = CONFIG.duelRotSpeed;
+
+    $("hero").style.opacity = "0";
+    $("hero").style.transform = "translateY(12px)";
+
+    showText("Final Duel","goldText",2500);
+  }
+
+  if(r === 1){
+    roundWinner();
+  }
+}
+
+function roundWinner(){
+  if(!state.running) return;
+
+  state.running = false;
+  updateMainButton();
+
+  const w = state.balls[0].tData;
+  const idx = state.teams.findIndex(t => t.c === w.c);
+
+  if(idx < 0) return;
+
+  state.teams[idx].s += 1;
+
+  stats.rounds += 1;
+  stats.fastest = Math.min(stats.fastest,state.timeMs);
+  stats.slowest = Math.max(stats.slowest,state.timeMs);
+
+  $("flash").style.opacity = "1";
+
+  setTimeout(() => {
+    $("flash").style.opacity = "0";
+  },180);
+
+  const champion = state.teams[idx].s >= state.target;
+
+  storageSave();
+  updateUI();
+
+  if(champion){
+    stats.cups += 1;
+    stats.wins[w.n] = (stats.wins[w.n] || 0) + 1;
+
+    storageSave();
+    updateUI();
+
+    if(typeof confetti === "function"){
+      confetti({
+        particleCount:650,
+        spread:280,
+        startVelocity:45,
+        origin:{y:.48},
+        zIndex:1000,
+        colors:["#00e5ff","#156bff","#ff334e","#00d084","#ffd166","#fff"]
+      });
+    }
+
+    showText(`👑 ${w.n.toUpperCase()}<br>WORLD CHAMPIONS!`,"goldText",7200);
+
+    setTimeout(() => {
+      state.teams = cloneTeams();
+      state.round = 1;
+
+      storageSave();
+      spawnBalls();
+      autoNext();
+    },7800);
+  }else{
+    const score = state.teams[idx].s;
+
+    showText(
+      (score === state.target - 1 ? "🔥 Match Point<br>" : "🏆 ") +
+      `${w.n.toUpperCase()} +1 POINT<br>${score}/${state.target}`,
+      "goldText",
+      3900
+    );
+
+    setTimeout(() => {
+      state.round += 1;
+
+      storageSave();
+      spawnBalls();
+      autoNext();
+    },4300);
+  }
+}
+
+function updateMainButton(){
+  const b = $("mainBtn");
+
+  if(state.running){
+    b.classList.add("running");
+    b.textContent = "⏸ Pause Game";
+  }else{
+    b.classList.remove("running");
+  }
+}
+
+function startGame(){
+  if(state.balls.length <= 1){
+    spawnBalls();
+  }
+
+  document.body.classList.add("playing");
+  resizeArena();
+  document.body.classList.add("playing");
+
+  state.running = true;
+
+  $("hero").style.opacity = "0";
+  $("hero").style.transform = "translateY(12px)";
+
+  updateMainButton();
+}
+
+function pauseGame(){
+  state.running = false;
+
+  $("mainBtn").textContent = "▶ Resume Game";
+
+  updateMainButton();
+}
+
+function autoNext(){
+  if(state.auto){
+    setTimeout(startGame,900);
+  }else{
+    $("mainBtn").textContent = "▶ Start Next Round";
+    updateMainButton();
+  }
+}
+
+$("mainBtn").onclick = () => {
+  state.running ? pauseGame() : startGame();
+};
+
+$("resetBtn").onclick = () => {
+  if(confirm("Reset championship to Round 1?")){
+    pauseGame();
+
+    document.body.classList.remove("playing");
+
+    state.teams = cloneTeams();
+    state.round = 1;
+    state.timeMs = 0;
+
+    storageSave();
+    spawnBalls();
+
+    $("mainBtn").textContent = "▶ Start Match";
+
+    updateMainButton();
+    updateUI();
+  }
+};
+
+$("targetSelect").onchange = e => {
+  state.target = parseInt(e.target.value,10) || 5;
+
+  storageSave();
+  updateUI();
+};
+
+$("autoCheck").onchange = e => {
+  state.auto = e.target.checked;
+
+  storageSave();
+};
+
+$("rankingBtn").onclick = () => {
+  $("statsPanel").classList.add("hidden");
+  $("rankingPanel").classList.toggle("hidden");
+
+  updateUI();
+};
+
+$("statsBtn").onclick = () => {
+  $("rankingPanel").classList.add("hidden");
+  $("statsPanel").classList.toggle("hidden");
+
+  updateUI();
+};
+
+initBackground();
+preloadFlags();
+</script>
+</body>
+</html>
