@@ -3,17 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>World Cup 2026 Survivor - Pro Live Edition</title>
+    <title>World Cup 2026 Simulator - Pro Edition</title>
     <style>
         :root {
-            --bg-dark: #050510;
+            --bg-dark: #070b19;
             --accent: #00f0ff;
-            --accent-glow: rgba(0, 240, 255, 0.5);
+            --accent-glow: rgba(0, 240, 255, 0.4);
             --danger: #ff003c;
-            --danger-glow: rgba(255, 0, 60, 0.5);
+            --danger-glow: rgba(255, 0, 60, 0.6);
             --gold: #ffd700;
-            --gold-glow: rgba(255, 215, 0, 0.5);
-            --glass-bg: rgba(15, 15, 25, 0.6);
+            --glass-bg: rgba(10, 15, 30, 0.7);
             --glass-border: rgba(255, 255, 255, 0.1);
         }
 
@@ -23,6 +22,7 @@
             padding: 0;
             font-family: 'Segoe UI', system-ui, sans-serif;
             user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -36,231 +36,217 @@
             align-items: center;
         }
 
-        /* Shake Animation */
         @keyframes shake {
-            0% { transform: translate(1px, 1px) rotate(0deg); }
-            10% { transform: translate(-1px, -2px) rotate(-1deg); }
-            20% { transform: translate(-3px, 0px) rotate(1deg); }
-            30% { transform: translate(3px, 2px) rotate(0deg); }
-            40% { transform: translate(1px, -1px) rotate(1deg); }
-            50% { transform: translate(-1px, 2px) rotate(-1deg); }
-            60% { transform: translate(-3px, 1px) rotate(0deg); }
-            70% { transform: translate(3px, 1px) rotate(-1deg); }
-            80% { transform: translate(-1px, -1px) rotate(1deg); }
-            90% { transform: translate(1px, 2px) rotate(0deg); }
-            100% { transform: translate(1px, -2px) rotate(-1deg); }
+            0%, 100% { transform: translate(0, 0); }
+            20% { transform: translate(-3px, 2px); }
+            40% { transform: translate(3px, -2px); }
+            60% { transform: translate(-3px, -2px); }
+            80% { transform: translate(3px, 2px); }
         }
 
-        .shake-active {
-            animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
-        }
+        .shake-active { animation: shake 0.3s cubic-bezier(.36,.07,.19,.97) both; }
 
-        /* Layers */
-        #bg-canvas {
+        #bg-canvas, #physics-canvas {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 1;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
         }
-
-        #game-layer {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 2;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+        
+        #bg-canvas { z-index: 1; }
+        #physics-canvas { z-index: 2; }
 
         #ui-layer {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             z-index: 10;
             pointer-events: none;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            padding: 20px;
         }
 
-        /* Glassmorphism UI */
-        .glass-panel {
-            background: var(--glass-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            padding: 15px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
-            pointer-events: auto;
-        }
-
-        /* Header Area */
-        .header-area {
+        /* Top Bar */
+        .top-bar {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            gap: 15px;
+            padding: 20px;
+            width: 100%;
+            pointer-events: auto;
         }
 
-        .stats-box {
-            display: flex;
-            gap: 20px;
-        }
-
-        .stat {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .stat-val {
-            font-size: 2rem;
-            font-weight: 900;
-            color: var(--accent);
-            text-shadow: 0 0 10px var(--accent-glow);
-        }
-
-        .stat-label {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: rgba(255,255,255,0.6);
-        }
-
-        /* Top 5 Leaderboard */
-        .leaderboard {
-            min-width: 200px;
-        }
-
-        .lb-title {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            color: rgba(255,255,255,0.6);
-            margin-bottom: 10px;
-            text-align: center;
-            letter-spacing: 2px;
-        }
-
-        .lb-row {
-            display: flex;
-            align-items: center;
-            margin-bottom: 8px;
-            background: rgba(0,0,0,0.3);
-            padding: 5px 10px;
+        .icon-btn {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            width: 40px; height: 40px;
             border-radius: 8px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex; justify-content: center; align-items: center;
         }
 
-        .lb-rank { width: 20px; font-weight: bold; color: var(--accent); }
-        .lb-flag { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; margin-right: 10px; border: 1px solid var(--glass-border); }
-        .lb-name { flex: 1; font-weight: 600; font-size: 0.9rem; }
-        .lb-score { font-weight: 900; color: var(--gold); }
-
-        /* Controls Area */
-        .controls-area {
+        .score-pill {
             display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            gap: 15px;
+            background: rgba(10, 15, 30, 0.8);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 10px 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            gap: 20px;
+            align-items: center;
         }
 
-        button {
-            background: rgba(255,255,255,0.1);
+        .score-half { display: flex; flex-direction: column; align-items: center; }
+        .score-half .label { font-size: 0.65rem; color: #8892b0; letter-spacing: 1px; }
+        .score-half .value { font-size: 1.8rem; font-weight: 900; color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
+        .score-pill .divider { width: 1px; height: 30px; background: rgba(255,255,255,0.1); }
+
+        .btn-ranking {
+            background: rgba(10, 15, 30, 0.8);
             border: 1px solid var(--glass-border);
             color: white;
-            padding: 12px 24px;
+            padding: 10px 15px;
             border-radius: 8px;
             font-weight: bold;
+            font-size: 0.8rem;
             cursor: pointer;
+            backdrop-filter: blur(10px);
             transition: 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            display: flex; align-items: center; gap: 8px;
         }
+        .btn-ranking:hover { background: rgba(255,255,255,0.1); border-color: var(--accent); color: var(--accent); }
 
-        button:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); }
-        button.btn-start { background: rgba(0, 240, 255, 0.2); border-color: var(--accent); color: var(--accent); }
-        button.btn-start:hover { background: var(--accent); color: black; box-shadow: 0 0 20px var(--accent-glow); }
-
-        select {
-            background: rgba(0,0,0,0.5);
-            color: white;
-            border: 1px solid var(--glass-border);
-            padding: 10px;
-            border-radius: 8px;
-            outline: none;
-        }
-
-        /* Dramatic Headers & Notifications */
-        #notify-layer {
+        .ranking-hint {
             position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 50;
+            top: 75px; right: 25px;
+            font-size: 0.7rem; color: rgba(255,255,255,0.5);
             pointer-events: none;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        }
+
+        /* Collapsible Leaderboard */
+        .ranking-panel {
+            position: absolute;
+            top: 95px; right: 20px;
+            width: 240px;
+            background: var(--glass-bg);
+            border: 1px solid var(--accent-glow);
+            border-radius: 12px;
+            padding: 15px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-origin: top right;
+            pointer-events: auto;
+            max-height: 50vh;
+            overflow-y: auto;
+        }
+
+        .ranking-panel.hidden { transform: scale(0.5); opacity: 0; pointer-events: none; }
+
+        .lb-title { text-align: center; font-size: 0.75rem; color: #8892b0; margin-bottom: 10px; letter-spacing: 2px; }
+        .lb-row { display: flex; align-items: center; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .lb-rank { width: 20px; color: var(--accent); font-weight: bold; font-size: 0.8rem; }
+        .lb-flag { width: 20px; height: 20px; border-radius: 50%; object-fit: cover; margin-right: 10px; border: 1px solid rgba(255,255,255,0.2); }
+        .lb-name { flex: 1; font-size: 0.85rem; }
+        .lb-score { font-weight: 900; color: var(--gold); }
+
+        /* Center Labels */
+        .center-labels {
+            position: absolute;
+            bottom: 22%; left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
             width: 100%;
         }
+        
+        .flags-remain { font-size: 0.8rem; color: rgba(255,255,255,0.6); letter-spacing: 1px; margin-bottom: 5px; }
+        .flags-remain span { color: var(--accent); font-weight: bold; font-size: 1rem; }
+        .who-wins { font-size: 2.2rem; font-weight: 900; letter-spacing: 2px; text-shadow: 0 0 20px var(--accent-glow); }
 
+        /* Bottom Control Panel */
+        .bottom-panel {
+            position: absolute;
+            bottom: 20px; left: 50%;
+            transform: translateX(-50%);
+            width: 92%; max-width: 600px;
+            background: rgba(10, 15, 30, 0.75);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 15px;
+            backdrop-filter: blur(15px);
+            pointer-events: auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            display: flex; flex-direction: column; gap: 15px;
+        }
+
+        .controls-main {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .select-wrapper { display: flex; flex-direction: column; }
+        .select-wrapper label { font-size: 0.6rem; color: #8892b0; margin-bottom: 3px; }
+        .select-wrapper select { background: transparent; color: white; border: 1px solid rgba(255,255,255,0.3); padding: 8px; border-radius: 6px; font-weight: bold; outline: none; }
+        
+        .auto-live { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; font-weight: bold; cursor: pointer; }
+        .auto-live input { width: 16px; height: 16px; accent-color: var(--accent); }
+
+        button.action-btn { flex: 1; min-width: 140px; padding: 12px; font-weight: 900; border-radius: 8px; cursor: pointer; border: none; text-transform: uppercase; transition: 0.2s; letter-spacing: 1px; }
+        .btn-primary { background: linear-gradient(90deg, #00f0ff, #0080ff); color: #000; box-shadow: 0 0 15px var(--accent-glow); }
+        .btn-primary:active { transform: scale(0.95); }
+        .btn-secondary { background: transparent; border: 1px solid rgba(255,255,255,0.3) !important; color: white; }
+        .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+
+        .controls-footer {
+            display: flex; justify-content: space-between; align-items: center;
+            border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;
+        }
+        
+        .footer-col { display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .footer-col .small-text { font-size: 0.55rem; color: #8892b0; letter-spacing: 1px; }
+        .footer-col .cyan-text { font-size: 0.8rem; color: var(--accent); font-weight: bold; margin: 2px 0; }
+        .footer-col.mid .trophy-icon { font-size: 1.2rem; color: var(--accent); text-shadow: 0 0 10px var(--accent); margin-bottom: 2px;}
+
+        /* Drama Text */
+        #notify-layer { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); z-index: 50; pointer-events: none; width: 100%; display: flex; flex-direction: column; align-items: center; }
+        
         .dramatic-text {
-            font-size: 8vw;
-            font-weight: 900;
-            text-transform: uppercase;
-            text-align: center;
-            opacity: 0;
-            transform: scale(0.2) translateY(50px);
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-size: 10vw; font-weight: 900; text-transform: uppercase; text-align: center;
+            opacity: 0; transform: scale(0.3); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             text-shadow: 0 10px 30px rgba(0,0,0,0.9);
-            filter: drop-shadow(0 0 20px rgba(0,0,0,0.5));
-            background: -webkit-linear-gradient(#fff, #aaa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            background: -webkit-linear-gradient(#fff, #aaa); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
-
-        .dramatic-text.show {
-            opacity: 1;
-            transform: scale(1) translateY(0);
-        }
-
-        .text-danger { background: -webkit-linear-gradient(#ff5577, #ff003c); -webkit-background-clip: text; filter: drop-shadow(0 0 30px var(--danger-glow)); }
-        .text-gold { background: -webkit-linear-gradient(#ffeeaa, #ffd700); -webkit-background-clip: text; filter: drop-shadow(0 0 40px var(--gold-glow)); font-size: 10vw;}
+        .dramatic-text.show { opacity: 1; transform: scale(1); }
+        .text-accent { background: -webkit-linear-gradient(#fff, #00f0ff); -webkit-background-clip: text; filter: drop-shadow(0 0 20px var(--accent-glow)); }
+        .text-danger { background: -webkit-linear-gradient(#ffaaaa, #ff003c); -webkit-background-clip: text; filter: drop-shadow(0 0 30px var(--danger-glow)); }
+        .text-gold { background: -webkit-linear-gradient(#ffeeaa, #ffd700); -webkit-background-clip: text; filter: drop-shadow(0 0 40px rgba(255, 215, 0, 0.6)); font-size: 12vw;}
 
         .elim-banner {
-            background: linear-gradient(90deg, transparent, rgba(255,0,60,0.8), transparent);
-            width: 100vw;
-            text-align: center;
-            padding: 15px 0;
-            font-size: 2rem;
-            font-weight: 800;
-            color: white;
-            opacity: 0;
-            transform: scaleY(0);
-            transition: 0.3s;
+            background: linear-gradient(90deg, transparent, rgba(255,0,60,0.9), transparent);
+            width: 100vw; text-align: center; padding: 10px 0; font-size: 1.5rem; font-weight: 800; color: white;
+            opacity: 0; transform: scaleY(0); transition: 0.2s; position: absolute; top: -100px;
         }
+        .elim-banner.show { opacity: 1; transform: scaleY(1); top: 0; }
 
-        .elim-banner.show { opacity: 1; transform: scaleY(1); }
-
-        #flash {
-            position: absolute; top:0; left:0; width:100%; height:100%;
-            background: white; opacity: 0; z-index: 100; pointer-events: none;
-            transition: opacity 0.2s;
-        }
-
-        /* Loading */
+        #flash { position: absolute; top:0; left:0; width:100%; height:100%; background: white; opacity: 0; z-index: 100; pointer-events: none; transition: opacity 0.2s; }
+        
         #loader {
-            position: absolute; top:0; left:0; width:100%; height:100%;
-            background: var(--bg-dark); z-index: 200;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            position: absolute; top:0; left:0; width:100%; height:100%; background: var(--bg-dark); z-index: 200;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--accent); font-weight: bold;
         }
-        .spinner { width: 60px; height: 60px; border: 4px solid rgba(0,240,255,0.2); border-top: 4px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        @media (max-width: 768px) {
-            .header-area { flex-direction: column; align-items: center; }
-            .stats-box { width: 100%; justify-content: space-around; }
-            .leaderboard { width: 100%; }
-            .dramatic-text { font-size: 12vw; }
-            .controls-area { flex-wrap: wrap; }
+        @media (max-height: 700px) {
+            .center-labels { bottom: 25%; }
+            .flags-remain { font-size: 0.7rem; }
+            .who-wins { font-size: 1.8rem; }
+            .bottom-panel { padding: 10px; gap: 10px; }
+            .controls-main { gap: 5px; }
+            button.action-btn { font-size: 0.8rem; padding: 10px; }
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
@@ -268,12 +254,11 @@
 </head>
 <body>
 
-    <div id="loader"><div class="spinner"></div><div style="margin-top:20px; font-weight:bold; color:var(--accent);">INITIALIZING PHYSICS...</div></div>
-
+    <div id="loader">LOADING RESOURCES...</div>
     <canvas id="bg-canvas"></canvas>
     
     <div id="wrapper" style="position:absolute; width:100%; height:100%;">
-        <div id="game-layer"></div>
+        <canvas id="physics-canvas"></canvas>
     </div>
 
     <div id="flash"></div>
@@ -284,87 +269,128 @@
     </div>
 
     <div id="ui-layer">
-        <div class="header-area">
-            <div class="glass-panel stats-box">
-                <div class="stat">
-                    <div class="stat-label">Round</div>
-                    <div class="stat-val" id="ui-round">1</div>
+        <div class="top-bar">
+            <button class="icon-btn">☰</button>
+            <div class="score-pill">
+                <div class="score-half">
+                    <div class="label">ROUND</div>
+                    <div class="value" id="val-round">1</div>
                 </div>
-                <div class="stat">
-                    <div class="stat-label">Remaining</div>
-                    <div class="stat-val" id="ui-rem">48</div>
+                <div class="divider"></div>
+                <div class="score-half">
+                    <div class="label">REMAINING</div>
+                    <div class="value" id="val-rem">48</div>
                 </div>
             </div>
-            
-            <div class="glass-panel leaderboard">
-                <div class="lb-title">Top 5 Leaders</div>
-                <div id="lb-content"></div>
+            <div style="position: relative;">
+                <button id="btn-ranking" class="btn-ranking"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M4 22H20C21.1 22 22 21.1 22 20V4C22 2.9 21.1 2 20 2H4C2.9 2 2 2.9 2 4V20C2 21.1 2.9 22 4 22ZM7 14H9V18H7V14ZM11 10H13V18H11V10ZM15 6H17V18H15V6Z"/></svg> RANKING</button>
+                <div class="ranking-hint" id="ranking-hint">Tap to show/hide ⤵</div>
             </div>
         </div>
 
-        <div class="controls-area">
-            <div class="glass-panel" style="display:flex; gap:10px; align-items:center;">
-                <select id="set-target">
-                    <option value="3">Best of 3</option>
-                    <option value="5">Best of 5</option>
-                    <option value="7">Best of 7</option>
-                </select>
-                <label style="font-size:0.8rem; font-weight:bold;"><input type="checkbox" id="set-auto"> AUTO LIVE</label>
+        <div class="ranking-panel hidden" id="ranking-panel">
+            <div class="lb-title">TOP 5</div>
+            <div id="lb-content"></div>
+        </div>
+
+        <div class="center-labels" id="center-labels">
+            <div class="flags-remain"><span id="lbl-rem-num">48</span> FLAGS REMAIN</div>
+            <div class="who-wins">WHO WILL WIN?</div>
+        </div>
+
+        <div class="bottom-panel">
+            <div class="controls-main">
+                <div class="select-wrapper">
+                    <label>BEST OF</label>
+                    <select id="sel-target">
+                        <option value="3">3</option>
+                        <option value="5" selected>5</option>
+                        <option value="7">7</option>
+                    </select>
+                </div>
+                <label class="auto-live"><input type="checkbox" id="chk-auto"> AUTO LIVE</label>
+                <button id="btn-action" class="action-btn btn-primary">▶ START GAME</button>
+                <button id="btn-reset" class="action-btn btn-secondary">↻ RESET</button>
             </div>
-            <button class="btn-start" id="btn-start">Start Game</button>
-            <button id="btn-reset">Reset</button>
+            <div class="controls-footer">
+                <div class="footer-col">
+                    <div class="small-text">FIRST TEAM TO</div>
+                    <div class="cyan-text" id="ft-pts">5 POINTS</div>
+                    <div class="small-text">WINS THE BATTLE</div>
+                </div>
+                <div class="footer-col mid">
+                    <div class="trophy-icon">🏆</div>
+                    <div class="small-text">SURVIVE. ELIMINATE. WIN.</div>
+                </div>
+                <div class="footer-col">
+                    <div class="small-text">MAY THE BEST</div>
+                    <div class="cyan-text">FLAG</div>
+                    <div class="small-text">WIN!</div>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        // --- DATA ---
+        // --- DATA VERIFIED FOR 2026 WORLD CUP ---
+        // Poland, Italy, Wales do not appear here. 48 exact qualified teams.
         const TEAMS = [
             { n: "USA", c: "us" }, { n: "Mexico", c: "mx" }, { n: "Canada", c: "ca" },
-            { n: "Brazil", c: "br" }, { n: "Argentina", c: "ar" }, { n: "France", c: "fr" },
-            { n: "Germany", c: "de" }, { n: "Italy", c: "it" }, { n: "Spain", c: "es" },
-            { n: "England", c: "gb-eng" }, { n: "Portugal", c: "pt" }, { n: "Netherlands", c: "nl" },
-            { n: "Belgium", c: "be" }, { n: "Croatia", c: "hr" }, { n: "Uruguay", c: "uy" },
-            { n: "Colombia", c: "co" }, { n: "Japan", c: "jp" }, { n: "South Korea", c: "kr" },
-            { n: "Morocco", c: "ma" }, { n: "Senegal", c: "sn" }, { n: "Switzerland", c: "ch" },
-            { n: "Denmark", c: "dk" }, { n: "Poland", c: "pl" }, { n: "Sweden", c: "se" },
-            { n: "Serbia", c: "rs" }, { n: "Australia", c: "au" }, { n: "Ecuador", c: "ec" },
-            { n: "Peru", c: "pe" }, { n: "Chile", c: "cl" }, { n: "Nigeria", c: "ng" },
-            { n: "Egypt", c: "eg" }, { n: "Algeria", c: "dz" }, { n: "Cameroon", c: "cm" },
-            { n: "Ivory Coast", c: "ci" }, { n: "Mali", c: "ml" }, { n: "Tunisia", c: "tn" },
-            { n: "Ghana", c: "gh" }, { n: "Costa Rica", c: "cr" }, { n: "Panama", c: "pa" },
-            { n: "Jamaica", c: "jm" }, { n: "Honduras", c: "hn" }, { n: "New Zealand", c: "nz" },
-            { n: "Qatar", c: "qa" }, { n: "Turkey", c: "tr" }, { n: "Ukraine", c: "ua" },
-            { n: "Saudi Arabia", c: "sa" }, { n: "Iran", c: "ir" }, { n: "Venezuela", c: "ve" }
+            { n: "Panama", c: "pa" }, { n: "Haiti", c: "ht" }, { n: "Curaçao", c: "cw" },
+            { n: "Argentina", c: "ar" }, { n: "Brazil", c: "br" }, { n: "Uruguay", c: "uy" },
+            { n: "Colombia", c: "co" }, { n: "Ecuador", c: "ec" }, { n: "Paraguay", c: "py" },
+            { n: "France", c: "fr" }, { n: "Spain", c: "es" }, { n: "England", c: "gb-eng" },
+            { n: "Germany", c: "de" }, { n: "Portugal", c: "pt" }, { n: "Netherlands", c: "nl" },
+            { n: "Belgium", c: "be" }, { n: "Croatia", c: "hr" }, { n: "Switzerland", c: "ch" },
+            { n: "Austria", c: "at" }, { n: "Sweden", c: "se" }, { n: "Norway", c: "no" },
+            { n: "Scotland", c: "gb-sct" }, { n: "Bosnia", c: "ba" }, { n: "Czechia", c: "cz" },
+            { n: "Türkiye", c: "tr" }, { n: "Japan", c: "jp" }, { n: "South Korea", c: "kr" },
+            { n: "Iran", c: "ir" }, { n: "Australia", c: "au" }, { n: "Saudi Arabia", c: "sa" },
+            { n: "Qatar", c: "qa" }, { n: "Iraq", c: "iq" }, { n: "Jordan", c: "jo" },
+            { n: "Uzbekistan", c: "uz" }, { n: "Morocco", c: "ma" }, { n: "Senegal", c: "sn" },
+            { n: "Egypt", c: "eg" }, { n: "Algeria", c: "dz" }, { n: "Tunisia", c: "tn" },
+            { n: "South Africa", c: "za" }, { n: "Ghana", c: "gh" }, { n: "Ivory Coast", c: "ci" },
+            { n: "DR Congo", c: "cd" }, { n: "Cape Verde", c: "cv" }, { n: "New Zealand", c: "nz" }
         ];
 
         let state = {
             teams: [], images: {}, loaded: 0,
-            round: 1, target: 3, auto: false, running: false,
-            balls: [], arenaRot: 0, rotSpeed: 0.008, 
-            baseTimeScale: 1, zoom: 1
+            round: 1, target: 5, auto: false, running: false,
+            balls: [], arenaRot: 0, rotSpeed: 0.008, targetRotSpeed: 0.008,
+            timeScale: 1, targetTimeScale: 1, zoom: 1, targetZoom: 1,
+            m10: false, m5: false, m3: false, m2: false
         };
 
         // --- AUDIO ENGINE ---
-        let actx;
-        function initAudio() { if(!actx) actx = new (window.AudioContext || window.webkitAudioContext)(); if(actx.state==='suspended') actx.resume(); }
+        let actx = null;
+        let lastHitTime = 0;
+        function initAudio() {
+            try {
+                if(!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
+                if(actx.state === 'suspended') actx.resume();
+            } catch(e) { console.warn("Audio Context blocked."); }
+        }
         
         function playTone(freq, type, dur, vol, slideFreq=null) {
             if(!actx) return;
-            const osc = actx.createOscillator();
-            const gain = actx.createGain();
-            osc.type = type;
-            osc.frequency.setValueAtTime(freq, actx.currentTime);
-            if(slideFreq) osc.frequency.exponentialRampToValueAtTime(slideFreq, actx.currentTime + dur);
-            gain.gain.setValueAtTime(vol, actx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + dur);
-            osc.connect(gain); gain.connect(actx.destination);
-            osc.start(); osc.stop(actx.currentTime + dur);
+            try {
+                const osc = actx.createOscillator();
+                const gain = actx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, actx.currentTime);
+                if(slideFreq) osc.frequency.exponentialRampToValueAtTime(slideFreq, actx.currentTime + dur);
+                gain.gain.setValueAtTime(vol, actx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + dur);
+                osc.connect(gain); gain.connect(actx.destination);
+                osc.start(); osc.stop(actx.currentTime + dur);
+            } catch(e) {}
         }
 
         function sndHit(velocity) {
-            if(!actx || velocity < 2) return;
-            const vol = Math.min(velocity * 0.02, 0.15);
-            playTone(150 + Math.random()*50, 'triangle', 0.1, vol);
+            const now = performance.now();
+            if(!actx || velocity < 2 || now - lastHitTime < 40) return;
+            lastHitTime = now;
+            playTone(150 + Math.random()*50, 'triangle', 0.1, Math.min(velocity * 0.015, 0.1));
         }
 
         function sndEliminate() {
@@ -373,55 +399,50 @@
         }
 
         function sndEvent() { playTone(800, 'sine', 1.0, 0.2, 200); }
-        
-        function sndWin() {
-            [440, 554, 659, 880].forEach((f, i) => setTimeout(()=>playTone(f, 'square', 0.5, 0.1), i*100));
-        }
-
+        function sndWin() { [440, 554, 659, 880].forEach((f, i) => setTimeout(()=>playTone(f, 'square', 0.5, 0.1), i*100)); }
         function sndChampion() {
             [440, 554, 659, 880, 1108, 1318].forEach((f, i) => setTimeout(()=>playTone(f, 'sine', 0.8, 0.15), i*150));
             setTimeout(()=>playTone(880, 'square', 2.0, 0.2), 900);
         }
 
-        // --- BACKGROUND PARTICLES ---
+        // --- BACKGROUND ---
         const bgCanvas = document.getElementById('bg-canvas');
         const bgCtx = bgCanvas.getContext('2d');
         let particles = [];
         function initBg() {
             bgCanvas.width = window.innerWidth; bgCanvas.height = window.innerHeight;
-            particles = Array.from({length: 50}, () => ({
-                x: Math.random() * bgCanvas.width,
-                y: Math.random() * bgCanvas.height,
-                s: Math.random() * 2 + 1,
-                v: Math.random() * 0.5 + 0.2
+            particles = Array.from({length: 80}, () => ({
+                x: Math.random() * bgCanvas.width, y: Math.random() * bgCanvas.height,
+                s: Math.random() * 1.5 + 0.5, v: Math.random() * 0.3 + 0.1
             }));
         }
         function drawBg() {
             bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
-            bgCtx.fillStyle = 'rgba(0, 240, 255, 0.3)';
+            bgCtx.fillStyle = 'rgba(0, 240, 255, 0.4)';
             particles.forEach(p => {
                 bgCtx.beginPath(); bgCtx.arc(p.x, p.y, p.s, 0, Math.PI*2); bgCtx.fill();
-                p.y -= p.v;
-                if(p.y < 0) { p.y = bgCanvas.height; p.x = Math.random() * bgCanvas.width; }
+                p.y -= p.v; if(p.y < 0) { p.y = bgCanvas.height; p.x = Math.random() * bgCanvas.width; }
             });
             requestAnimationFrame(drawBg);
         }
         initBg(); drawBg(); window.addEventListener('resize', initBg);
 
-        // --- CORE LOGIC & STORAGE ---
+        // --- STATE MANAGEMENT ---
         function loadStorage() {
-            const sv = localStorage.getItem('wcProSave');
+            const sv = localStorage.getItem('wc26Pro');
             if(sv) {
                 const p = JSON.parse(sv);
-                state.teams = p.teams; state.round = p.round;
+                state.teams = p.teams || TEAMS.map(t => ({...t, s: 0}));
+                state.round = p.round || 1;
             } else initData();
         }
-        function saveStorage() { localStorage.setItem('wcProSave', JSON.stringify({teams: state.teams, round: state.round})); }
+        function saveStorage() { localStorage.setItem('wc26Pro', JSON.stringify({teams: state.teams, round: state.round})); }
         function initData() { state.teams = TEAMS.map(t => ({...t, s: 0})); state.round = 1; saveStorage(); }
 
         function updateUI() {
-            document.getElementById('ui-round').innerText = state.round;
-            document.getElementById('ui-rem').innerText = state.balls.length;
+            document.getElementById('val-round').innerText = state.round;
+            document.getElementById('val-rem').innerText = state.balls.length;
+            document.getElementById('lbl-rem-num').innerText = state.balls.length;
             
             const sort = [...state.teams].sort((a,b) => b.s - a.s || a.n.localeCompare(b.n)).slice(0, 5);
             document.getElementById('lb-content').innerHTML = sort.map((t, i) => `
@@ -439,96 +460,100 @@
                 const img = new Image(); img.crossOrigin = "anonymous";
                 img.onload = () => {
                     state.images[t.c] = img; state.loaded++;
-                    if(state.loaded === TEAMS.length) { document.getElementById('loader').style.display = 'none'; loadStorage(); updateUI(); setupMatter(); }
+                    if(state.loaded === TEAMS.length) { 
+                        document.getElementById('loader').style.display = 'none'; 
+                        loadStorage(); updateUI(); setupMatter(); 
+                    }
                 };
                 img.src = `https://flagcdn.com/w80/${t.c}.png`;
             });
         }
 
-        // --- MATTER.JS PHYSICS ---
-        const { Engine, Render, Runner, Bodies, Body, Composite, Events, Vector } = Matter;
-        let eng, rnd, run, arena;
+        // --- MATTER.JS PANCERNY SILNIK ---
+        const { Engine, Render, Bodies, Body, Composite, Events } = Matter;
+        let eng, rnd, arena;
         let cx, cy, rad;
 
         function setupMatter() {
-            const cont = document.getElementById('game-layer');
-            eng = Engine.create({ positionIterations: 8, velocityIterations: 8 });
-            eng.gravity.y = 0; eng.gravity.x = 0; // Top-down
+            const canvas = document.getElementById('physics-canvas');
+            eng = Engine.create({ positionIterations: 16, velocityIterations: 16 });
+            eng.gravity.y = 0; eng.gravity.x = 0;
             
             rnd = Render.create({
-                element: cont, engine: eng,
+                canvas: canvas, engine: eng,
                 options: { width: window.innerWidth, height: window.innerHeight, wireframes: false, background: 'transparent' }
             });
 
             resizeArena();
-            Render.run(rnd);
-            run = Runner.create();
-
-            // Custom Render for Flags
-            Events.on(rnd, 'afterRender', () => {
-                const ctx = rnd.context;
-                // Handle Zoom
-                ctx.save();
-                if(state.zoom !== 1) {
-                    ctx.translate(cx, cy); ctx.scale(state.zoom, state.zoom); ctx.translate(-cx, -cy);
-                }
-
-                state.balls.forEach(b => {
-                    const t = b.tData; const img = state.images[t.c];
-                    if(img) {
-                        ctx.save();
-                        ctx.translate(b.position.x, b.position.y);
-                        ctx.rotate(b.angle);
-                        ctx.beginPath(); ctx.arc(0, 0, b.circleRadius, 0, Math.PI*2); ctx.clip();
-                        const r = b.circleRadius;
-                        ctx.drawImage(img, -r, -r, r*2, r*2);
-                        // Glass/Light effect on ball
-                        const grad = ctx.createRadialGradient(-r*0.3, -r*0.3, r*0.1, 0, 0, r);
-                        grad.addColorStop(0, 'rgba(255,255,255,0.4)'); grad.addColorStop(1, 'rgba(0,0,0,0.4)');
-                        ctx.fillStyle = grad; ctx.fill();
-                        ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(255,255,255,0.2)'; ctx.stroke();
-                        ctx.restore();
-                    }
-                });
-                ctx.restore();
-            });
-
-            // Collisions for sound
+            
+            Events.on(rnd, 'afterRender', customRender);
             Events.on(eng, 'collisionStart', (e) => {
                 e.pairs.forEach(p => {
                     if(!p.bodyA.isStatic && !p.bodyB.isStatic) {
                         const vA = p.bodyA.velocity; const vB = p.bodyB.velocity;
-                        const relVel = Math.hypot(vA.x - vB.x, vA.y - vB.y);
-                        sndHit(relVel);
+                        sndHit(Math.hypot(vA.x - vB.x, vA.y - vB.y));
                     }
                 });
             });
 
-            Events.on(eng, 'beforeUpdate', physicsLoop);
             spawn();
+            Render.run(rnd); // Render runs async from physics
+            requestAnimationFrame(customPhysicsLoop); // Własna pętla fizyki
+        }
+
+        function customRender() {
+            const ctx = rnd.context;
+            ctx.save();
+            ctx.translate(cx, cy); ctx.scale(state.zoom, state.zoom); ctx.translate(-cx, -cy);
+
+            // Glowing Arena Arc
+            const gapAngle = (4/70) * Math.PI * 2;
+            ctx.beginPath();
+            ctx.arc(cx, cy, rad, state.arenaRot + gapAngle + 0.05, state.arenaRot + Math.PI*2 - 0.05);
+            ctx.strokeStyle = '#00f0ff'; ctx.lineWidth = 6;
+            ctx.shadowBlur = 20; ctx.shadowColor = '#00f0ff';
+            ctx.stroke(); ctx.shadowBlur = 0;
+
+            // Render Flags
+            state.balls.forEach(b => {
+                const img = state.images[b.tData.c];
+                if(img) {
+                    ctx.save();
+                    ctx.translate(b.position.x, b.position.y);
+                    ctx.rotate(b.angle);
+                    ctx.beginPath(); ctx.arc(0, 0, b.circleRadius, 0, Math.PI*2); ctx.clip();
+                    const r = b.circleRadius;
+                    ctx.drawImage(img, -r, -r, r*2, r*2);
+                    const grad = ctx.createRadialGradient(-r*0.3, -r*0.3, r*0.1, 0, 0, r);
+                    grad.addColorStop(0, 'rgba(255,255,255,0.4)'); grad.addColorStop(1, 'rgba(0,0,0,0.5)');
+                    ctx.fillStyle = grad; ctx.fill();
+                    ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(255,255,255,0.2)'; ctx.stroke();
+                    ctx.restore();
+                }
+            });
+            ctx.restore();
         }
 
         function resizeArena() {
-            cx = window.innerWidth / 2; cy = window.innerHeight / 2;
-            rad = Math.min(window.innerWidth, window.innerHeight) * 0.42;
+            cx = window.innerWidth / 2; cy = window.innerHeight * 0.45;
+            rad = Math.min(window.innerWidth, window.innerHeight) * 0.38;
+            if(rad > 250) rad = 250;
             
-            if(rnd) { rnd.canvas.width = window.innerWidth; rnd.canvas.height = window.innerHeight; rnd.options.width = window.innerWidth; rnd.options.height = window.innerHeight; }
+            if(rnd) { rnd.canvas.width = window.innerWidth; rnd.canvas.height = window.innerHeight; }
             if(arena) Composite.remove(eng.world, arena);
 
             const parts = []; const segs = 70; const thick = 30;
-            for(let i=0; i<segs; i++) {
-                if(i < 5) continue; // Gap
+            for(let i=4; i<segs; i++) {
                 const a = (i/segs) * Math.PI*2;
                 const p = Bodies.rectangle(cx + Math.cos(a)*rad, cy + Math.sin(a)*rad, (Math.PI*2*rad)/segs * 1.05, thick, {
-                    angle: a, isStatic: true, restitution: 0.8, friction: 0.1,
-                    render: { fillStyle: 'rgba(0, 240, 255, 0.1)', strokeStyle: '#00f0ff', lineWidth: 2 }
+                    angle: a, isStatic: true, restitution: 0.9, friction: 0.05, render: { visible: false }
                 });
                 parts.push(p);
             }
             arena = Body.create({ parts: parts, isStatic: true });
             Body.setPosition(arena, {x: cx, y: cy});
             Composite.add(eng.world, arena);
-            if(!state.running) spawn();
+            if(!state.running && state.balls.length <= 1) spawn();
         }
 
         window.addEventListener('resize', () => { clearTimeout(window.rsz); window.rsz = setTimeout(resizeArena, 200); });
@@ -536,79 +561,92 @@
         function spawn() {
             state.balls.forEach(b => Composite.remove(eng.world, b));
             state.balls = [];
-            const br = Math.max(10, rad / 22);
+            const br = Math.max(10, rad / 15);
             
             state.teams.forEach((t, i) => {
                 const a = (i/state.teams.length) * Math.PI*2;
-                const d = Math.random()*(rad*0.6) + 30;
+                const d = Math.random()*(rad*0.7) + 20;
                 const b = Bodies.circle(cx + Math.cos(a)*d, cy + Math.sin(a)*d, br, {
-                    restitution: 0.95, friction: 0.02, frictionAir: 0.005, density: 0.05, render: { visible: false }
+                    restitution: 0.95, friction: 0.005, frictionAir: 0.015, density: 0.08, render: { visible: false }
                 });
                 b.tData = t; state.balls.push(b); Composite.add(eng.world, b);
             });
-            state.baseTimeScale = 1; eng.timing.timeScale = 1; state.zoom = 1; updateUI();
+            state.targetTimeScale = 1; state.timeScale = 1; state.targetZoom = 1; state.zoom = 1;
+            state.m10 = false; state.m5 = false; state.m3 = false; state.m2 = false;
+            document.getElementById('center-labels').style.opacity = '1';
+            updateUI();
         }
 
-        // --- DRAMA & UI FX ---
+        // --- CUSTOM RAF LOOP ---
+        let lastTime = performance.now();
+        function customPhysicsLoop(time) {
+            requestAnimationFrame(customPhysicsLoop);
+            let delta = time - lastTime; lastTime = time;
+            if(delta > 100) delta = 1000/60; // Tab inactive fix
+
+            // Smooth transitions
+            state.zoom += (state.targetZoom - state.zoom) * 0.05;
+            state.timeScale += (state.targetTimeScale - state.timeScale) * 0.05;
+            state.rotSpeed += (state.targetRotSpeed - state.rotSpeed) * 0.05;
+
+            if(!state.running) return;
+
+            Engine.update(eng, delta * state.timeScale);
+
+            // Arena rotation
+            state.arenaRot += state.rotSpeed * state.timeScale;
+            Body.setAngle(arena, state.arenaRot); Body.setPosition(arena, {x: cx, y: cy});
+
+            // Random events
+            if(Math.random() < 0.005) state.targetRotSpeed = (Math.random() > 0.5 ? 1 : -1) * (0.005 + Math.random()*0.015);
+
+            // Dangerous Hole Logic
+            const hAngle = state.arenaRot + ((2/70) * Math.PI * 2);
+            const hx = cx + Math.cos(hAngle) * rad;
+            const hy = cy + Math.sin(hAngle) * rad;
+
+            for(let i = state.balls.length-1; i>=0; i--) {
+                const b = state.balls[i];
+                
+                // Anti-stuck and movement
+                if(b.speed < 0.2) Body.applyForce(b, b.position, {x: (Math.random()-0.5)*0.002, y: (Math.random()-0.5)*0.002});
+                
+                // Suck into hole
+                const distH = Math.hypot(b.position.x - hx, b.position.y - hy);
+                if(distH < rad * 0.3) {
+                    Body.applyForce(b, b.position, {x: (hx - b.position.x)*0.0001, y: (hy - b.position.y)*0.0001});
+                }
+
+                // Elimination
+                if(Math.hypot(b.position.x - cx, b.position.y - cy) > rad + 30) {
+                    const t = b.tData;
+                    Composite.remove(eng.world, b); state.balls.splice(i, 1);
+                    sndEliminate(); shake(); showElim(`${t.n.toUpperCase()} ELIMINATED!`);
+                    updateUI(); checkMilestones();
+                }
+            }
+        }
+
+        // --- DRAMA ---
         const elWrap = document.getElementById('wrapper');
         const dText = document.getElementById('dramatic-msg');
         const elimBan = document.getElementById('elim-banner');
 
         function shake() { elWrap.classList.remove('shake-active'); void elWrap.offsetWidth; elWrap.classList.add('shake-active'); }
-        
-        function showText(txt, cls, dur) {
-            dText.innerHTML = txt; dText.className = `dramatic-text show ${cls}`;
-            setTimeout(() => dText.className = 'dramatic-text', dur);
-        }
-
-        function showElim(txt) {
-            elimBan.innerHTML = txt; elimBan.classList.add('show');
-            setTimeout(() => elimBan.classList.remove('show'), 1500);
-        }
-
-        // --- GAME LOOP ---
-        function physicsLoop() {
-            if(!state.running) return;
-
-            // Arena Rotation
-            state.arenaRot += state.rotSpeed;
-            Body.setAngle(arena, state.arenaRot); Body.setPosition(arena, {x: cx, y: cy});
-
-            // Random impulses (Chaos)
-            if(Math.random() < 0.03) {
-                const b = state.balls[Math.floor(Math.random()*state.balls.length)];
-                if(b) Body.applyForce(b, b.position, {x: (Math.random()-0.5)*0.01, y: (Math.random()-0.5)*0.01});
-            }
-
-            // Speed changes
-            if(Math.random() < 0.005) state.rotSpeed = (Math.random() > 0.5 ? 1 : -1) * (0.005 + Math.random()*0.01);
-
-            // Bounds check & Elimination
-            for(let i = state.balls.length-1; i>=0; i--) {
-                const b = state.balls[i];
-                if(Math.hypot(b.position.x - cx, b.position.y - cy) > rad + 20) {
-                    const t = b.tData;
-                    Composite.remove(eng.world, b); state.balls.splice(i, 1);
-                    
-                    sndEliminate(); shake();
-                    showElim(`${t.n.toUpperCase()} ELIMINATED!`);
-                    updateUI();
-                    checkMilestones();
-                }
-            }
-        }
+        function showText(txt, cls, dur) { dText.innerHTML = txt; dText.className = `dramatic-text show ${cls}`; setTimeout(() => dText.className = 'dramatic-text', dur); }
+        function showElim(txt) { elimBan.innerHTML = txt; elimBan.classList.add('show'); setTimeout(() => elimBan.classList.remove('show'), 1500); }
 
         function checkMilestones() {
             const rem = state.balls.length;
-            if(rem === 10) { showText("FINAL 10", "", 2000); sndEvent(); }
-            if(rem === 5) { showText("FINAL 5", "text-danger", 2000); sndEvent(); state.rotSpeed *= 1.5; }
-            if(rem === 3) { showText("FINAL 3", "text-danger", 2000); sndEvent(); eng.timing.timeScale = 0.6; } // Slowmo
-            if(rem === 2) { showText("FINAL 2", "text-gold", 2000); sndEvent(); eng.timing.timeScale = 0.4; state.zoom = 1.3; } // Super Slow + Zoom
+            if(rem === 10 && !state.m10) { state.m10 = true; showText("FINAL 10", "text-accent", 2000); sndEvent(); }
+            if(rem === 5 && !state.m5) { state.m5 = true; showText("FINAL 5", "text-danger", 2000); sndEvent(); state.targetRotSpeed *= 1.5; }
+            if(rem === 3 && !state.m3) { state.m3 = true; showText("FINAL 3", "text-danger", 2000); sndEvent(); state.targetTimeScale = 0.5; }
+            if(rem === 2 && !state.m2) { state.m2 = true; showText("FINAL DUEL", "text-gold", 3000); sndEvent(); state.targetTimeScale = 0.3; state.targetZoom = 1.4; document.getElementById('center-labels').style.opacity = '0'; }
             if(rem === 1) handleWin();
         }
 
         function handleWin() {
-            state.running = false; Runner.stop(run);
+            state.running = false;
             const w = state.balls[0].tData;
             const idx = state.teams.findIndex(t => t.c === w.c);
             state.teams[idx].s++; saveStorage(); updateUI();
@@ -620,38 +658,55 @@
 
             if(isChamp) {
                 sndChampion();
-                confetti({ particleCount: 300, spread: 150, origin: { y: 0.6 }, zIndex: 1000, colors: ['#ffd700', '#00f0ff', '#ffffff'] });
-                showText(`
-                    👑 ${w.n.toUpperCase()} WINS! 👑<br>
-                    <img src="https://flagcdn.com/w160/${w.c}.png" style="margin-top:30px; border-radius:15px; box-shadow:0 0 50px var(--gold); border: 2px solid var(--gold);">
-                `, 'text-gold', 7000);
-                setTimeout(() => { initData(); updateUI(); if(state.auto) start(); else resetUI(); }, 8000);
+                confetti({ particleCount: 400, spread: 160, origin: { y: 0.5 }, zIndex: 1000, colors: ['#ffd700', '#00f0ff', '#ffffff'] });
+                showText(`👑 ${w.n.toUpperCase()} WINS! 👑<br><img src="https://flagcdn.com/w160/${w.c}.png" style="margin-top:20px; border-radius:15px; box-shadow:0 0 50px var(--gold); border: 2px solid var(--gold);">`, 'text-gold', 7000);
+                setTimeout(() => { initData(); updateUI(); autoCheck(); }, 8000);
             } else {
                 sndWin();
                 showText(`🏆 ${w.n.toUpperCase()} +1 POINT!`, 'text-gold', 4000);
-                setTimeout(() => { state.round++; saveStorage(); if(state.auto) start(); else resetUI(); }, 4500);
+                setTimeout(() => { state.round++; saveStorage(); autoCheck(); }, 4500);
             }
         }
 
-        function start() {
+        function autoCheck() {
+            spawn();
+            if(state.auto) { setTimeout(() => startSim(), 1000); } 
+            else { document.getElementById('btn-action').innerHTML = "▶ START NEXT ROUND"; }
+        }
+
+        // --- CONTROLS ---
+        function startSim() {
             initAudio();
             if(state.balls.length <= 1) spawn();
-            state.running = true; Runner.run(run, eng);
-            document.getElementById('btn-start').innerText = "Running...";
+            state.running = true;
+            document.getElementById('btn-action').innerHTML = "⏸ PAUSE GAME";
         }
 
-        function resetUI() {
-            spawn();
-            document.getElementById('btn-start').innerText = "Start Game";
+        function pauseSim() {
+            state.running = false;
+            document.getElementById('btn-action').innerHTML = "▶ RESUME GAME";
         }
 
-        // --- EVENTS ---
-        document.getElementById('btn-start').onclick = () => { if(!state.running) start(); };
+        document.getElementById('btn-action').onclick = () => { state.running ? pauseSim() : startSim(); };
+        
         document.getElementById('btn-reset').onclick = () => {
-            if(confirm("Wipe all scores and reset?")) { state.running = false; Runner.stop(run); initData(); resetUI(); }
+            if(confirm("Reset entire match to Round 1?")) { pauseSim(); initData(); spawn(); document.getElementById('btn-action').innerHTML = "▶ START GAME"; }
         };
-        document.getElementById('set-target').onchange = (e) => state.target = parseInt(e.target.value);
-        document.getElementById('set-auto').onchange = (e) => state.auto = e.target.checked;
+
+        document.getElementById('sel-target').onchange = (e) => {
+            state.target = parseInt(e.target.value);
+            document.getElementById('ft-pts').innerText = `${state.target} POINTS`;
+        };
+
+        document.getElementById('chk-auto').onchange = (e) => { state.auto = e.target.checked; };
+
+        // Ranking Toggle
+        let rOpen = false;
+        document.getElementById('btn-ranking').onclick = () => {
+            rOpen = !rOpen;
+            document.getElementById('ranking-panel').classList.toggle('hidden', !rOpen);
+            document.getElementById('ranking-hint').style.display = 'none'; // hide hint forever
+        };
 
         preload();
     </script>
